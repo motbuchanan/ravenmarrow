@@ -1,6 +1,6 @@
 # Ravenmarrow: Roadmap
 
-**Current version:** 1.1 · Nov 13 2026
+**Current version:** 1.2 · Nov 13 2026
 **Live URL:** https://motbuchanan.github.io/ravenmarrow/ (repo: ravenmarrow, files at the root)
 **What it is:** A gothic Norse boss-battle game drawn entirely in code. A gift build inspired by a mobile Viking strategy RPG, built around boss fights, a warrior roster, and a light village. No money, no accounts, no data leaves the phone.
 
@@ -38,6 +38,10 @@
 - Saga Journal (book button, top of camp): realm and boss lore, kill counts, stats.
 - 20 Deeds paying bone runes (boss kills, flawless boss, Good Dog, Ultimate finisher, recruits, levels, buildings, full coffers, raids, 100 wins). Raid boss kills count.
 
+## Shipped in 1.2 (Nov 13 2026)
+- Relics: 15 (3 per boss), defined in RELICS in the engine. First boss kill always drops one; repeat kills 40%; raid boss 50%. One per warrior, most with a trade-off. Journal Relics tab, deeds Cursed Collector and The Hoard. Save fields `relics` {id: time} and `equip` {warrior: relic}.
+- Combat feel pass (her feedback via Mot: too fast, no impact): wind-up before every move with rune flare, slash + spark effects, knockback, red hurt flash, heavier shakes, Android vibration. 1x pacing about 1.2 s per hero action; speed divides pauses by 1 / 1.8 / 3.
+
 ## Locked decisions
 - Art is drawn in code (approved Sample A look). No image files except the app icons.
 - No real money, loot boxes or timers that push paying.
@@ -47,8 +51,7 @@
 ## Open queue (expansion ideas, in rough priority)
 1. Her feedback after first play
 2. Realm VI and beyond (each realm = 1 entry in REALMS + 1 foe shape if new)
-3. v1.2 Relics: cursed relics dropped by bosses, 1 slot per warrior
-4. Warrior stars / ascension past the level cap
-5. Weekly hunt: one rotating boss with a modifier
-6. More warriors (each = 1 WARRIORS entry + 3 SKILLS + a portrait case)
-7. Haptics on hits (Android only; iPhone Safari has no vibration)
+3. Warrior stars / ascension past the level cap
+4. Weekly hunt: one rotating boss with a modifier
+5. More warriors (each = 1 WARRIORS entry + 3 SKILLS + a portrait case)
+6. Haptics on hits (Android only; iPhone Safari has no vibration)
