@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<!-- Ravenmarrow v1.0 · Nov 13 2026 -->
+<!-- Ravenmarrow v1.1 · Nov 13 2026 -->
 <html lang="en"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-<meta name="build" content="1.0">
+<meta name="build" content="1.1">
 <meta name="build-date" content="Nov 13 2026">
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#050304">
@@ -50,7 +50,7 @@ button{font-family:inherit;color:inherit;cursor:pointer}
 #hub .topbar{position:relative;display:flex;align-items:center;gap:10px;padding:calc(10px + env(safe-area-inset-top)) 12px 8px;background:linear-gradient(#000c,#0000)}
 .cur{display:flex;align-items:center;gap:5px;font-size:12px;letter-spacing:.5px;color:#e9dcc8;padding:5px 9px;border:1px solid #3a2a20;background:rgba(0,0,0,.55)}
 .cur svg{width:15px;height:15px}
-.gear{margin-left:auto;width:40px;height:40px;border:1px solid #3a2a20;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;position:relative}
+.gear{margin-left:auto;flex:none;width:40px;height:40px;border:1px solid #3a2a20;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;position:relative}
 .gear svg{width:20px;height:20px}
 .dot{position:absolute;top:4px;right:4px;width:8px;height:8px;border-radius:50%;background:#e0334a;box-shadow:0 0 6px #e0334a}
 .panel{flex:1;overflow-y:auto;padding:4px 14px 18px;-webkit-overflow-scrolling:touch}
@@ -213,6 +213,9 @@ textarea{-webkit-user-select:text;user-select:text;width:100%;min-height:80px;ba
 @media (prefers-reduced-motion:reduce){.ash i,.fogdrift,.node.next,.sk.ready{animation:none}}
 @media (min-height:760px){.card{height:128px}}
 @media (max-height:520px){.card{height:64px}.card svg.art{opacity:.6}.sk{min-height:44px}.sk em{font-size:18px;line-height:20px}.btitle .bs{display:none}#skills{padding-top:5px}.blog{min-height:18px;font-size:13px;padding:2px}}
+.gear+.gear{margin-left:0}
+.bless.done{opacity:.6}
+.bless:not(.done){border-color:#d9a441;box-shadow:0 0 12px rgba(217,164,65,.25),inset 0 0 18px #000}
 
 </style>
 </head><body>
@@ -227,7 +230,7 @@ textarea{-webkit-user-select:text;user-select:text;width:100%;min-height:80px;ba
   <button class="ghost" id="howTitle">How to play</button>
  </section>
  <section class="screen" id="hub">
-  <div class="topbar"><div id="curs" style="display:flex;gap:6px;flex-wrap:wrap"></div><button class="gear" id="gearBtn" aria-label="Settings"></button></div>
+  <div class="topbar"><div id="curs" style="display:flex;gap:6px;flex-wrap:wrap"></div><button class="gear" id="bookBtn" aria-label="Saga Journal"></button><button class="gear" id="gearBtn" aria-label="Settings" style="margin-left:6px"></button></div>
   <div class="panel" id="panel"></div>
   <nav class="tabs">
    <button class="tab on" data-tab="saga"><span class="r">&#5835;</span>SAGA</button>
@@ -532,6 +535,7 @@ const ICON = {
  silver:'<svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="8" fill="#9aa0a8" stroke="#e8ecf0" stroke-width="1"/><circle cx="10" cy="10" r="5.5" fill="none" stroke="#5a6068" stroke-width="1"/><path d="M10 6v8M8 8l2-2 2 2" stroke="#3a4048" stroke-width="1.2" fill="none"/></svg>',
  iron:'<svg viewBox="0 0 20 20"><path d="M3 13l3-6h8l3 6z" fill="#5a5560" stroke="#a8a0b0" stroke-width="1"/><path d="M6 7h8" stroke="#d0c8d8" stroke-width="1"/></svg>',
  runes:'<svg viewBox="0 0 20 20"><path d="M6 2h8l2 4v8l-2 4H6l-2-4V6z" fill="#e8dcc0" stroke="#fff6e0" stroke-width=".8"/><path d="M10 5v10M10 7l3 2M10 10l-3 2" stroke="#7a0c1a" stroke-width="1.6" fill="none"/></svg>',
+ book:'<svg viewBox="0 0 24 24"><path d="M4 5c3-1.5 6-1.5 8 .5v14c-2-2-5-2-8-.5z M20 5c-3-1.5-6-1.5-8 .5v14c2-2 5-2 8-.5z" fill="none" stroke="#c9b38f" stroke-width="1.3"/><path d="M8 9l1 2 1-2M15 8v4" stroke="#e0334a" stroke-width="1.2" fill="none"/></svg>',
  gear:'<svg viewBox="0 0 24 24"><path d="M12 2l2 3 3.5-.8.6 3.5 3.2 1.6-1.5 3.2 1.5 3.2-3.2 1.6-.6 3.5L14 19l-2 3-2-3-3.5.8-.6-3.5-3.2-1.6 1.5-3.2-1.5-3.2 3.2-1.6.6-3.5L10 5z" fill="none" stroke="#c9b38f" stroke-width="1.3"/><circle cx="12" cy="12" r="3.4" fill="none" stroke="#e0334a" stroke-width="1.4"/></svg>',
 };
 
@@ -686,6 +690,12 @@ const VERSION = document.querySelector('meta[name="build"]').content; // e.g. "1
 const BUILD_DATE = document.querySelector('meta[name="build-date"]').content;
 // Newest first. Every update adds an entry; it shows once after the update lands.
 const CHANGELOG = [
+ {v:'1.1', d:'Nov 13 2026', notes:[
+  'Daily Blessing: your first win each day pays a bonus. Miss a day and nothing is lost.',
+  'The Saga Journal: lore for every realm and boss you have broken, and how many times you have beaten each.',
+  'Deeds: 20 achievements, each paying bone runes. Some are easy. Some are cruel.',
+  'The journal lives behind the book button at the top of the camp screens.',
+ ]},
  {v:'1.0', d:'Nov 13 2026', notes:[
   'The saga begins. Five realms of the restless dead, each ending in a boss.',
   'Eight warriors to recruit and level, each with a special move and an Ultimate.',
@@ -716,7 +726,8 @@ function freshSave(){
   vil:{forge:0, altar:0, barracks:0, mead:0}, silver:0, iron:0, runes:0,
   cleared:RM.REALMS.map(() => 0), raid:{best:0, runs:0, clears:0}, idleAt:Date.now(),
   set:{sfx:true, music:false, auto:false, speed:1}, tut:{done:false, stage:0}, seenVer:VERSION,
-  stats:{wins:0, losses:0, bosses:0, created:Date.now()}};
+  stats:{wins:0, losses:0, bosses:0, created:Date.now(), flawless:0, collects:0, ultKills:0},
+  bossKills:RM.REALMS.map(() => 0), ach:{}, daily:{last:'', total:0}};
 }
 // Forward migration: older saves gain any new fields, realms, buildings and settings automatically.
 function migrate(s){
@@ -728,6 +739,9 @@ function migrate(s){
  for (const k in f.raid) if (s.raid[k] === undefined) s.raid[k] = f.raid[k];
  for (const k in f.stats) if (s.stats[k] === undefined) s.stats[k] = f.stats[k];
  while (s.cleared.length < RM.REALMS.length) s.cleared.push(0);
+ while (s.bossKills.length < RM.REALMS.length) s.bossKills.push(0);
+ if (s.bossKills.every(k => !k)) s.bossKills = s.cleared.map(c => c >= RM.STAGES ? 1 : 0); // 1.0 saves: credit bosses already beaten
+ for (const k in f.daily) if (s.daily[k] === undefined) s.daily[k] = f.daily[k];
  for (const id in s.owned) if (!RM.WARRIORS.find(w => w.id === id)) delete s.owned[id];
  s.squad = s.squad.filter(id => s.owned[id]).slice(0, 3);
  if (!s.squad.length) s.squad = Object.keys(s.owned).slice(0, 3);
@@ -819,7 +833,9 @@ function go(tab){
  renderTop(); $('#panel').scrollTop = 0; Coach.emit('tab:' + tab);
 }
 function renderSaga(){
- let h = `<h2>The Saga</h2><p class="sub">Clear each realm. Every realm ends in a boss.</p>`;
+ const blessed = S.daily.last === today();
+ let h = `<h2>The Saga</h2><p class="sub">Clear each realm. Every realm ends in a boss.</p>
+  <div class="box bless ${blessed ? 'done' : ''}"><div class="row" style="flex-wrap:nowrap;gap:10px"><div class="brune" style="width:38px;height:38px;font-size:20px">&#5835;</div><div style="flex:1"><div class="bname">Daily Blessing</div><div class="bdesc" style="margin:0">${blessed ? 'Claimed today. It returns at midnight.' : 'Your first win today pays ' + blessingPreview() + ' extra.'}</div></div></div></div>`;
  RM.REALMS.forEach((R, r) => {
   const open = realmOpen(r), c = S.cleared[r];
   h += `<div class="box realm ${open ? '' : 'locked'}"><div class="rname">${toRoman(r + 1)}. ${R.name}</div><div class="rsub">${open ? R.sub : 'Defeat ' + RM.REALMS[r - 1].boss.n + ' to open this realm.'}</div>`;
@@ -884,13 +900,13 @@ function warriorSheet(id){
  html += '</div>';
  sheet(html);
  $('#xs').onclick = closeSheet;
- const lv = $('#lvBtn'); if (lv) lv.onclick = () => { if (S.silver < lc) return; S.silver -= lc; S.owned[id]++; save(); sfx('up'); toast(w.name + ' reached level ' + S.owned[id] + '.'); Coach.emit('levelup'); warriorSheet(id); renderWarriors(); renderTop(); };
+ const lv = $('#lvBtn'); if (lv) lv.onclick = () => { if (S.silver < lc) return; S.silver -= lc; S.owned[id]++; save(); sfx('up'); toast(w.name + ' reached level ' + S.owned[id] + '.'); Coach.emit('levelup'); warriorSheet(id); renderWarriors(); renderTop(); checkDeeds(); };
  const sq = $('#sqBtn'); if (sq) sq.onclick = () => {
   if (inSq){ if (S.squad.length <= 1){ toast('Your squad needs at least one warrior.'); return; } S.squad = S.squad.filter(x => x !== id); }
   else { if (S.squad.length >= 3){ toast('Squad is full. Remove someone first.'); return; } S.squad.push(id); }
   save(); sfx('tap'); warriorSheet(id); renderWarriors();
  };
- const rc = $('#recBtn'); if (rc) rc.onclick = () => { if (S.runes < w.cost) return; S.runes -= w.cost; S.owned[id] = Math.max(1, Math.min(cap, Math.floor(avgLevel() * 0.7))); save(); sfx('up'); toast(w.name + ' has joined you.'); warriorSheet(id); renderWarriors(); renderTop(); };
+ const rc = $('#recBtn'); if (rc) rc.onclick = () => { if (S.runes < w.cost) return; S.runes -= w.cost; S.owned[id] = Math.max(1, Math.min(cap, Math.floor(avgLevel() * 0.7))); save(); sfx('up'); toast(w.name + ' has joined you.'); warriorSheet(id); renderWarriors(); renderTop(); checkDeeds(); };
 }
 function avgLevel(){ const v = Object.values(S.owned); return v.reduce((a, b) => a + b, 0) / v.length; }
 function renderVillage(){
@@ -904,11 +920,11 @@ function renderVillage(){
  });
  $('#panel').innerHTML = h;
  $('#panel .vscene').innerHTML = '';
- $('#collect').onclick = () => { const n = idleNow(); if (n < 1) return; S.silver += n; S.idleAt = Date.now(); save(); sfx('coin'); toast('Collected ' + fmt(n) + ' silver.'); Coach.emit('collect'); renderVillage(); renderTop(); };
+ $('#collect').onclick = () => { const n = idleNow(); if (n < 1) return; S.silver += n; S.idleAt = Date.now(); S.stats.collects++; if (n >= RM.idleRate(S.vil.mead) * RM.IDLE_CAP_H) FLAGS.fullCoffers = true; save(); sfx('coin'); toast('Collected ' + fmt(n) + ' silver.'); Coach.emit('collect'); renderVillage(); renderTop(); checkDeeds(); };
  $$('#panel [data-b]').forEach(btn => btn.onclick = () => {
   const id = btn.dataset.b, l = S.vil[id], c = RM.buildCost(l); if (!afford(c)) return;
   if (id === 'mead'){ S.silver += idleNow(); S.idleAt = Date.now(); }
-  pay(c); S.vil[id]++; save(); sfx('up'); toast(RM.BUILDINGS.find(b => b.id === id).name + ' raised to level ' + S.vil[id] + '.'); renderVillage(); renderTop();
+  pay(c); S.vil[id]++; save(); sfx('up'); toast(RM.BUILDINGS.find(b => b.id === id).name + ' raised to level ' + S.vil[id] + '.'); renderVillage(); renderTop(); checkDeeds();
  });
 }
 function raidRealm(){ let r = -1; S.cleared.forEach((c, i) => { if (c >= RM.STAGES) r = i; }); return r; }
@@ -929,7 +945,7 @@ function renderRaid(){
 }
 
 // ---------- BATTLE ----------
-let B = null, CTX = null, TGT = null, PICK = null, FLEE = false, BID = 0;
+let B = null, CTX = null, TGT = null, PICK = null, FLEE = false, BID = 0, LASTKIND = '', BOSSULT = false, HERODOWN = false;
 function heroesFor(){ return S.squad.map(id => RM.makeHero(id, S.owned[id], S.vil)); }
 function startSaga(r, s){ CTX = {type:'saga', r, s}; runFight(heroesFor(), RM.encounter(r, s)); }
 function startRaid(rr){
@@ -944,7 +960,8 @@ function raidWave(r, w){
 async function runFight(heroes, foes){
  const my = ++BID; // a newer fight cancels any older loop still waiting on a timer
  if (PICK){ const r = PICK; PICK = null; r({sid:'strike'}); }
- B = new RM.Battle(heroes, foes); FLEE = false; TGT = null; PICK = null;
+ B = new RM.Battle(heroes, foes); FLEE = false; TGT = null; PICK = null; BOSSULT = false; LASTKIND = '';
+ if (!(CTX && CTX.type === 'raid' && CTX.wave > 0)) HERODOWN = false; // raids remember a fall across waves
  setBG(CTX.r); showScreen('battle');
  const R = RM.REALMS[CTX.r], bossF = foes.find(f => f.boss);
  $('#bn').textContent = CTX.type === 'raid' ? 'Raid: Wave ' + (CTX.wave + 1) + ' of 5' : bossF ? bossF.name : R.name;
@@ -1032,7 +1049,7 @@ async function playEvents(ev){
   const unit = B.all().find(x => x.uid === (e.u || e.tgt));
   switch (e.t){
    case 'act': {
-    const u = B.all().find(x => x.uid === e.u);
+    const u = B.all().find(x => x.uid === e.u); LASTKIND = e.kind;
     if (e.kind === 'ult'){ const f = $('#ultflash'); f.querySelector('.ur').textContent = RM.SKILLS[e.sid].rune; f.querySelector('.un').textContent = e.name; f.classList.remove('on'); void f.offsetWidth; f.classList.add('on'); sfx('ult'); await wait(800 / Math.min(sp, 2)); }
     if (e.kind === 'sig'){ log(u.name + ' unleashes ' + e.name + '!'); sfx('boss'); shakeScreen(); await wait(500 / sp); }
     else log(u.name + (u.side === 'hero' ? ' uses ' + e.name + '.' : ' attacks.'));
@@ -1044,7 +1061,7 @@ async function playEvents(ev){
     updateUnits(); await wait(230 / sp); break; }
    case 'heal': floatAt(e.tgt, '+' + e.amt, 'heal'); sfx('heal'); updateUnits(); await wait(200 / sp); break;
    case 'self': floatAt(e.u, '-' + e.amt, 'hurt'); updateUnits(); await wait(120 / sp); break;
-   case 'die': sfx('die'); log(unit.name + (unit.side === 'hero' ? ' has fallen.' : ' is destroyed.')); updateUnits(); await wait(300 / sp); break;
+   case 'die': if (unit.boss && LASTKIND === 'ult') BOSSULT = true; if (unit.side === 'hero') HERODOWN = true; sfx('die'); log(unit.name + (unit.side === 'hero' ? ' has fallen.' : ' is destroyed.')); updateUnits(); await wait(300 / sp); break;
    case 'buff': sfx('buff'); log(BUFFLOG[e.k] || ''); updateUnits(); await wait(300 / sp); break;
    case 'enrage': floatAt(e.u, 'ENRAGED', 'crit'); log(unit.name + ' is enraged!'); sfx('boss'); shakeScreen(); await wait(600 / sp); break;
    case 'revive': floatAt(e.u, 'Rises!', 'heal'); log(unit.name + ' rises again.'); sfx('heal'); updateUnits(); await wait(400 / sp); break;
@@ -1067,6 +1084,9 @@ function afterFight(res){
   if (res === 'win'){
    const L = RM.loot(CTX.r, CTX.wave === 4 ? 3 : Math.min(2, CTX.wave), true);
    ['silver','iron','runes'].forEach(k => { CTX.loot[k] += L[k]; S[k] += L[k]; }); // banked right away
+   const pre = {silver:L.silver, iron:L.iron, runes:L.runes};
+   const DBr = dailyBlessing(L); if (DBr){ CTX.loot.blessed = true; ['silver','iron','runes'].forEach(k => CTX.loot[k] += L[k] - pre[k]); }
+   if (CTX.wave === 4){ S.bossKills[CTX.r]++; if (BOSSULT) S.stats.ultKills++; if (!HERODOWN){ FLAGS.raidFlawless = true; S.stats.flawless++; } }
    save();
    CTX.wave++;
    if (CTX.wave < 5){
@@ -1090,15 +1110,19 @@ function afterFight(res){
   if (first) S.cleared[CTX.r] = CTX.s + 1;
   const bossDown = first && CTX.s === RM.STAGES - 1;
   if (bossDown) S.stats.bosses++;
+  const hadBoss = B && B.foes.some(f => f.boss);
+  if (hadBoss){ S.bossKills[CTX.r]++; if (!HERODOWN){ S.stats.flawless++; FLAGS.flawless = RM.REALMS[CTX.r].id; } if (BOSSULT) S.stats.ultKills++; }
+  const DB = dailyBlessing(L);
   save(); sfx('win');
   const nextS = CTX.s + 1 < RM.STAGES ? {r:CTX.r, s:CTX.s + 1} : (CTX.r + 1 < RM.REALMS.length ? {r:CTX.r + 1, s:0} : null);
-  sheet(`<div class="result"><div class="lockmsg">${bossDown ? R.boss.n + ' is destroyed' : 'The fog thins'}</div><div class="big">Victory</div>${bossDown ? `<p>${CTX.r + 1 < RM.REALMS.length ? RM.REALMS[CTX.r + 1].name + ' is open.' : 'You have broken every realm, for now.'}${CTX.r === 0 ? ' Raids are open.' : ''}</p>` : ''}<div class="loot">${lootHTML(L)}</div>
+  sheet(`<div class="result"><div class="lockmsg">${bossDown ? R.boss.n + ' is destroyed' : 'The fog thins'}</div><div class="big">Victory</div>${bossDown ? `<p>${CTX.r + 1 < RM.REALMS.length ? RM.REALMS[CTX.r + 1].name + ' is open.' : 'You have broken every realm, for now.'}${CTX.r === 0 ? ' Raids are open.' : ''}</p>` : ''}<div class="loot">${lootHTML(L)}</div>${DB}
    <div class="row" style="justify-content:center"><button class="btn" id="rBack">Saga</button><button class="btn" id="rAgain">Again</button>${nextS ? '<button class="btn blood" id="rNext">Next</button>' : ''}</div></div>`);
   $('#veil')._lock = true;
   $('#rBack').onclick = () => { closeSheet(); toHub('saga'); };
   $('#rAgain').onclick = () => { closeSheet(); startSaga(CTX.r, CTX.s); };
   const n = $('#rNext'); if (n) n.onclick = () => { closeSheet(); startSaga(nextS.r, nextS.s); };
   Coach.emit('victory');
+  checkDeeds();
  } else if (res === 'lose'){
   S.stats.losses++; save(); sfx('lose');
   sheet(`<div class="result"><div class="lockmsg">The fog closes</div><div class="big" style="color:#a99">Fallen</div><p>Level up your warriors, recruit new ones with bone runes, or build up the Forge. Replaying fights you already won earns silver.</p>
@@ -1113,8 +1137,8 @@ function endRaid(full, lost){
  const L = CTX.loot, waves = CTX.wave;
  S.raid.runs++;
  if (waves > S.raid.best) S.raid.best = waves; if (full) S.raid.clears++;
- save(); sfx(full ? 'win' : lost ? 'lose' : 'coin');
- sheet(`<div class="result"><div class="lockmsg">${waves} of 5 waves</div><div class="big">${full ? 'Raid Cleared' : lost ? 'Overrun' : 'Withdrawn'}</div><p>${full ? 'The boss falls a second time. It will be back.' : 'You keep everything from the waves you cleared.'}</p><div class="loot">${lootHTML(L)}</div><button class="btn blood" id="rDone">Back to camp</button></div>`);
+ save(); setTimeout(checkDeeds, 400); sfx(full ? 'win' : lost ? 'lose' : 'coin');
+ sheet(`<div class="result"><div class="lockmsg">${waves} of 5 waves</div><div class="big">${full ? 'Raid Cleared' : lost ? 'Overrun' : 'Withdrawn'}</div><p>${full ? 'The boss falls a second time. It will be back.' : 'You keep everything from the waves you cleared.'}${L.blessed ? ' Includes today\'s Daily Blessing.' : ''}</p><div class="loot">${lootHTML(L)}</div><button class="btn blood" id="rDone">Back to camp</button></div>`);
  $('#veil')._lock = true;
  $('#rDone').onclick = () => { closeSheet(); toHub('raid'); };
 }
@@ -1235,6 +1259,99 @@ const Coach = (() => {
 const _ws = warriorSheet; warriorSheet = function(id){ _ws(id); Coach.emit('sheet:' + id); };
 const _emit = Coach.emit; Coach.emit = function(n){ _emit(n); if (n === 'victory') Coach.afterVictory(); };
 
+// ---------- DAILY BLESSING (v1.1) ----------
+function today(){ const d = new Date(); return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); }
+function blessingAmt(){ const r = frontier(); return {silver:Math.round(160 * Math.pow(1.8, r)), iron:12 + 10 * r, runes:6 + 2 * r}; }
+function blessingPreview(){ const b = blessingAmt(); return Object.keys(b).map(k => `<span class="cost">${ART.ICON[k]}${fmt(b[k])}</span>`).join(' '); }
+// call on a win; returns result-sheet HTML if the blessing paid out
+function dailyBlessing(L){
+ if (S.daily.last === today()) return '';
+ const b = blessingAmt();
+ S.silver += b.silver; S.iron += b.iron; S.runes += b.runes; S.daily.last = today(); S.daily.total++;
+ if (L){ L.silver += b.silver; L.iron += b.iron; L.runes += b.runes; }
+ return `<p class="lockmsg" style="color:#f0c060;margin:-6px 0 12px">Daily Blessing included: ${Object.keys(b).map(k => `<span class="cost">${ART.ICON[k]}${fmt(b[k])}</span>`).join(' ')}</p>`;
+}
+
+// ---------- DEEDS / ACHIEVEMENTS (v1.1) ----------
+const FLAGS = {};
+const maxLv = () => Math.max(...Object.values(S.owned));
+const DEEDS = [
+ {id:'first', n:'First Blood', d:'Win your first fight.', r:3, ok:() => S.stats.wins >= 1},
+ {id:'b0', n:'The Mound Breaks', d:'Defeat the Barrow-King.', r:5, ok:() => S.bossKills[0] >= 1},
+ {id:'b1', n:'Hound Muzzled', d:'Defeat Garm.', r:8, ok:() => S.bossKills[1] >= 1},
+ {id:'b2', n:'Half a Queen', d:'Defeat the Hel-Maiden.', r:10, ok:() => S.bossKills[2] >= 1},
+ {id:'b3', n:'Root Rot', d:'Defeat Nidhogg.', r:12, ok:() => S.bossKills[3] >= 1},
+ {id:'b4', n:'World Ender, Ended', d:'Defeat Jormungandr.', r:20, ok:() => S.bossKills[4] >= 1},
+ {id:'flaw', n:'Not a Scratch Worth Mentioning', d:'Beat any boss with no warrior falling.', r:6, ok:() => S.stats.flawless >= 1},
+ {id:'garmflaw', n:'Good Dog', d:'Beat Garm without anyone falling.', r:12, ok:() => FLAGS.flawless === 'ironwood'},
+ {id:'ultkill', n:'Saved the Best for Last', d:'Finish a boss with an Ultimate.', r:6, ok:() => S.stats.ultKills >= 1},
+ {id:'recruit1', n:'New Blood', d:'Recruit your first new warrior.', r:4, ok:() => Object.keys(S.owned).length >= 4},
+ {id:'recruit8', n:'The Full Hall', d:'Recruit all eight warriors.', r:20, ok:() => Object.keys(S.owned).length >= RM.WARRIORS.length},
+ {id:'lv10', n:'Seasoned', d:'Raise a warrior to level 10.', r:6, ok:() => maxLv() >= 10},
+ {id:'lv20', n:'Hardened', d:'Raise a warrior to level 20.', r:12, ok:() => maxLv() >= 20},
+ {id:'build3', n:'Stone on Stone', d:'Raise any building to level 3.', r:5, ok:() => Object.values(S.vil).some(v => v >= 3)},
+ {id:'build5', n:'The Long Hall', d:'Fully build all four buildings.', r:25, ok:() => Object.values(S.vil).every(v => v >= RM.VMAX)},
+ {id:'coffers', n:'Patience Pays', d:'Collect a full Mead Hall (10 hours of silver).', r:5, ok:() => !!FLAGS.fullCoffers},
+ {id:'raid3', n:'Still Standing', d:'Survive three raid waves.', r:6, ok:() => S.raid.best >= 3},
+ {id:'raid5', n:'Raider', d:'Clear a full raid.', r:10, ok:() => S.raid.clears >= 1},
+ {id:'raidflaw', n:'Nobody Stays Down', d:'Clear a full raid with no warrior falling.', r:15, ok:() => !!FLAGS.raidFlawless},
+ {id:'w100', n:'A Hundred Graves', d:'Win 100 fights.', r:15, ok:() => S.stats.wins >= 100},
+];
+let deedQueue = [], deedShowing = false;
+function checkDeeds(){
+ let got = 0;
+ DEEDS.forEach(d => { if (!S.ach[d.id]){ let ok = false; try { ok = d.ok(); } catch (e) {} if (ok){ S.ach[d.id] = Date.now(); S.runes += d.r; got++; deedQueue.push(d); } } });
+ Object.keys(FLAGS).forEach(k => delete FLAGS[k]);
+ if (got){ save(); renderTopSafe(); showDeeds(); }
+}
+async function showDeeds(){
+ if (deedShowing) return; deedShowing = true;
+ await wait(2400); // let the toast that caused it finish first
+ while (deedQueue.length){
+  while (Coach.isOn() || !$('#hub').classList.contains('on') && !$('#battle').classList.contains('on')) await wait(1000);
+  if (deedQueue.length > 2){ const all = deedQueue.splice(0); sfx('up'); toast(all.length + ' deeds done: +' + all.reduce((a, d) => a + d.r, 0) + ' runes. See the Journal.', 3400); await wait(3600); continue; }
+  const d = deedQueue.shift(); sfx('up'); toast('Deed done: ' + d.n + '  (+' + d.r + ' runes)', 2600); await wait(2900);
+ }
+ deedShowing = false;
+}
+
+// ---------- SAGA JOURNAL (v1.1) ----------
+const LORE = {
+ barrow:{realm:'The oldest mounds were dug by people in a hurry. They buried their chieftain sitting up, with his sword across his knees, and left before the last stone was set. He has been waiting for someone to finish the job ever since.',
+  boss:'The Barrow-King wears the crown he was buried in, and the cold he was buried with. He does not hate the living. He simply does not remember what they are for.'},
+ ironwood:{realm:'The Ironwood grows east of everything. Its trees ring like struck shields when the wind moves them, and the wolves there are born with iron in their teeth.',
+  boss:'Garm is chained at the mouth of a cave that leads down to Hel. The chain is long, and lately it has been getting longer. His chest is red with whatever he ate last.'},
+ helgate:{realm:'Nothing grows near the Gate of Hel, and nothing rots there either. The dead who arrive wait in a long, quiet line. Some of them have stopped waiting.',
+  boss:'One side of her face is a young woman. The other side is what happens to a young woman in the ground. She rules the dead who died in their beds, and she wants more of them.'},
+ roots:{realm:'Below the world, the roots of the great tree hang in the dark like the ribs of something huge. They are wet. They are chewed. They are getting thinner.',
+  boss:'Nidhogg gnaws the root of the world and eats the bodies of oathbreakers. When it runs out of oathbreakers, it is not picky.'},
+ drowned:{realm:'Every ship that never came home ended up here, along with its crew. The sea is cold, dark, and crowded.',
+  boss:'Jormungandr is long enough to circle the whole world and bite its own tail. When it lets go, the oceans rise. It has started to let go.'},
+};
+function plural(n, w){ return n + ' ' + w + (n === 1 ? '' : 's'); }
+function journalSheet(tab){
+ tab = tab || 'saga';
+ const done = Object.keys(S.ach).length;
+ let body = '';
+ if (tab === 'saga'){
+  RM.REALMS.forEach((R, r) => {
+   const open = realmOpen(r), kills = S.bossKills[r] || 0, Lr = LORE[R.id] || {};
+   body += `<div class="box ${open ? '' : 'locked'}"><div class="rname" style="font-family:cinzeldec;font-size:15px">${toRoman(r + 1)}. ${open ? R.name : 'Unknown realm'}</div>`;
+   if (open) body += `<p style="margin:4px 0 8px;font-size:14px">${Lr.realm || ''}</p>`;
+   if (kills){ body += `<div class="row" style="flex-wrap:nowrap;gap:10px;align-items:flex-start"><div class="foe" style="width:84px;height:100px;flex:none;max-width:none;--rim:${R.moon}88">${ART.foeArt(R.boss.shape, R.eye, true, R.moon)}</div><div><div class="bname">${R.boss.n}</div><div class="lockmsg">${R.boss.t} · beaten ${kills} time${kills > 1 ? 's' : ''}</div><p style="margin:4px 0 0;font-size:14px">${Lr.boss || ''}</p></div></div>`; }
+   else if (open) body += `<div class="lockmsg">${R.boss.n}: not yet beaten. This page stays blank until you do.</div>`;
+   body += '</div>';
+  });
+ } else {
+  body = DEEDS.map(d => { const g = S.ach[d.id]; return `<div class="skillrow" style="opacity:${g ? 1 : .55}"><em class="${g ? 'u' : ''}">${g ? '&#5835;' : '&#5833;'}</em><span style="flex:1"><b>${d.n}</b> <span class="lockmsg">+${d.r} runes</span><div>${d.d}${g ? ' <span style="color:#9fd8a0">Done.</span>' : ''}</div></span></div>`; }).join('');
+ }
+ sheet(`<button class="btn small close" id="xs">Close</button><h3>Saga Journal</h3>
+  <p class="lockmsg" style="margin:0 0 10px">${plural(S.stats.wins, 'win')} · ${plural(S.stats.bosses, 'realm')} broken · ${done} of ${DEEDS.length} deeds · ${plural(S.daily.total, 'blessing')}</p>
+  <div class="toggle" style="margin:0 0 12px;display:inline-flex"><button data-j="saga" class="${tab === 'saga' ? 'on' : ''}">REALMS</button><button data-j="deeds" class="${tab === 'deeds' ? 'on' : ''}">DEEDS</button></div>${body}`);
+ $('#xs').onclick = closeSheet;
+ $$('[data-j]').forEach(b => b.onclick = () => { sfx('tap'); journalSheet(b.dataset.j); });
+}
+
 // ---------- SETTINGS / HOW TO PLAY / BACKUP ----------
 function settingsSheet(){
  const inst = installable();
@@ -1273,6 +1390,8 @@ function howSheet(){
   <h4>Warriors</h4><p>Silver levels them up. Bone runes recruit new ones. Your squad holds three. Mix roles: a Guardian to soak hits, a Mender to heal, and someone who hits hard.</p>
   <h4>Village</h4><p><b>Forge</b>: more damage. <b>Rune Altar</b>: faster Rage. <b>Barracks</b>: higher level cap. <b>Mead Hall</b>: more life, more silver while you are away, better rest in raids. Collect the Mead Hall coffers whenever you come back.</p>
   <h4>Raids</h4><p>Five waves in a row with no full heal between them. Fallen warriors stay down until the raid ends. Loot is doubled, and you keep loot from every wave you clear, even if you leave or fall.</p>
+  <h4>Daily Blessing</h4><p>Your first win each day, in the saga or a raid, pays a bonus. It resets at midnight. Missing a day costs nothing.</p>
+  <h4>Journal and Deeds</h4><p>The book button at the top opens the Saga Journal: lore for each realm, every boss you have beaten, and 20 deeds that pay bone runes when you complete them.</p>
   <h4>Stuck?</h4><p>Replay earlier fights for silver, level your weakest warrior, upgrade the Forge, then try again. Bring Aslaug or Ragna to boss fights.</p>
   <h4>Updates</h4><p>New chapters arrive on their own. When one is ready, a banner appears. Tap it and the game reloads with your progress kept.</p></div>`);
  $('#xs').onclick = closeSheet;
@@ -1362,10 +1481,12 @@ function boot(){
  $('#gearBtn').innerHTML = ART.ICON.gear + '<span class="dot" id="gearDot"></span>';
  setBG(0);
  $('#startBtn').textContent = S.tut.done || S.stats.wins ? 'Continue the saga' : 'Begin the saga';
- $('#startBtn').onclick = () => { ac(); sfx('boss'); if (S.set.music) musicOn(); showScreen('hub'); go('saga'); setTimeout(() => { if (!S.tut.done) Coach.intro(); else whatsNew(false); }, 350); };
+ $('#startBtn').onclick = () => { ac(); sfx('boss'); if (S.set.music) musicOn(); showScreen('hub'); go('saga'); setTimeout(() => { if (!S.tut.done) Coach.intro(); else whatsNew(false); }, 350); setTimeout(checkDeeds, 600); };
  $('#howTitle').onclick = () => { ac(); howSheet(); };
  $$('.tab').forEach(t => t.onclick = () => { sfx('tap'); go(t.dataset.tab); });
  $('#gearBtn').onclick = () => { sfx('tap'); settingsSheet(); };
+ $('#bookBtn').innerHTML = ART.ICON.book; $('#bookBtn').onclick = () => { sfx('tap'); journalSheet(); };
+
  $('#fleeB').onclick = () => { FLEE = true; if (PICK){ const r = PICK; PICK = null; r({sid:'strike'}); } };
  $$('#autoT button').forEach(b => b.onclick = () => setAuto(b.dataset.m === 'auto'));
  $('#speedB').onclick = () => { S.set.speed = S.set.speed >= 3 ? 1 : S.set.speed + 1; save(); syncToggles(); sfx('tap'); };

@@ -1,6 +1,6 @@
 # Ravenmarrow: Roadmap
 
-**Current version:** 1.0 · Nov 13 2026
+**Current version:** 1.1 · Nov 13 2026
 **Live URL:** https://motbuchanan.github.io/ravenmarrow/ (repo: ravenmarrow, files at the root)
 **What it is:** A gothic Norse boss-battle game drawn entirely in code. A gift build inspired by a mobile Viking strategy RPG, built around boss fights, a warrior roster, and a light village. No money, no accounts, no data leaves the phone.
 
@@ -18,6 +18,7 @@
 
 ## Save format
 - localStorage key `ravenmarrow.save`, `v:1`. `migrate()` fills in any new fields, realms, buildings and settings, so old saves keep working when content is added.
+- v1.1 added `ach` (deed id -> time), `daily` {last, total}, `bossKills` per realm, and stats flawless/collects/ultKills. 1.0 saves get bossKills backfilled from cleared realms.
 - Backup codes start with `RVM1.` (Settings > Copy backup code / Restore).
 
 ## Shipped in 1.0
@@ -32,6 +33,11 @@
 - Sound effects (WebAudio, on by default, only on taps and fights), ambient music (off by default)
 - Balance target: realms 1 and 2 quick, then about 300 to 500 fights to clear realm 5 (simulated)
 
+## Shipped in 1.1 (Nov 13 2026)
+- Daily Blessing: first win each local day (saga or raid) pays silver, iron and runes scaled to her furthest realm. No streak penalty.
+- Saga Journal (book button, top of camp): realm and boss lore, kill counts, stats.
+- 20 Deeds paying bone runes (boss kills, flawless boss, Good Dog, Ultimate finisher, recruits, levels, buildings, full coffers, raids, 100 wins). Raid boss kills count.
+
 ## Locked decisions
 - Art is drawn in code (approved Sample A look). No image files except the app icons.
 - No real money, loot boxes or timers that push paying.
@@ -41,10 +47,8 @@
 ## Open queue (expansion ideas, in rough priority)
 1. Her feedback after first play
 2. Realm VI and beyond (each realm = 1 entry in REALMS + 1 foe shape if new)
-3. Gear: cursed relics dropped by bosses, 1 slot per warrior
+3. v1.2 Relics: cursed relics dropped by bosses, 1 slot per warrior
 4. Warrior stars / ascension past the level cap
 5. Weekly hunt: one rotating boss with a modifier
-6. Daily first-win bonus (no streak punishment)
-7. More warriors (each = 1 WARRIORS entry + 3 SKILLS + a portrait case)
-8. Achievements / saga journal of bosses defeated
-9. Haptics on hits (Android only; iPhone Safari has no vibration)
+6. More warriors (each = 1 WARRIORS entry + 3 SKILLS + a portrait case)
+7. Haptics on hits (Android only; iPhone Safari has no vibration)
