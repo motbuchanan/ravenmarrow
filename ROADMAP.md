@@ -1,6 +1,6 @@
 # Ravenmarrow: Roadmap
 
-**Current version:** 1.2 · Nov 13 2026
+**Current version:** 1.3 · Nov 13 2026
 **Live URL:** https://motbuchanan.github.io/ravenmarrow/ (repo: ravenmarrow, files at the root)
 **What it is:** A gothic Norse boss-battle game drawn entirely in code. A gift build inspired by a mobile Viking strategy RPG, built around boss fights, a warrior roster, and a light village. No money, no accounts, no data leaves the phone.
 
@@ -42,6 +42,9 @@
 - Relics: 15 (3 per boss), defined in RELICS in the engine. First boss kill always drops one; repeat kills 40%; raid boss 50%. One per warrior, most with a trade-off. Journal Relics tab, deeds Cursed Collector and The Hoard. Save fields `relics` {id: time} and `equip` {warrior: relic}.
 - Combat feel pass (her feedback via Mot: too fast, no impact): wind-up before every move with rune flare, slash + spark effects, knockback, red hurt flash, heavier shakes, Android vibration. 1x pacing about 1.2 s per hero action; speed divides pauses by 1 / 1.8 / 3.
 
+## Shipped in 1.3 (Nov 13 2026)
+- Onboarding rework (Mot watched her read it: too much small text): cinematic one-line-at-a-time story intro, the Seer as a portrait character with one short line per step, gold keywords, word-by-word reveal, a notch pointing at the target, progress bar. How to Play is 11 swipeable picture cards (mini() in ui.js).
+
 ## Locked decisions
 - Art is drawn in code (approved Sample A look). No image files except the app icons.
 - No real money, loot boxes or timers that push paying.
@@ -50,7 +53,7 @@
 
 ## Open queue (expansion ideas, in rough priority)
 1. Her feedback after first play
-2. Realm VI and beyond (each realm = 1 entry in REALMS + 1 foe shape if new)
+2. v1.4 Realm VI and beyond (each realm = 1 entry in REALMS + 1 foe shape if new)
 3. Warrior stars / ascension past the level cap
 4. Weekly hunt: one rotating boss with a modifier
 5. More warriors (each = 1 WARRIORS entry + 3 SKILLS + a portrait case)

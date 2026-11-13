@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<!-- Ravenmarrow v1.2 · Nov 13 2026 -->
+<!-- Ravenmarrow v1.3 · Nov 13 2026 -->
 <html lang="en"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-<meta name="build" content="1.2">
+<meta name="build" content="1.3">
 <meta name="build-date" content="Nov 13 2026">
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#050304">
@@ -248,6 +248,66 @@ textarea{-webkit-user-select:text;user-select:text;width:100%;min-height:80px;ba
 .floatn.crit{font-size:34px}
 .sk.pressed{transform:scale(.94);border-color:#f0c060;box-shadow:0 0 18px rgba(240,192,96,.7);filter:brightness(1.4)}
 @media (prefers-reduced-motion:reduce){.slash,.spark{display:none}.shakebig,.shake{animation:none}.card.windup,.foe.windup .fart{transform:none}.card.hit,.card.lunge,.foe.hit .fart,.foe.lunge .fart{animation:none}.floatn.rune{animation:floatup .9s ease-out forwards}#hurtflash.on{animation-duration:.25s;opacity:.4}}
+
+/* v1.3 guide + how to play */
+#coach .bub{display:flex;gap:10px;align-items:flex-start;padding:12px 12px 16px;border-radius:6px}
+#coach .bub .seer{flex:none;width:58px;height:66px;border:1px solid #6b5a44;background:#0a0608;border-radius:4px;overflow:hidden}
+#coach .bub .bt{flex:1;min-width:0}
+#coach .bub .who{font-size:11px;margin-bottom:2px}
+#coach .bub .tx{font-family:fell;font-size:clamp(17px,5vw,20px);line-height:1.3;color:#f1e6d2}
+#coach .bub .tx b{color:#f0c060;font-weight:400;text-shadow:0 0 10px rgba(240,192,96,.5)}
+#coach .bub .tx .w{display:inline-block;opacity:0;transform:translateY(5px);animation:wordin .3s ease-out forwards}
+#coach .bub .tx.all .w{animation:none;opacity:1;transform:none}
+@keyframes wordin{to{opacity:1;transform:none}}
+#coach .bub .row{margin-top:8px}
+#coach .dowhat{font-family:fell;font-style:italic;font-size:13px;color:#f0c060;animation:pulse 1.4s infinite}
+#coach .bub .prog{position:absolute;left:0;right:0;bottom:0;height:3px;background:#2a1418}
+#coach .bub .prog i{display:block;height:100%;background:linear-gradient(90deg,#b3182a,#f0c060)}
+#coach .bub.nup:before,#coach .bub.ndown:before{content:"";position:absolute;left:var(--nx,50%);width:16px;height:16px;margin-left:-8px;background:#24120f;border:1px solid #d9a441;transform:rotate(45deg)}
+#coach .bub.nup:before{top:-9px;border-right:none;border-bottom:none}
+#coach .bub.ndown:before{bottom:-9px;border-left:none;border-top:none;background:#0d0607}
+#coach .spot{animation:spotpulse 1.4s ease-in-out infinite}
+@keyframes spotpulse{50%{box-shadow:0 0 0 9999px rgba(0,0,0,.72),0 0 30px #f0c060}}
+#story{position:absolute;inset:0;z-index:75;background:radial-gradient(circle at 50% 38%,#2a0810,#050304 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px;text-align:center;transition:opacity .4s}
+#story.out{opacity:0}
+#story p{font-family:cinzeldec;font-size:clamp(18px,5.4vw,24px);line-height:1.25;max-width:320px;letter-spacing:1px;color:#f1e6d2;text-shadow:0 0 16px #b3182a;margin:10px 0;opacity:0;animation:storyin 1s ease-out forwards}
+#story .btn{margin-top:28px;opacity:0;animation:storyin .8s ease-out forwards}
+#story .skipst{position:absolute;top:calc(14px + env(safe-area-inset-top));right:14px;background:none;border:none;color:#8a7a68;font-family:fell;font-style:italic;font-size:15px;min-height:44px;padding:0 10px}
+@keyframes storyin{from{opacity:0;transform:translateY(10px);filter:blur(4px)}to{opacity:1;transform:none;filter:none}}
+.howsheet{min-height:72%}
+.how{text-align:center}
+.how h3{font-size:22px;margin:10px 0 6px}
+.how ul{list-style:none;padding:0;margin:0 0 14px}
+.how li{font-family:fell;font-size:clamp(17px,4.8vw,19px);line-height:1.35;color:#e9dcc8;padding:5px 0;border-bottom:1px solid #22161a}
+.how li b{color:#f0c060;font-weight:400}
+.hpic{height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;margin:8px -16px 4px;background:radial-gradient(ellipse at 50% 60%,rgba(122,12,26,.35),transparent 70%);animation:sheetup .3s ease-out}
+.hdots{display:flex;justify-content:center;gap:6px;margin:0 0 12px}
+.hdots i{width:7px;height:7px;transform:rotate(45deg);border:1px solid #6b5a44}
+.hdots i.on{background:#f0c060;border-color:#f0c060}
+.mrow{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}
+.mnode{width:40px;height:40px;transform:rotate(45deg);border:1px solid #6b5a44;display:flex;align-items:center;justify-content:center;background:#0a0608;font-family:serif;color:#8a7a68}
+.mnode span{transform:rotate(-45deg);font-size:14px}
+.mnode.done{border-color:#6aa36f;color:#9fd8a0}.mnode.next{border-color:#d9a441;color:#f0c060;box-shadow:0 0 12px rgba(217,164,65,.5);animation:pulse 1.6s infinite}.mnode.boss{border-color:#e0334a;color:#e0334a;width:46px;height:46px}
+.mlink{width:16px;height:2px;background:repeating-linear-gradient(90deg,#4a3a2c 0 4px,transparent 4px 7px)}
+.mcard{width:70px;height:84px;border:1px solid #6b5a44;background:linear-gradient(#1a1014,#0a0608);position:relative;overflow:hidden}
+.mcard svg{position:absolute;inset:0;width:100%;height:100%}
+.mcard.act{border-color:#d9a441;box-shadow:0 0 14px rgba(217,164,65,.6);transform:translateY(-8px)}
+.msk{width:86px;height:62px;border:1px solid #6b5a44;background:radial-gradient(circle at 50% 35%,#2a1418,#0a0608);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:9px;letter-spacing:1px;color:#c9b38f}
+.msk em{font-style:normal;font-family:serif;font-size:24px;color:#e0334a;text-shadow:0 0 8px #b3182a}
+.msk.ult{border-color:#d9a441;animation:pulse 1.2s infinite}.msk.ult em{color:#f0c060}
+.mbar{width:200px;height:12px;border:1px solid #6b5a44;background:#200;position:relative;overflow:hidden}
+.mbar i{position:absolute;inset:0;width:60%;background:linear-gradient(90deg,#b3182a,#f0603a);animation:mfill 2.4s ease-in-out infinite}
+.mbar.full i{width:100%;background:linear-gradient(90deg,#d9a441,#fff0b0);box-shadow:0 0 10px #f0c060;animation:none}
+@keyframes mfill{0%{width:10%}100%{width:95%}}
+.mtog{display:flex;border:1px solid #6b5a44}.mtog b{padding:9px 12px;font-size:11px;letter-spacing:1.5px;font-weight:400;color:#c9b38f}.mtog b.on{background:#7a0c1a;color:#fff}
+.mboss{width:120px;height:140px;--rim:#b3182a99}.mboss svg{width:100%;height:100%;filter:drop-shadow(0 0 6px #b3182a)}
+.mrelic{width:52px;height:52px;border:1px solid #d9a441;display:flex;align-items:center;justify-content:center;font-family:serif;font-size:30px;color:#f0c060;text-shadow:0 0 12px #d9a441;background:#0a0608}
+.mb{width:66px;height:66px;border:1px solid #6b5a44;background:radial-gradient(#2a1418,#0a0608);display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:serif;font-size:24px;color:#e0334a;text-shadow:0 0 8px #b3182a}
+.mb small{font-family:cinzel;font-size:8px;letter-spacing:1px;color:#c9b38f;text-shadow:none;margin-top:4px}
+.mb svg{width:26px;height:26px}.mb.gold{border-color:#d9a441;color:#f0c060}
+.mpip{width:22px;height:22px;transform:rotate(45deg);border:1px solid #6b5a44}.mpip.on{background:#7a0c1a;border-color:#e0334a}.mpip.boss{width:30px;height:30px;border-color:#f0c060;box-shadow:0 0 12px rgba(240,192,96,.6)}
+@media (prefers-reduced-motion:reduce){#coach .bub .tx .w,#story p,#story .btn{animation:none;opacity:1;transform:none;filter:none}#coach .spot,#coach .dowhat,.mbar i,.msk.ult,.mnode.next,.sheet,.hpic{animation:none}}
+@media (max-height:520px){#story{justify-content:flex-start;overflow-y:auto;padding-top:20px}#story p{font-size:16px;margin:5px 0}#story .btn{margin-top:12px}}
 
 </style>
 </head><body>
@@ -743,7 +803,19 @@ function raven(){ // logo mark
  <path d="M92 70 C90 52 110 52 108 70 C106 78 94 78 92 70z" fill="#050305"/><path d="M98 72 L100 84 L102 72z" fill="#2a2024"/><circle cx="96" cy="64" r="2" fill="#5ff0c0"/><circle cx="104" cy="64" r="2" fill="#5ff0c0"/></svg>`;
 }
 
-return {ICON, sceneSVG, heroArt, foeArt, raven};
+function seer(){ // the guide: a hooded seer with a raven on her shoulder
+ return `<svg viewBox="0 0 80 90" width="100%" height="100%"><defs><radialGradient id="seg" cx=".5" cy=".4"><stop offset="0" stop-color="#5ff0c0" stop-opacity=".25"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient></defs>
+ <rect width="80" height="90" fill="url(#seg)"/>
+ <path d="M10 90 C12 62 24 50 40 46 C56 50 68 62 70 90z" fill="#1a1014"/>
+ <path d="M22 52 C16 22 64 22 58 52 L62 78 L18 78z" fill="#24161a"/><path d="M22 52 C16 22 64 22 58 52" fill="none" stroke="#8a6f4a" stroke-width="1"/>
+ <path d="M28 44 C28 30 52 30 52 44 C52 56 28 56 28 44z" fill="#070406"/>
+ <circle cx="35" cy="44" r="2.2" fill="#5ff0c0"><animate attributeName="opacity" values="1;1;.1;1" keyTimes="0;.9;.95;1" dur="4s" repeatCount="indefinite"/></circle>
+ <circle cx="45" cy="44" r="2.2" fill="#5ff0c0"><animate attributeName="opacity" values="1;1;.1;1" keyTimes="0;.9;.95;1" dur="4s" repeatCount="indefinite"/></circle>
+ <path d="M38 60 l2 6 l2 -6" stroke="#d9a441" stroke-width="1" fill="none"/><circle cx="40" cy="68" r="2.4" fill="#d9a441"/>
+ <path d="M58 40 q6 -9 15 -5 q-2 3 -5 5 l7 3 q-9 4 -16 1z" fill="#050305"/><circle cx="67" cy="37" r="1" fill="#e0334a"/>
+ </svg>`;
+}
+return {ICON, sceneSVG, heroArt, foeArt, raven, seer};
 })();
 
 // ===== RAVENMARROW UI =====
@@ -751,6 +823,11 @@ const VERSION = document.querySelector('meta[name="build"]').content; // e.g. "1
 const BUILD_DATE = document.querySelector('meta[name="build-date"]').content;
 // Newest first. Every update adds an entry; it shows once after the update lands.
 const CHANGELOG = [
+ {v:'1.3', d:'Nov 13 2026', notes:[
+  'A new opening: the story arrives one line at a time.',
+  'The Seer now guides you in person, with short lines, gold key words, and a pointer to exactly what to tap.',
+  'How to Play is now a deck of picture cards. Swipe through them, one idea per card.',
+ ]},
  {v:'1.2', d:'Nov 13 2026', notes:[
   'Relics: every boss guards three cursed relics. The first kill always drops one; later kills and raid bosses can drop the rest.',
   'Each warrior carries one relic. Most give power and take something back. Equip them from a warrior\'s page.',
@@ -1259,6 +1336,9 @@ function toHub(tab){ B = null; showScreen('hub'); go(tab || 'saga'); }
 // ---------- COACH (guided walkthrough) ----------
 const Coach = (() => {
  let active = false, waitFor = null, resolveStep = null, target = null, rafT = null, lesson = false, step = 0;
+ const TOTAL = 19;
+ // split a line into words that fade in one after another; <b> words glow gold
+ function words(html){ let i = 0; return html.replace(/(<b>.*?<\/b>|[^\s<]+)/g, w => `<span class="w" style="animation-delay:${(i++) * 55}ms">${w}</span>`); }
  const el = () => $('#coach');
  function place(){
   if (!active) return;
@@ -1266,18 +1346,23 @@ const Coach = (() => {
   const t = target && (typeof target === 'function' ? target() : $(target));
   if (t){ const r = t.getBoundingClientRect(); spot.classList.remove('none'); Object.assign(spot.style, {left:(r.left - a.left - 6) + 'px', top:(r.top - a.top - 6) + 'px', width:(r.width + 12) + 'px', height:(r.height + 12) + 'px'});
    const need = (bub.offsetHeight || 170) + 24, spaceBelow = a.bottom - r.bottom, spaceAbove = r.top - a.top;
-   if (spaceBelow >= need && spaceBelow >= spaceAbove){ bub.style.top = (r.bottom - a.top + 16) + 'px'; bub.style.bottom = ''; }
-   else if (spaceAbove >= need){ bub.style.top = ''; bub.style.bottom = (a.bottom - r.top + 16) + 'px'; }
-   else { bub.style.top = ''; bub.style.bottom = 'calc(16px + env(safe-area-inset-bottom))'; } }
-  else { spot.classList.add('none'); bub.style.top = '34%'; bub.style.bottom = ''; }
+   bub.classList.remove('nup', 'ndown');
+   if (spaceBelow >= need && spaceBelow >= spaceAbove){ bub.style.top = (r.bottom - a.top + 20) + 'px'; bub.style.bottom = ''; bub.classList.add('nup'); }
+   else if (spaceAbove >= need){ bub.style.top = ''; bub.style.bottom = (a.bottom - r.top + 20) + 'px'; bub.classList.add('ndown'); }
+   else { bub.style.top = ''; bub.style.bottom = 'calc(16px + env(safe-area-inset-bottom))'; }
+   const br = bub.getBoundingClientRect(); bub.style.setProperty('--nx', Math.max(18, Math.min(br.width - 18, r.left + r.width / 2 - br.left)) + 'px'); }
+  else { spot.classList.add('none'); bub.classList.remove('nup', 'ndown'); bub.style.top = '30%'; bub.style.bottom = ''; }
   rafT = setTimeout(place, 250);
  }
  // show a coach step; resolves when waitFor event fires or Next is tapped
  function show(o){
+  if (o.story) return storyIntro();
   return new Promise(res => {
    active = true; target = o.target || null; waitFor = o.wait || null; resolveStep = res;
-   el().innerHTML = `<div class="spot"></div><div class="bub"><div class="who">${o.who || 'The Seer'}</div><div class="tx">${o.text}</div><div class="row">${o.skip === false ? '<span></span>' : '<button class="skip" id="cSkip">Skip the guide</button>'}${waitFor ? '' : `<button class="btn small blood" id="cNext">${o.next || 'Next'}</button>`}</div></div>`;
+   step++;
+   el().innerHTML = `<div class="spot"></div><div class="bub"><div class="seer">${ART.seer()}</div><div class="bt"><div class="who">The Seer</div><div class="tx">${words(o.text)}</div><div class="row">${o.skip === false ? '<span></span>' : '<button class="skip" id="cSkip">Skip guide</button>'}${waitFor ? '<span class="dowhat">' + (o.hint || 'Tap the glowing spot') + '</span>' : `<button class="btn small blood" id="cNext">${o.next || 'Next'}</button>`}</div></div><div class="prog"><i style="width:${Math.min(100, Math.round(100 * step / TOTAL))}%"></i></div></div>`;
    el().classList.add('on'); clearTimeout(rafT); place();
+   const tx = el().querySelector('.tx'); el().querySelector('.bub').addEventListener('click', () => tx.classList.add('all'));
    const n = $('#cNext'); if (n) n.onclick = () => { sfx('tap'); done(); };
    const sk = $('#cSkip'); if (sk) sk.onclick = () => { finish(true); };
   });
@@ -1303,28 +1388,28 @@ const Coach = (() => {
   if (!T()) return;
   if (S.tut.stage >= 2){ finish(false); return; }
   if (S.tut.stage <= 0){
-   await show({who:'The Seer', text:'The barrows have opened. The dead are walking out of the mounds and down toward the villages. You lead the last squad willing to go back in after them.', next:'Go on'});
+   await show({who:'The Seer', text:'', story:true});
    if (!T()) return;
-   await show({who:'The Seer', text:'Tap the first mound to begin your saga.', target:'.node[data-r="0"][data-s="0"]', wait:'prepare'});
+   await show({who:'The Seer', text:'Tap the <b>first mound</b> to begin.', target:'.node[data-r="0"][data-s="0"]', wait:'prepare'});
    if (!T()) return;
    S.tut.stage = 1; save(); lesson = true;
-   await show({who:'The Seer', text:'This is your squad: Sigrun the shield-maiden, Bjorn the berserker, and Aslaug the witch who heals. Tap Fight.', target:'#fightBtn', wait:'fight'});
+   await show({who:'The Seer', text:'Your squad: a <b>shield</b>, an <b>axe</b>, and a <b>healer</b>. Tap <b>Fight</b>.', target:'#fightBtn', wait:'fight'});
   }
  }
  async function battleStart(){
   if (!T() || S.tut.stage !== 1) return;
   lesson = true;
-  await show({who:'The Seer', text:'Warriors and enemies take turns, fastest first. The glowing card is whoever moves next.', target:'#party', next:'Got it'});
+  await show({who:'The Seer', text:'Your squad. Fastest moves first. A <b>glowing card</b> means it is their move.', target:'#party', next:'Got it'});
  }
  let heroTurns = 0;
  async function heroTurn(u){
   if (!T() || !lesson) return;
   heroTurns++;
-  if (heroTurns === 1){ PREP_PICK = {text:`It's ${u.name}'s turn. Every warrior has three moves. Tap the first rune, a basic attack.`, target:() => $('#skills .sk[data-sid]'), wait:'used:basic'}; }
-  else if (heroTurns === 2){ PREP_PICK = {text:'The middle rune is a special move. It is stronger, then it rests for a few turns. The number on it counts down. Use it now.', target:() => $$('#skills .sk[data-sid]')[1], wait:'used:special'}; }
-  else if (heroTurns === 3){ u.rage = 100; updateUnits(); PREP_PICK = {text:'The red bar under each warrior is Rage. It fills when they act and when they get hit. When it is full, the gold rune unlocks an Ultimate. Unleash it.', target:() => $$('#skills .sk[data-sid]')[2], wait:'used:ult'}; }
-  else if (heroTurns === 4){ await show({who:'The Seer', text:'Tap an enemy to choose who your squad attacks. The marked one gets hit first.', target:'#foes', next:'Got it'}); PREP_PICK = null; }
-  else if (heroTurns === 5){ await show({who:'The Seer', text:'Auto, up top, lets your squad fight on their own, and they fight smart. Switch to Manual when a boss gets hard. The 1x button speeds fights up to 3x. Try Auto after this, or keep fighting yourself.', target:'#autoT', next:'Got it'}); lesson = false; PREP_PICK = null; }
+  if (heroTurns === 1){ PREP_PICK = {text:`<b>${u.name}</b>'s turn. Tap the <b>first rune</b> to attack.`, target:() => $('#skills .sk[data-sid]'), wait:'used:basic'}; }
+  else if (heroTurns === 2){ PREP_PICK = {text:'The middle rune is a <b>special</b>: a bigger move, then it rests. Try it.', target:() => $$('#skills .sk[data-sid]')[1], wait:'used:special'}; }
+  else if (heroTurns === 3){ u.rage = 100; updateUnits(); PREP_PICK = {text:'The red bar is <b>Rage</b>. It is full now. Tap the <b>gold rune</b>.', target:() => $$('#skills .sk[data-sid]')[2], wait:'used:ult'}; }
+  else if (heroTurns === 4){ await show({who:'The Seer', text:'Tap an <b>enemy</b> to pick who gets hit.', target:'#foes', next:'Got it'}); PREP_PICK = null; }
+  else if (heroTurns === 5){ await show({who:'The Seer', text:'<b>Auto</b> fights for you, and fights smart. Flip it on any time.', target:'#autoT', next:'Got it'}); lesson = false; PREP_PICK = null; }
  }
  let PREP_PICK = null;
  // called from playerPick path: coach the skill buttons after they render
@@ -1335,35 +1420,35 @@ const Coach = (() => {
  async function afterVictory(){
   if (!T() || S.tut.stage !== 1) return;
   S.tut.stage = 2; lesson = false; save();
-  await show({who:'The Seer', text:'Victory leaves silver, iron and bone runes. Silver levels up warriors. Iron builds the village. Bone runes recruit new warriors.', next:'Go on'});
+  await show({who:'The Seer', text:'Wins drop <b>silver</b>, <b>iron</b> and <b>runes</b>. Spend them at camp.', next:'Go on'});
   if (!T()) return;
   closeSheet(); toHub('saga');
-  await show({who:'The Seer', text:'Open your Warriors.', target:'.tab[data-tab="warriors"]', wait:'tab:warriors'});
+  await show({who:'The Seer', text:'Open your <b>Warriors</b>.', target:'.tab[data-tab="warriors"]', wait:'tab:warriors'});
   if (!T()) return;
-  await show({who:'The Seer', text:'Tap Bjorn. He hits hardest, so he gets stronger fastest.', target:'.wcard[data-id="bjorn"]', wait:'sheet:bjorn'});
+  await show({who:'The Seer', text:'Tap <b>Bjorn</b>. He hits hardest.', target:'.wcard[data-id="bjorn"]', wait:'sheet:bjorn'});
   if (!T()) return;
   const lvb = $('#lvBtn');
-  if (lvb && !lvb.disabled) await show({who:'The Seer', text:'Each warrior has a story, stats, and three moves. Spend silver to level him up.', target:'#lvBtn', wait:'levelup'});
-  else await show({who:'The Seer', text:'Each warrior has a story, stats, and three moves. Silver levels them up, right here.', next:'Go on'});
+  if (lvb && !lvb.disabled) await show({who:'The Seer', text:'Spend silver. <b>Level him up</b>.', target:'#lvBtn', wait:'levelup'});
+  else await show({who:'The Seer', text:'Silver levels warriors up, <b>right here</b>.', next:'Go on'});
   if (!T()) return;
   closeSheet();
-  await show({who:'The Seer', text:'Eight warriors in all. The grey ones are waiting to be recruited with bone runes. Bosses drop the most runes.', target:'.grid', next:'Go on'});
+  await show({who:'The Seer', text:'Grey warriors wait to be <b>recruited</b> with runes.', target:'.grid', next:'Go on'});
   if (!T()) return;
-  await show({who:'The Seer', text:'Now the Village.', target:'.tab[data-tab="village"]', wait:'tab:village'});
+  await show({who:'The Seer', text:'Now the <b>Village</b>.', target:'.tab[data-tab="village"]', wait:'tab:village'});
   if (!T()) return;
-  await show({who:'The Seer', text:'The Mead Hall earns silver while you are away, even between lunch breaks. Come back and collect it here.', target:'#meadBox', next:'Go on'});
+  await show({who:'The Seer', text:'The Mead Hall earns silver <b>while you are away</b>. Collect it here.', target:'#meadBox', next:'Go on'});
   if (!T()) return;
-  await show({who:'The Seer', text:'Upgrade buildings with silver and iron. The Forge makes everyone hit harder. The Barracks raises the level cap.', target:() => $$('#panel .box')[1], next:'Go on'});
+  await show({who:'The Seer', text:'Upgrades make <b>everyone</b> stronger.', target:() => $$('#panel .box')[1], next:'Go on'});
   if (!T()) return;
-  await show({who:'The Seer', text:'Raids are the long fights for when you have time: five waves, no rest, double loot.', target:'.tab[data-tab="raid"]', wait:'tab:raid'});
+  await show({who:'The Seer', text:'<b>Raids</b>: five waves, wounds carry over, <b>big loot</b>.', target:'.tab[data-tab="raid"]', wait:'tab:raid'});
   if (!T()) return;
-  await show({who:'The Seer', text:'They open after you beat the Barrow-King. Back to the Saga.', target:'.tab[data-tab="saga"]', wait:'tab:saga'});
+  await show({who:'The Seer', text:'They open after the <b>first boss</b>. Back to the <b>Saga</b>.', target:'.tab[data-tab="saga"]', wait:'tab:saga'});
   if (!T()) return;
-  await show({who:'The Seer', text:'That is everything. The gear in the corner has How to Play, sound, saving, and installing the game on your phone. Go take back the Barrow Mounds.', next:'Begin', skip:false});
+  await show({who:'The Seer', text:'That is all. <b>How to Play</b> lives in the gear. Go break the <b>Barrow-King</b>.', next:'Begin', skip:false});
   finish(false);
   setTimeout(maybeInstallNudge, 600);
  }
- function replay(){ S.tut = {done:false, stage:0}; heroTurns = 0; save(); closeSheet(); toHub('saga'); setTimeout(intro, 300); }
+ function replay(){ S.tut = {done:false, stage:0}; heroTurns = 0; step = 0; save(); closeSheet(); toHub('saga'); setTimeout(intro, 300); }
  return {show, emit, intro, battleStart, heroTurn, afterAction, forceManual, afterVictory, replay, finish, isOn:() => active};
 })();
 // hook coach to warrior sheet + victory
@@ -1507,7 +1592,7 @@ function settingsSheet(){
  $('#xs').onclick = closeSheet;
  $('#tSfx').onclick = () => { S.set.sfx = !S.set.sfx; save(); sfx('tap'); settingsSheet(); };
  $('#tMus').onclick = () => { S.set.music = !S.set.music; save(); S.set.music ? musicOn() : musicOff(); settingsSheet(); };
- $('#howBtn').onclick = howSheet;
+ $('#howBtn').onclick = () => howSheet(0);
  $('#tutBtn').onclick = () => Coach.replay();
  $('#newBtn').onclick = () => whatsNew(true);
  $('#updBtn').onclick = () => { if (UPD.ready) applyUpdate(); else checkUpdate(true); };
@@ -1517,23 +1602,56 @@ function settingsSheet(){
  $('#verTap').onclick = () => toast('Ravenmarrow ' + VERSION + ' · ' + BUILD_DATE);
  let armed = false; $('#wipe').onclick = e => { if (!armed){ armed = true; e.target.textContent = 'Tap again to erase'; setTimeout(() => { armed = false; const w = $('#wipe'); if (w) w.textContent = 'Erase save'; }, 3000); return; } store.del(SAVE_KEY); S = freshSave(); save(); closeSheet(); location.reload(); };
 }
-function howSheet(){
- sheet(`<button class="btn small close" id="xs">Close</button><div class="codex"><h3>How to Play</h3>
-  <h4>The saga</h4><p>Each realm has three fights and a boss. Beat a fight to open the next. Beat the boss to open the next realm. You can replay anything you have already won for more loot.</p>
-  <h4>Turns</h4><p>Everyone takes turns, fastest first. The glowing card is the warrior about to move. Tap an enemy to mark it as your target.</p>
-  <h4>Three moves</h4><p><b>Basic</b> (first rune) can be used every turn. <b>Special</b> (middle rune) is stronger, then rests for a few turns; the number shows how many. <b>Ultimate</b> (gold rune) needs a full Rage bar.</p>
-  <h4>Rage</h4><p>The red bar fills when a warrior acts and when they get hit. Full Rage turns gold and the Ultimate unlocks. The Rune Altar fills it faster and makes Ultimates hit harder.</p>
-  <h4>Auto and Manual</h4><p>Auto plays your squad for you: it heals when someone is hurt, shields when a boss is up, and focuses the weakest enemy. Manual lets you choose. You can switch in the middle of a fight. 2x and 3x speed up the fight.</p>
-  <h4>Bosses</h4><p>Every third turn a boss uses its signature attack on your whole squad. Below half life it becomes enraged and hits 30% harder. Save Ultimates and shields for that.</p>
-  <h4>Warriors</h4><p>Silver levels them up. Bone runes recruit new ones. Your squad holds three. Mix roles: a Guardian to soak hits, a Mender to heal, and someone who hits hard.</p>
-  <h4>Village</h4><p><b>Forge</b>: more damage. <b>Rune Altar</b>: faster Rage. <b>Barracks</b>: higher level cap. <b>Mead Hall</b>: more life, more silver while you are away, better rest in raids. Collect the Mead Hall coffers whenever you come back.</p>
-  <h4>Raids</h4><p>Five waves in a row with no full heal between them. Fallen warriors stay down until the raid ends. Loot is doubled, and you keep loot from every wave you clear, even if you leave or fall.</p>
-  <h4>Relics</h4><p>Each boss guards three relics. The first time you beat a boss it always drops one. Beating it again, or killing it at the end of a raid, can drop the others. A warrior carries one relic. Most relics give something and take something, so match them to the warrior: Hel's Veil on a warrior with a big Ultimate, the Drowned Anchor on a Guardian.</p>
-  <h4>Daily Blessing</h4><p>Your first win each day, in the saga or a raid, pays a bonus. It resets at midnight. Missing a day costs nothing.</p>
-  <h4>Journal and Deeds</h4><p>The book button at the top opens the Saga Journal: lore for each realm, every boss you have beaten, every relic you have found, and deeds that pay bone runes when you complete them.</p>
-  <h4>Stuck?</h4><p>Replay earlier fights for silver, level your weakest warrior, upgrade the Forge, then try again. Bring Aslaug or Ragna to boss fights.</p>
-  <h4>Updates</h4><p>New chapters arrive on their own. When one is ready, a banner appears. Tap it and the game reloads with your progress kept.</p></div>`);
- $('#xs').onclick = closeSheet;
+// cinematic opening: one line at a time over the scene
+function storyIntro(){
+ if ($('#story')) return Promise.resolve();
+ return new Promise(res => {
+  const d = document.createElement('div'); d.id = 'story';
+  const L = ['The barrows have opened.', 'The dead are walking.', 'Down toward the villages.', 'You lead the last squad willing to go back in.'];
+  d.innerHTML = L.map((t, i) => `<p style="animation-delay:${0.3 + i * 1.1}s">${t}</p>`).join('') + `<button class="btn blood" style="animation-delay:${0.3 + L.length * 1.1}s">Take up the spear</button><button class="skipst">Skip</button>`;
+  $('#app').appendChild(d); sfx('boss');
+  let ended = false;
+  const end = () => { if (ended) return; ended = true; sfx('tap'); d.classList.add('out'); setTimeout(() => { d.remove(); res(); }, 400); };
+  d.querySelector('.btn').onclick = end; d.querySelector('.skipst').onclick = end;
+ });
+}
+// How to Play: swipeable picture cards, one idea each
+function mini(){
+ const rune = (g, cls, label) => `<span class="msk ${cls || ''}"><em>${g}</em>${label}</span>`;
+ const node = (c, g) => `<span class="mnode ${c}"><span>${g}</span></span>`;
+ return [
+  {t:'The Saga', p:`<div class="mrow">${node('done', '&#5833;')}<i class="mlink"></i>${node('done', '&#5833;')}<i class="mlink"></i>${node('next', 'III')}<i class="mlink"></i>${node('boss', '&#5835;')}</div>`, l:['Each realm: <b>3 fights</b>, then a <b>boss</b>.', 'Beat the boss to open the next realm.', 'Replay old fights for more loot.']},
+  {t:'Turns', p:`<div class="mrow"><span class="mcard">${ART.heroArt('axe')}</span><span class="mcard act">${ART.heroArt('spear')}</span><span class="mcard">${ART.heroArt('witch')}</span></div>`, l:['Fastest moves first.', 'A <b>glowing card</b> is taking its turn.', 'Tap an enemy to <b>target</b> it.']},
+  {t:'Three Runes', p:`<div class="mrow">${rune('&#5846;', '', 'BASIC')}${rune('&#5854;', '', 'SPECIAL')}${rune('&#5835;', 'ult', 'ULTIMATE')}</div>`, l:['<b>Basic</b>: use it every turn.', '<b>Special</b>: a bigger move, then it rests.', '<b>Gold</b>: the Ultimate.']},
+  {t:'Rage', p:`<div class="mbar"><i></i></div><div class="mbar full"><i></i></div>`, l:['Acting and getting hit fill the <b>red bar</b>.', 'A full bar turns <b>gold</b>.', 'Gold means the Ultimate is ready.']},
+  {t:'Auto or Manual', p:`<div class="mrow"><span class="mtog"><b class="on">AUTO</b><b>MANUAL</b></span><span class="mtog"><b>2x</b></span></div>`, l:['<b>Auto</b> fights for you, and fights smart.', 'Switch to <b>Manual</b> when a boss gets hard.', 'Speed up to <b>3x</b>.']},
+  {t:'Bosses', p:`<div class="mboss">${ART.foeArt('draugr', '#5ff0c0', true, '#b3182a')}</div>`, l:['Every <b>3rd turn</b>: a hit on everyone.', 'Below half life: <b>enraged</b>.', 'Save shields and Ultimates for that.']},
+  {t:'Warriors & Relics', p:`<div class="mrow"><span class="mcard act">${ART.heroArt('raven')}</span><span class="mrelic">&#5847;</span></div>`, l:['<b>Silver</b> levels warriors up.', '<b>Runes</b> recruit new ones.', 'Bosses drop <b>relics</b>. One per warrior.']},
+  {t:'The Village', p:`<div class="mrow"><span class="mb">&#5839;<small>FORGE</small></span><span class="mb">&#5833;<small>ALTAR</small></span><span class="mb">&#5855;<small>BARRACKS</small></span><span class="mb">&#5847;<small>MEAD</small></span></div>`, l:['<b>Forge</b>: harder hits. <b>Altar</b>: faster rage.', '<b>Barracks</b>: higher level cap.', '<b>Mead Hall</b>: silver while you are away.']},
+  {t:'Raids', p:`<div class="mrow">${[1, 2, 3, 4].map(() => '<span class="mpip on"></span>').join('')}<span class="mpip boss"></span></div>`, l:['<b>Five waves</b> in a row.', 'Wounds carry over. <b>Double silver and iron</b>.', 'Keep everything you earned.']},
+  {t:'Every Day', p:`<div class="mrow"><span class="mb gold">&#5835;<small>BLESSING</small></span><span class="mb">${ART.ICON.book}<small>JOURNAL</small></span></div>`, l:['Your <b>first win</b> each day pays extra.', 'The <b>Journal</b> holds lore, relics, deeds.', 'Missing a day costs nothing.']},
+  {t:'Stuck?', p:`<div class="mrow"><span class="mb">&#8635;<small>REPLAY</small></span><span class="mb">&#8679;<small>LEVEL</small></span><span class="mb">&#5839;<small>FORGE</small></span></div>`, l:['Replay old fights for <b>silver</b>.', 'Level your <b>weakest</b> warrior.', 'Bring a <b>healer</b> to bosses.']},
+ ];
+}
+function howSheet(start){
+ const C = mini(); let i = (typeof start === 'number' && start >= 0 && start < C.length) ? start : 0;
+ const draw = () => {
+  const c = C[i];
+  const html = `<button class="btn small close" id="xs">Close</button><div class="how" id="howCard">
+   <div class="hpic">${c.p}</div><h3>${c.t}</h3><ul>${c.l.map(x => `<li>${x}</li>`).join('')}</ul>
+   <div class="hdots">${C.map((_, k) => `<i class="${k === i ? 'on' : ''}"></i>`).join('')}</div>
+   <div class="row" style="justify-content:space-between"><button class="btn small" id="hPrev" ${i ? '' : 'disabled'}>Back</button><span class="lockmsg">${i + 1} of ${C.length}</span><button class="btn small blood" id="hNext">${i < C.length - 1 ? 'Next' : 'Done'}</button></div></div>`;
+  const open = $('#veil').classList.contains('on') && $('#veil .howsheet');
+  if (open){ open.innerHTML = html; } else sheet(html, 'howsheet');
+  $('#xs').onclick = closeSheet;
+  $('#hPrev').onclick = () => { if (i){ i--; sfx('tap'); draw(); } };
+  $('#hNext').onclick = () => { sfx('tap'); if (i < C.length - 1){ i++; draw(); } else closeSheet(); };
+  const card = $('#howCard'); let x0 = null;
+  let y0 = 0;
+  card.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, {passive:true});
+  card.addEventListener('touchend', e => { if (x0 === null) return; const dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0; x0 = null; if (Math.abs(dx) < Math.abs(dy) * 1.3) return; if (dx < -45 && i < C.length - 1){ i++; sfx('tap'); draw(); } else if (dx > 45 && i){ i--; sfx('tap'); draw(); } });
+ };
+ draw();
 }
 function copyBackup(){
  const code = 'RVM1.' + btoa(unescape(encodeURIComponent(JSON.stringify(S))));
