@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<!-- Ravenmarrow v1.6 · Nov 16 2026 -->
+<!-- Ravenmarrow v1.6.1 · Nov 16 2026 -->
 <html lang="en"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-<meta name="build" content="1.6">
+<meta name="build" content="1.6.1">
 <meta name="build-date" content="Nov 16 2026">
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#050304">
@@ -420,6 +420,8 @@ textarea{-webkit-user-select:text;user-select:text;width:100%;min-height:80px;ba
 .rival .wbody{flex:1;min-width:0}
 .rchips{display:flex;flex-wrap:wrap;gap:4px;margin:4px 0 8px}
 .rchip{font-size:11px;padding:2px 6px;border:1px solid #6b5a44;color:#c9b38f;white-space:nowrap}
+.jshake{animation:jshake .4s}
+@keyframes jshake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
 
 </style>
 </head><body>
@@ -1115,6 +1117,7 @@ const VERSION = document.querySelector('meta[name="build"]').content; // e.g. "1
 const BUILD_DATE = document.querySelector('meta[name="build-date"]').content;
 // Newest first. Every update adds an entry; it shows once after the update lands.
 const CHANGELOG = [
+ {v:'1.6.1', d:'Nov 16 2026', notes:['Joining a warband now says clearly what went wrong, if anything does.']},
  {v:'1.6', d:'Nov 16 2026', notes:[
   'The warband is online. Open War, tap Join a warband, and type the same group code as your friends.',
   'One shared Warband Boss for the whole group, with a "who hit hardest" board. Kill it together and everyone claims the spoils.',
@@ -1655,6 +1658,18 @@ function sharedBoss(){
  const dealt = hits.reduce((a, h) => a + h.total, 0);
  return {life, dealt, left:Math.max(0, life - dealt), pct:Math.max(0, 100 - dealt / life * 100), dead:dealt >= life, hits:hits.sort((a, b) => b.total - a.total)};
 }
+// plain-language reason a join failed, so problems on the Firebase side are easy to spot
+function netWhy(){
+ const e = String(NET.err || '');
+ if (NET.importFailed) return 'The game could not download Firebase. Close it and open it again with signal.';
+ if (/operation-not-allowed|admin-restricted/i.test(e)) return 'Anonymous sign-in is off in Firebase (Authentication, Sign-in method).';
+ if (/permission|insufficient/i.test(e)) return 'Firebase refused the save. Check the Firestore Rules were published.';
+ if (/not.?found|does not exist/i.test(e)) return 'The Firestore database is missing in Firebase.';
+ if (/api.?key/i.test(e)) return 'Firebase did not accept the app key.';
+ if (/timeout/i.test(e)) return 'Firebase did not answer. Check your signal, and that the Firestore database exists.';
+ return 'Could not reach the warband.' + (e ? ' (' + escH(e.slice(0, 90)) + ')' : '');
+}
+function jErr(html){ const m = $('#jMsg'); if (!m) return; m.innerHTML = '<b style="color:#ff5468">' + html + '</b>'; m.classList.remove('jshake'); void m.offsetWidth; m.classList.add('jshake'); try { m.scrollIntoView({block:'center'}); } catch (e) {} sfx('lose'); vibe([30, 40, 30]); }
 function joinSheet(){
  sheet(`<button class="btn small close" id="xs">Close</button><div class="joinbox"><div class="jart">${ART.raven ? ART.raven() : ''}</div><h3>Join your warband</h3>
   <p class="sub">Everyone in your group types the <b>same code</b>. You'll share one boss and raid each other's villages.</p>
@@ -1665,15 +1680,15 @@ function joinSheet(){
  $('#xs').onclick = closeSheet;
  $('#jGo').onclick = async () => {
   const name = cleanName($('#jName').value), code = cleanCode($('#jCode').value), msg = $('#jMsg');
-  if (name.length < 2){ msg.textContent = 'Pick a name, at least 2 letters.'; return; }
-  if (code.length < 6){ msg.textContent = 'The group code needs at least 6 letters or numbers, so strangers can\'t guess it.'; return; }
-  if (NET.importFailed){ msg.innerHTML = '<b style="color:#e0334a">No connection yet.</b> Close the game and open it again with signal, then join.'; return; }
+  if (name.length < 2){ jErr('Pick a name, at least 2 letters.'); $('#jName').focus(); return; }
+  if (code.length < 6){ jErr('The group code needs at least 6 letters or numbers (you have ' + code.length + ').'); $('#jCode').focus(); return; }
+  if (NET.importFailed){ jErr(netWhy()); return; }
   const btn = $('#jGo'); btn.disabled = true; btn.textContent = 'Joining...';
   const prevG = S.profile.group, prevN = S.profile.name;
   if (prevG && prevG !== code && NET.state === 'on') NET.api.delDoc('groups/g_' + prevG + '/players/' + NET.uid).catch(() => {});
   S.profile.name = name; S.profile.group = code; save();
   const ok = await netPublish();
-  if (!ok){ btn.disabled = false; btn.textContent = 'Try again'; msg.innerHTML = NET.importFailed ? '<b style="color:#e0334a">No connection.</b> Close the game and open it again with signal.' : '<b style="color:#e0334a">Could not reach the warband.</b> Check your signal and try again.'; S.profile.group = prevG; S.profile.name = prevN || name; save(); return; }
+  if (!ok){ btn.disabled = false; btn.textContent = 'Try again'; jErr(netWhy()); S.profile.group = prevG; S.profile.name = prevN || name; save(); return; }
   if (prevG !== code) netFeed(name + ' joined the warband.');
   NET.cache = {players:[], hits:[], feed:[], at:0};
   sfx('up'); closeSheet(); toast('You joined the warband ' + code + '.'); await netRefresh(); if (TAB === 'raid') renderWar(); checkDeeds();
