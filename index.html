@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<!-- Ravenmarrow v1.5 · Nov 16 2026 -->
+<!-- Ravenmarrow v1.6 · Nov 16 2026 -->
 <html lang="en"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-<meta name="build" content="1.5">
+<meta name="build" content="1.6">
 <meta name="build-date" content="Nov 16 2026">
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#050304">
@@ -180,7 +180,7 @@ h2{font-family:cinzeldec;font-weight:700;font-size:20px;letter-spacing:1.5px;mar
 @keyframes sheetup{from{transform:translateY(40px);opacity:0}}
 .sheet h3{font-family:cinzeldec;font-size:19px;letter-spacing:1px;margin:0 0 4px;color:#f1e6d2}
 .sheet p,.sheet li{font-family:fell;font-size:15px;line-height:1.45;color:#d8c6a8}
-.sheet .close{position:absolute;right:10px;top:8px}
+.sheet .close{position:absolute;right:10px;top:8px;z-index:5}
 .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .stat{display:flex;justify-content:space-between;font-size:12px;letter-spacing:1px;padding:5px 0;border-bottom:1px solid #2a1e18}
 .skillrow{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid #2a1e18}
@@ -353,7 +353,7 @@ textarea{-webkit-user-select:text;user-select:text;width:100%;min-height:80px;ba
 .vcard.alarm{border-color:#e0334a;box-shadow:0 0 18px rgba(224,51,74,.5),inset 0 0 18px #000;animation:pulse 1.2s infinite}
 .vcard.alarm small{color:#ff8a9a}
 .bsheet{text-align:center}
-.bart{display:flex;justify-content:center;margin:2px 0 4px;filter:drop-shadow(0 0 16px rgba(217,121,42,.35))}
+.bart{display:flex;justify-content:center;margin:2px 0 4px;pointer-events:none;filter:drop-shadow(0 0 16px rgba(217,121,42,.35))}
 .nightart svg.fart{width:90px;height:110px}
 .bline{font-size:16px!important;margin:6px 0}
 .bwhat{font-family:fell;font-size:15px;color:#bba;margin:2px 0 10px}
@@ -396,6 +396,30 @@ textarea{-webkit-user-select:text;user-select:text;width:100%;min-height:80px;ba
 .wbar span{position:relative;display:block;font-size:9px;letter-spacing:.5px;line-height:14px;text-align:center;color:#e9dcc8}
 .card.band .nm{font-size:9px;letter-spacing:0;bottom:22px}
 .wbar span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 4px}
+/* ---------- v1.6 warband online ---------- */
+.wband{display:flex;align-items:center;gap:10px;border-color:#8a6f4a;background:linear-gradient(90deg,rgba(122,12,26,.35),rgba(10,6,8,.6))}
+.wband .wbody{flex:1;min-width:0}
+.wband.on{background:linear-gradient(90deg,rgba(217,164,65,.12),rgba(10,6,8,.6))}
+.board .bname,.feed .bname{margin-bottom:6px}
+.brow{display:grid;grid-template-columns:18px minmax(0,1fr) 34%  auto;align-items:center;gap:8px;padding:5px 0;border-top:1px solid rgba(107,90,68,.35);font-size:14px}
+.brow b{color:#8a6f4a;font-family:cinzel,serif;font-size:12px}
+.brow span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.brow i{display:block;height:8px;background:linear-gradient(90deg,#7a0c1a,#e0334a);box-shadow:0 0 8px rgba(224,51,74,.5)}
+.brow em{font-style:normal;color:#f0c060;font-size:13px;min-width:36px;text-align:right}
+.brow.me span{color:#f0c060}
+.fline{display:flex;justify-content:space-between;gap:10px;padding:5px 0;border-top:1px solid rgba(107,90,68,.3);font-size:13px;line-height:1.35}
+.fline span{overflow-wrap:anywhere}
+.fline i{font-style:normal;color:#8a6f4a;font-size:11px;white-space:nowrap}
+.fline.me span{color:#ff8a98}
+.joinbox{text-align:center;padding-top:8px}
+.joinbox .jart svg{width:64px;height:64px}
+.jl{display:block;text-align:left;font-family:cinzel,serif;font-size:12px;letter-spacing:1px;color:#c9b38f;margin:12px 0 0}
+.jl input{display:block;width:100%;box-sizing:border-box;margin-top:5px;padding:13px 12px;font-size:17px;background:#0a0608;color:#f1e6d2;border:1px solid #6b5a44;border-radius:0;font-family:inherit;letter-spacing:0}
+.jl input:focus{outline:none;border-color:#f0c060;box-shadow:0 0 0 2px rgba(240,192,96,.25)}
+.rival{display:flex;gap:10px;align-items:stretch;margin-top:10px}
+.rival .wbody{flex:1;min-width:0}
+.rchips{display:flex;flex-wrap:wrap;gap:4px;margin:4px 0 8px}
+.rchip{font-size:11px;padding:2px 6px;border:1px solid #6b5a44;color:#c9b38f;white-space:nowrap}
 
 </style>
 </head><body>
@@ -1091,6 +1115,14 @@ const VERSION = document.querySelector('meta[name="build"]').content; // e.g. "1
 const BUILD_DATE = document.querySelector('meta[name="build-date"]').content;
 // Newest first. Every update adds an entry; it shows once after the update lands.
 const CHANGELOG = [
+ {v:'1.6', d:'Nov 16 2026', notes:[
+  'The warband is online. Open War, tap Join a warband, and type the same group code as your friends.',
+  'One shared Warband Boss for the whole group, with a "who hit hardest" board. Kill it together and everyone claims the spoils.',
+  'Raid your friends\' villages in the Arena. Win and your rating climbs. Their walls, towers and Garrison fight back.',
+  'A warband feed shows who raided whom. Raids on your village show up in red.',
+  'Settings shows what your group can see, and lets you change your name or leave.',
+ ]},
+ {v:'1.5.1', d:'Nov 16 2026', notes:['The Close button on building and troop sheets works again.']},
  {v:'1.5', d:'Nov 16 2026', notes:[
   'Your village is now a map you can see grow. Tap any building to build or upgrade it.',
   'The Jarl\'s Hall caps how high everything else can grow. Raise it to unlock bigger upgrades.',
@@ -1154,7 +1186,7 @@ function freshSave(){
  return {v:SAVE_V, owned:{sigrun:1, bjorn:1, aslaug:1}, squad:['sigrun','bjorn','aslaug'],
   vil:{hall:1, mead:0, mine:0, lookout:0, forge:0, altar:0, barracks:0, camp:0, infirmary:0, wall:0, tower:0, pits:0}, silver:0, iron:0, runes:0,
   prod:{ironAt:Date.now(), runeAt:Date.now()}, army:{skirmish:{type:'spear', n:0}, garrison:{type:'spear', n:0}}, night:{next:0, wins:0, losses:0},
-  wb:{day:'', used:0, best:0, total:0}, arena:{day:'', used:0, rating:1000, wins:0, losses:0}, profile:{name:'', group:''},
+  wb:{day:'', used:0, best:0, total:0, wk:'', wkPts:0, wkBest:0, wkTries:0, claimed:''}, arena:{day:'', used:0, rating:1000, wins:0, losses:0}, profile:{name:'', group:''},
   cleared:RM.REALMS.map(() => 0), raid:{best:0, runs:0, clears:0}, idleAt:Date.now(),
   set:{sfx:true, music:false, auto:false, speed:1}, tut:{done:false, stage:0}, seenVer:VERSION,
   stats:{wins:0, losses:0, bosses:0, created:Date.now(), flawless:0, collects:0, ultKills:0},
@@ -1534,8 +1566,148 @@ function startNight(){
 }
 
 // ---------- WARBAND BOSS + ARENA ----------
-// Online play turns on when FIREBASE_CONFIG is filled in. Until then both run as practice.
-const FIREBASE_CONFIG = null;
+// ---------- WARBAND ONLINE (v1.6, Firebase) ----------
+// The web config is public by design; the Firestore rules are what protect the data.
+const FIREBASE_CONFIG = {apiKey:'AIzaSyB6xIbkPwh_Gk3yZaCG2J1BawmIljgkEIM', authDomain:'ravenmarrow-99790.firebaseapp.com', projectId:'ravenmarrow-99790', storageBucket:'ravenmarrow-99790.firebasestorage.app', messagingSenderId:'947371899138', appId:'1:947371899138:web:5f12f67f117e12e1f6ea1b'};
+const FB_V = '10.12.2', WB_LIFE_PER = 700;
+function escH(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'})[c]); }
+function cleanName(s){ return String(s || '').replace(/[^A-Za-z0-9 '\-]/g, '').replace(/\s+/g, ' ').trim().slice(0, 16); }
+function cleanCode(s){ return String(s || '').toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 20); }
+function clampN(v, lo, hi){ v = Math.round(+v || 0); return Math.max(lo, Math.min(hi, v)); }
+// anything that arrives from another phone is checked before the engine sees it
+function cleanLineup(L){
+ if (!L || !Array.isArray(L.squad)) return null;
+ const vil = {}; RM.BUILDINGS.forEach(b => { vil[b.id] = clampN(L.vil && L.vil[b.id], 0, RM.VMAX); }); vil.hall = Math.max(1, vil.hall); RM.BUILDINGS.forEach(b => { if (b.id !== 'hall') vil[b.id] = Math.min(vil[b.id], RM.bmax(b.id, vil)); });
+ const seen = new Set(), squad = L.squad.filter(s => s && wdef(s.id) && !seen.has(s.id) && seen.add(s.id)).slice(0, 4).map(s => ({id:s.id, lv:clampN(s.lv, 1, RM.levelCap(RM.VMAX)), relic:RM.RELICS.some(r => r.id === s.relic) ? s.relic : null}));
+ if (!squad.length) return null;
+ const gt = L.garrison && RM.TROOPS.some(t => t.id === L.garrison.type) ? L.garrison.type : 'spear';
+ const garrison = {type:gt, n:clampN(L.garrison && L.garrison.n, 0, RM.campCap(vil.camp))};
+ return {squad, garrison, vil, fort:{tower:vil.tower, wall:vil.wall, pits:vil.pits, lookout:vil.lookout}, name:cleanName(L.name) || 'A rival'};
+}
+const NET = {state:'off', uid:null, err:'', api:null, cache:{players:[], hits:[], feed:[], at:0}, p:null, busy:false, lastTry:0};
+function netOn(){ return !!FIREBASE_CONFIG && !!S.profile.group; }
+function gpath(){ return 'groups/g_' + S.profile.group; }
+NET.init = function(){
+ if (NET.state === 'on') return Promise.resolve(true);
+ if (NET.importFailed) return Promise.resolve(false);
+ if (NET.p) return NET.p;
+ NET.state = 'loading';
+ NET.p = (async () => {
+  try {
+   if (window.RM_NET_MOCK){ NET.api = window.RM_NET_MOCK; NET.uid = await NET.api.signIn(); NET.state = 'on'; return true; }
+   const base = 'https://www.gstatic.com/firebasejs/' + FB_V + '/';
+   let A, U, F;
+   try { [A, U, F] = await Promise.all([import(base + 'firebase-app.js'), import(base + 'firebase-auth.js'), import(base + 'firebase-firestore.js')]); }
+   catch (e){ NET.importFailed = true; throw e; } // the browser remembers a failed import until the page reloads
+   const app = A.initializeApp(FIREBASE_CONFIG), auth = U.getAuth(app), db = F.getFirestore(app);
+   const cred = await withTimeout(U.signInAnonymously(auth), 12000);
+   NET.uid = cred.user.uid;
+   NET.api = {
+    setDoc:(p, d) => F.setDoc(F.doc(db, p), d, {merge:true}),
+    delDoc:p => F.deleteDoc(F.doc(db, p)),
+    list:async p => (await F.getDocs(F.collection(db, p))).docs.map(x => Object.assign({id:x.id}, x.data())),
+    add:(p, d) => F.addDoc(F.collection(db, p), d),
+    recent:async (p, n) => (await F.getDocs(F.query(F.collection(db, p), F.orderBy('at', 'desc'), F.limit(n)))).docs.map(x => Object.assign({id:x.id}, x.data())),
+   };
+   NET.state = 'on'; return true;
+  } catch (e){ NET.state = 'err'; NET.err = String((e && e.message) || e); NET.p = null; return false; }
+ })();
+ return NET.p;
+};
+function withTimeout(p, ms){ return Promise.race([p, new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), ms))]); }
+function wbWeek(){ const w = weekId(); if (S.wb.wk !== w){ S.wb.wk = w; S.wb.wkPts = 0; S.wb.wkBest = 0; S.wb.wkTries = 0; } }
+function myPower(){ return S.squad.reduce((a, id) => a + RM.power(id, S.owned[id], S.vil, S.equip[id]), 0); }
+async function netPublish(){
+ if (!netOn()) return false;
+ const g = S.profile.group;
+ if (!(await NET.init()) || S.profile.group !== g) return false;
+ wbWeek();
+ const L = defenseLineup(), gp = 'groups/g_' + g;
+ try {
+  await withTimeout(Promise.all([NET.api.setDoc(gp + '/players/' + NET.uid, {name:S.profile.name, lineup:{squad:L.squad, garrison:L.garrison, vil:L.vil, name:S.profile.name}, power:myPower(), rating:S.arena.rating, wins:S.arena.wins, losses:S.arena.losses, at:Date.now(), v:VERSION}),
+   NET.api.setDoc(gp + '/boss/' + S.wb.wk + '/hits/' + NET.uid, {name:S.profile.name, total:S.wb.wkPts, best:S.wb.wkBest, tries:S.wb.wkTries, at:Date.now()})]), 10000);
+  return true;
+ } catch (e){ NET.err = String((e && e.message) || e); return false; }
+}
+async function netRefresh(){
+ if (!netOn() || NET.busy) return false;
+ NET.busy = true; NET.lastTry = Date.now();
+ try {
+  const g = S.profile.group;
+  if (!(await NET.init()) || S.profile.group !== g) return false;
+  wbWeek();
+  const wk = S.wb.wk, gp = 'groups/g_' + g;
+  const [players, hits, feed] = await withTimeout(Promise.all([NET.api.list(gp + '/players'), NET.api.list(gp + '/boss/' + wk + '/hits'), NET.api.recent(gp + '/feed', 25).catch(() => [])]), 12000);
+  if (S.profile.group !== g) return false;
+  NET.cache = {players, hits, feed, at:Date.now(), wk, g};
+  return true;
+ } catch (e){ NET.err = String((e && e.message) || e); NET.state = NET.state === 'on' ? 'on' : 'err'; return false; }
+ finally { NET.busy = false; }
+}
+function netFeed(text, target){ if (!netOn() || NET.state !== 'on') return; NET.api.add(gpath() + '/feed', {uid:NET.uid, name:S.profile.name, text:String(text).slice(0, 120), target:target || null, at:Date.now()}).catch(() => {}); }
+// players who left, switched phones or stopped playing stop counting after a week
+function activePlayers(hits){ const hit = new Set((hits || []).map(h => h.id)); return NET.cache.players.filter(p => p.id === NET.uid || hit.has(p.id) || Date.now() - (+p.at || 0) < 7 * 86400000); }
+function sharedBoss(){
+ const wkOK = NET.cache.wk === S.wb.wk, raw = wkOK ? NET.cache.hits : [];
+ const n = Math.max(1, activePlayers(raw).length), life = WB_LIFE_PER * n;
+ const hits = raw.map(h => ({uid:h.id, name:cleanName(h.name) || 'Someone', total:clampN(h.total, 0, 1e7), best:clampN(h.best, 0, 1e7), tries:clampN(h.tries, 0, 999)}));
+ const me = hits.find(h => h.uid === NET.uid); if (me) me.total = Math.max(me.total, S.wb.wkPts); else if (S.wb.wkPts) hits.push({uid:NET.uid, name:S.profile.name, total:S.wb.wkPts, best:S.wb.wkBest, tries:S.wb.wkTries});
+ const dealt = hits.reduce((a, h) => a + h.total, 0);
+ return {life, dealt, left:Math.max(0, life - dealt), pct:Math.max(0, 100 - dealt / life * 100), dead:dealt >= life, hits:hits.sort((a, b) => b.total - a.total)};
+}
+function joinSheet(){
+ sheet(`<button class="btn small close" id="xs">Close</button><div class="joinbox"><div class="jart">${ART.raven ? ART.raven() : ''}</div><h3>Join your warband</h3>
+  <p class="sub">Everyone in your group types the <b>same code</b>. You'll share one boss and raid each other's villages.</p>
+  <label class="jl">Your name<input id="jName" maxlength="16" autocomplete="off" value="${escH(S.profile.name)}" placeholder="Shown to your group"></label>
+  <label class="jl">Group code<input id="jCode" maxlength="20" autocomplete="off" autocapitalize="off" value="${escH(S.profile.group)}" placeholder="letters and numbers"></label>
+  <p class="lockmsg" id="jMsg">Your group sees your name, warriors, village, Garrison, scores and fight news. Stored on Google Firebase.</p>
+  <button class="btn blood wide" id="jGo">Join</button></div>`);
+ $('#xs').onclick = closeSheet;
+ $('#jGo').onclick = async () => {
+  const name = cleanName($('#jName').value), code = cleanCode($('#jCode').value), msg = $('#jMsg');
+  if (name.length < 2){ msg.textContent = 'Pick a name, at least 2 letters.'; return; }
+  if (code.length < 6){ msg.textContent = 'The group code needs at least 6 letters or numbers, so strangers can\'t guess it.'; return; }
+  if (NET.importFailed){ msg.innerHTML = '<b style="color:#e0334a">No connection yet.</b> Close the game and open it again with signal, then join.'; return; }
+  const btn = $('#jGo'); btn.disabled = true; btn.textContent = 'Joining...';
+  const prevG = S.profile.group, prevN = S.profile.name;
+  if (prevG && prevG !== code && NET.state === 'on') NET.api.delDoc('groups/g_' + prevG + '/players/' + NET.uid).catch(() => {});
+  S.profile.name = name; S.profile.group = code; save();
+  const ok = await netPublish();
+  if (!ok){ btn.disabled = false; btn.textContent = 'Try again'; msg.innerHTML = NET.importFailed ? '<b style="color:#e0334a">No connection.</b> Close the game and open it again with signal.' : '<b style="color:#e0334a">Could not reach the warband.</b> Check your signal and try again.'; S.profile.group = prevG; S.profile.name = prevN || name; save(); return; }
+  if (prevG !== code) netFeed(name + ' joined the warband.');
+  NET.cache = {players:[], hits:[], feed:[], at:0};
+  sfx('up'); closeSheet(); toast('You joined the warband ' + code + '.'); await netRefresh(); if (TAB === 'raid') renderWar(); checkDeeds();
+ };
+}
+function leaveWarband(){
+ const g = S.profile.group; if (!g) return Promise.resolve();
+ const path = 'groups/g_' + g + '/players/';
+ const done = NET.init().then(ok => ok ? NET.api.delDoc(path + NET.uid) : null).catch(() => {});
+ S.profile.group = ''; NET.cache = {players:[], hits:[], feed:[], at:0}; save(); toast('You left ' + g + '.');
+ return done;
+}
+function rivalsSheet(){
+ const rivals = activePlayers(NET.cache.wk === S.wb.wk ? NET.cache.hits : []).filter(p => p.id !== NET.uid).map(p => ({p, L:cleanLineup(Object.assign({}, p.lineup, {name:p.name}))})).filter(x => x.L);
+ const left = usedToday(S.arena, 5);
+ let h = `<button class="btn small close" id="xs">Close</button><h3>Raid a village</h3><p class="sub">The game fights for them: their squad, Garrison, walls and towers. Fights left today: ${left} of 5.</p>`;
+ if (!rivals.length) h += `<p class="lockmsg" style="text-align:center;margin:20px 0">No rivals yet. Send your group the code <b style="color:#f0c060">${escH(S.profile.group)}</b>.</p>`;
+ rivals.sort((a, b) => clampN(b.p.rating, 0, 99999) - clampN(a.p.rating, 0, 99999)).forEach((x, i) => {
+  const L = x.L;
+  h += `<div class="box rival"><div class="wart lineup">${L.squad.map(s => `<span>${ART.heroArt(wdef(s.id).look)}</span>`).join('')}</div><div class="wbody"><div class="bname">${escH(L.name)}</div>
+   <div class="rchips"><span class="rchip">&#5835; ${clampN(x.p.power, 0, 1e6)}</span><span class="rchip">Rating ${clampN(x.p.rating, 0, 99999)}</span>${L.fort.wall ? `<span class="rchip">Wall ${L.fort.wall}</span>` : ''}${L.fort.tower ? `<span class="rchip">Tower ${L.fort.tower}</span>` : ''}${L.garrison.n ? `<span class="rchip">${L.garrison.n} ${RM.TROOPS.find(t => t.id === L.garrison.type).n.split(' ')[0]}</span>` : ''}</div>
+   <button class="btn blood small rgo" data-i="${i}" ${left > 0 ? '' : 'disabled'}>Raid</button></div></div>`;
+ });
+ sheet(h);
+ $('#xs').onclick = closeSheet;
+ $$('.rgo').forEach(b => b.onclick = () => { const x = rivals[+b.dataset.i]; closeSheet(); CTX_RIVAL = {uid:x.p.id, name:x.L.name}; startArena(x.L, false); });
+}
+let CTX_RIVAL = null;
+function feedHTML(){
+ const f = NET.cache.feed.slice(0, 8);
+ if (!f.length) return '';
+ const ago = t => { const m = Math.max(0, Math.round((Date.now() - (+t || 0)) / 60000)); return m < 60 ? m + 'm' : m < 1440 ? Math.round(m / 60) + 'h' : Math.round(m / 1440) + 'd'; };
+ return `<div class="box feed"><div class="bname">The warband</div>${f.map(e => `<div class="fline ${e.target === NET.uid ? 'me' : ''}"><span>${escH(String(e.text || '').slice(0, 120))}</span><i>${ago(e.at)}</i></div>`).join('')}</div>`;
+}
 function weekId(){ const d = new Date(); const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())); const day = t.getUTCDay() || 7; t.setUTCDate(t.getUTCDate() + 4 - day); const y = new Date(Date.UTC(t.getUTCFullYear(), 0, 1)); return t.getUTCFullYear() + '-W' + Math.ceil(((t - y) / 86400000 + 1) / 7); }
 function weekBoss(){ const n = parseInt(weekId().split('W')[1], 10) || 1, r = n % RM.REALMS.length; return {r, def:RM.REALMS[r].boss}; }
 function usedToday(o, max){ if (o.day !== today()){ o.day = today(); o.used = 0; } return max - o.used; }
@@ -1546,7 +1718,7 @@ function startBoss(){
  const boss = RM.makeFoe(Math.max(lvl, 0), 3, wb.def, true, 1);
  boss.max = boss.hp = boss.max * 40; boss.atk = Math.round(boss.atk * 0.9); // a wall of life, not a one-shot machine
  boss.name = wb.def.n + ', Unbound'; boss.title = 'Warband Boss of the week';
- CTX = {type:'boss', r:wb.r};
+ CTX = {type:'boss', r:wb.r, bossMax:boss.max};
  const h = heroesFor(); runFight(h, [boss], {roundLimit:8});
 }
 function defenseLineup(){ return {squad:S.squad.map(id => ({id, lv:S.owned[id], relic:S.equip[id] || null})), garrison:Object.assign({}, S.army.garrison), fort:{tower:S.vil.tower || 0, wall:S.vil.wall || 0, pits:S.vil.pits || 0, lookout:S.vil.lookout || 0}, vil:Object.assign({}, S.vil), name:S.profile.name || 'You'}; }
@@ -1558,36 +1730,54 @@ function lineupFoes(L, shadow){
 function startArena(L, practice){
  if (usedToday(S.arena, 5) <= 0){ toast('No Arena fights left today. They come back at midnight.'); return; }
  S.arena.used++; save();
+ if (practice) CTX_RIVAL = null;
  CTX = {type:'arena', r:2, foeName:practice ? 'your own shadow' : L.name, practice};
  runFight(heroesFor(), lineupFoes(L, practice), practice ? {roundLimit:15, pvp:3} : {fort:Object.assign({side:'foe'}, L.fort), roundLimit:15, pvp:3});
 }
 function renderWar(){
- const rr = raidRealm(), wb = weekBoss(), R = RM.REALMS[wb.r], left = usedToday(S.wb, 3), aleft = usedToday(S.arena, 5), online = !!FIREBASE_CONFIG;
+ const rr = raidRealm(), wb = weekBoss(), R = RM.REALMS[wb.r], left = usedToday(S.wb, 3), aleft = usedToday(S.arena, 5), joined = netOn();
+ wbWeek();
  let h = `<h2>War</h2><p class="sub">Raids, the Warband Boss, and the Arena.</p>`;
+ // warband banner
+ if (!joined) h += `<div class="box wband"><div class="wbody"><div class="bname">Your warband</div><div class="bdesc">Join your friends with a group code. One shared boss, and raids on each other's villages.</div><button class="btn blood small" id="joinBtn">Join a warband</button></div></div>`;
+ else {
+  const st = NET.state === 'on' ? (NET.cache.at ? NET.cache.players.length + ' in the warband' : 'Gathering the warband...') : NET.state === 'err' ? (NET.importFailed ? 'No connection. Tap Refresh once you have signal.' : 'Offline. Your fights still count and send later.') : 'Connecting...';
+  h += `<div class="box wband on"><div class="wbody"><div class="bname">Warband <span style="color:#f0c060">${escH(S.profile.group)}</span></div><div class="lockmsg">${escH(S.profile.name)} · ${st}</div></div><button class="btn small" id="wbRef">Refresh</button></div>`;
+ }
  // raid card
  h += `<div class="box wcardx"><div class="wart">${ART.foeArt(rr >= 0 ? RM.REALMS[rr].boss.shape : 'draugr', rr >= 0 ? RM.REALMS[rr].eye : '#5ff0c0', true, rr >= 0 ? RM.REALMS[rr].moon : '#b3182a')}</div><div class="wbody"><div class="bname">Raid</div>
   <div class="bdesc">${rr < 0 ? 'Opens after the Barrow-King.' : '5 waves, wounds carry over, double loot.'}</div>
   <div class="lockmsg">${S.raid.best ? 'Best: ' + S.raid.best + ' of 5' : 'No raids yet'}</div>
   <button class="btn blood small" id="raidBtn" ${rr < 0 ? 'disabled' : ''}>Begin raid</button></div></div>`;
  // warband boss
+ const SB = joined && NET.cache.at ? sharedBoss() : null;
  h += `<div class="box wcardx boss"><div class="wart">${ART.foeArt(wb.def.shape, R.eye, true, R.moon)}</div><div class="wbody"><div class="bname">Warband Boss</div>
   <div class="bdesc"><b style="color:#f0c060">${wb.def.n}, Unbound</b>. 8 rounds to hit as hard as you can.</div>
-  <div class="wbar"><i style="width:100%"></i><span>${online ? 'Shared warband life' : 'Shared life: soon'}</span></div>
-  <div class="lockmsg">Best hit: ${fmt(S.wb.best)} · Attempts today: ${left} of 3</div>
+  <div class="wbar"><i style="width:${SB ? SB.pct.toFixed(1) : 100}%"></i><span>${SB ? (SB.dead ? 'Slain by the warband!' : Math.ceil(SB.pct) + '% of its life left') : joined ? 'Shared warband life' : 'Solo: join a warband to share it'}</span></div>
+  <div class="lockmsg">This week: ${S.wb.wkPts} wounds · Attempts today: ${left} of 3</div>
   <button class="btn blood small" id="bossBtn" ${left > 0 && rr >= 0 ? '' : 'disabled'}>${rr >= 0 ? 'Fight' : 'After the first boss'}</button></div></div>`;
+ if (SB && SB.hits.length){
+  h += `<div class="box board"><div class="bname">Who hit hardest this week</div>${SB.hits.slice(0, 8).map((x, i) => `<div class="brow ${x.uid === NET.uid ? 'me' : ''}"><b>${i + 1}</b><span>${escH(x.name)}</span><i style="width:${Math.max(4, Math.round(x.total / Math.max(1, SB.hits[0].total) * 100))}%"></i><em>${x.total}</em></div>`).join('')}
+   ${SB.dead && S.wb.claimed !== S.wb.wk && S.wb.wkPts > 0 ? '<button class="btn blood wide" id="claimBtn" style="margin-top:8px">Claim the warband spoils</button>' : SB.dead ? (S.wb.claimed === S.wb.wk ? '<p class="lockmsg" style="text-align:center">Spoils claimed. A new boss rises Monday.</p>' : '<p class="lockmsg" style="text-align:center">Slain. Land a hit this week to share the spoils.</p>') : ''}</div>`;
+ }
  // arena
- const L = defenseLineup();
+ const L = defenseLineup(), rivals = joined ? activePlayers(NET.cache.wk === S.wb.wk ? NET.cache.hits : []).filter(p => p.id !== NET.uid).length : 0;
  h += `<div class="box wcardx"><div class="wart lineup">${L.squad.map(s => `<span>${ART.heroArt(wdef(s.id).look)}</span>`).join('')}</div><div class="wbody"><div class="bname">Arena</div>
-  <div class="bdesc">Your defense: this squad, your Garrison, and your walls and towers. Friends fight it while the game plays your side.</div>
+  <div class="bdesc">Raid a friend's village. Your squad, Garrison, walls and towers defend yours while you're away.</div>
   <div class="lockmsg">Rating ${S.arena.rating} · ${S.arena.wins} won, ${S.arena.losses} lost · Fights today: ${aleft} of 5</div>
-  <div class="row" style="gap:6px"><button class="btn small" id="sparBtn" ${aleft > 0 && rr >= 0 ? '' : 'disabled'}>Spar with your shadow</button><button class="btn small blood" disabled>${online ? 'Find rivals' : 'Rivals: soon'}</button></div></div></div>`;
- if (!online) h += `<p class="lockmsg" style="text-align:center">The warband goes online soon: shared boss, rival villages, and a leaderboard.</p>`;
+  <div class="row" style="gap:6px"><button class="btn small blood" id="rivBtn" ${joined && rr >= 0 ? '' : 'disabled'}>${!joined ? 'Join to raid' : rr < 0 ? 'After the first boss' : rivals ? 'Raid a village (' + rivals + ')' : 'Raid a village'}</button><button class="btn small" id="sparBtn" ${aleft > 0 && rr >= 0 ? '' : 'disabled'}>Spar your shadow</button></div></div></div>`;
+ if (joined) h += feedHTML();
  $('#panel').innerHTML = h;
  const b = $('#raidBtn'); if (b) b.onclick = () => { sfx('tap'); startRaid(rr); };
  $('#bossBtn').onclick = () => { sfx('tap'); startBoss(); };
  $('#sparBtn').onclick = () => { sfx('tap'); startArena(defenseLineup(), true); };
+ const jb = $('#joinBtn'); if (jb) jb.onclick = () => { sfx('tap'); joinSheet(); };
+ const rf = $('#wbRef'); if (rf) rf.onclick = () => { sfx('tap'); if (NET.importFailed){ save(); location.reload(); return; } rf.disabled = true; rf.textContent = '...'; netPublish().then(netRefresh).then(() => { if (TAB === 'raid' && !B) renderWar(); }); };
+ const rb = $('#rivBtn'); if (rb) rb.onclick = () => { sfx('tap'); if (!NET.cache.at){ toast('Still gathering the warband. Try again in a moment.'); return; } rivalsSheet(); };
+ const cb = $('#claimBtn'); if (cb) cb.onclick = () => { const r = Math.max(0, raidRealm()), L2 = {silver:Math.round(400 * Math.pow(1.8, r)), iron:40 + 30 * r, runes:20 + 5 * r}; S.wb.claimed = S.wb.wk; S.silver += L2.silver; S.iron += L2.iron; S.runes += L2.runes; save(); sfx('win'); renderTop(); sheet(`<div class="result"><div class="lockmsg">The warband stands over the corpse</div><div class="big">Spoils</div><div class="loot">${lootHTML(L2)}</div><button class="btn blood" id="rDone">Take it</button></div>`); $('#rDone').onclick = () => { closeSheet(); renderWar(); }; };
+ // background sync: refresh at most once a minute while the War tab is open
+ if (joined && !NET.busy && Date.now() - (NET.lastTry || 0) > 60000){ netRefresh().then(ok => { if (ok && TAB === 'raid' && !B && !$('#veil').classList.contains('on')) renderWar(); else if (!ok && TAB === 'raid' && !B && NET.state === 'err' && !$('#veil').classList.contains('on')) renderWar(); }); }
 }
-
 function raidRealm(){ let r = -1; S.cleared.forEach((c, i) => { if (c >= RM.STAGES) r = i; }); return r; }
 
 // ---------- BATTLE ----------
@@ -1930,9 +2120,11 @@ function afterNight(res){
 function afterBoss(res){
  const bandMsg = settleBand(CTX.bandKey, CTX.band), dealt = Math.round(B.dealt);
  const best = dealt > S.wb.best; if (best) S.wb.best = dealt; S.wb.total += dealt;
+ wbWeek(); const pts = Math.round(1000 * dealt / (CTX.bossMax || 1)); S.wb.wkPts += pts; S.wb.wkTries++; if (pts > S.wb.wkBest) S.wb.wkBest = pts;
+ if (netOn()){ netPublish().then(ok => { if (ok) netFeed(S.profile.name + ' wounded the boss for ' + pts + '.'); }); }
  const L = {silver:Math.round(dealt * 0.12), iron:Math.round(dealt * 0.012), runes:Math.min(15, 2 + Math.floor(dealt / 2500))};
  S.silver += L.silver; S.iron += L.iron; S.runes += L.runes; save(); sfx('win');
- sheet(`<div class="result"><div class="lockmsg">${CTX.type === 'boss' ? 'The boss withdraws, wounded' : ''}</div><div class="big">${fmt(dealt)}</div><p>damage dealt${best ? ', your best yet' : ''}. Attempts left today: ${usedToday(S.wb, 3)} of 3.</p>
+ sheet(`<div class="result"><div class="lockmsg">${CTX.type === 'boss' ? 'The boss withdraws, wounded' : ''}</div><div class="big">${fmt(dealt)}</div><p>damage dealt${best ? ', your best yet' : ''}.${netOn() ? ' <b style="color:#f0c060">' + pts + ' wounds</b> on the shared boss.' : ''} Attempts left today: ${usedToday(S.wb, 3)} of 3.</p>
   <div class="loot">${lootHTML(L)}</div>${bandMsg}<div class="row" style="justify-content:center"><button class="btn blood" id="rDone">Back to War</button></div></div>`);
  $('#veil')._lock = true;
  $('#rDone').onclick = () => { closeSheet(); toHub('raid'); };
@@ -1941,11 +2133,13 @@ function afterBoss(res){
 function afterArena(res){
  const bandMsg = settleBand(CTX.bandKey, CTX.band), win = res === 'win', r = Math.max(0, raidRealm());
  if (!CTX.practice){ if (win){ S.arena.rating += 20; S.arena.wins++; } else { S.arena.rating = Math.max(0, S.arena.rating - 10); S.arena.losses++; } }
+ const rv = CTX_RIVAL; CTX_RIVAL = null;
+ if (!CTX.practice && rv && netOn()){ netPublish(); netFeed(S.profile.name + (win ? ' raided ' + rv.name + '\'s village and won.' : ' was driven off by ' + rv.name + '\'s defenses.'), rv.uid); }
  else if (win) S.arena.sparW = (S.arena.sparW || 0) + 1; else S.arena.sparL = (S.arena.sparL || 0) + 1;
  const L = win ? {silver:Math.round(90 * Math.pow(1.8, r)), iron:6 + 6 * r, runes:2 + r} : {silver:Math.round(25 * Math.pow(1.8, r)), iron:0, runes:0};
  S.silver += L.silver; S.iron += L.iron; S.runes += L.runes; save(); sfx(win ? 'win' : 'lose');
  sheet(`<div class="result"><div class="lockmsg">${res === 'time' ? 'Time ran out, the defense holds' : CTX.foeName}</div><div class="big" ${win ? '' : 'style="color:#a99"'}>${win ? 'Victory' : 'Repelled'}</div>
-  <p>${CTX.practice ? 'A practice spar. Rivals arrive when the warband goes online.' : 'Rating ' + S.arena.rating + '.'}</p><div class="loot">${lootHTML(L)}</div>${bandMsg}
+  <p>${CTX.practice ? 'A practice spar. It does not change your rating.' : 'Rating ' + S.arena.rating + (win ? ' (+20).' : ' (-10).')}</p><div class="loot">${lootHTML(L)}</div>${bandMsg}
   <div class="row" style="justify-content:center"><button class="btn blood" id="rDone">Back to War</button></div></div>`);
  $('#veil')._lock = true;
  $('#rDone').onclick = () => { closeSheet(); toHub('raid'); };
@@ -2152,6 +2346,7 @@ const DEEDS = [
  {id:'hall3', n:'A Proper Village', d:'Raise the Jarl\'s Hall to III.', r:8, ok:() => S.vil.hall >= 3},
  {id:'army20', n:'A Real Warband', d:'Muster 20 troops at once.', r:6, ok:() => S.army.skirmish.n + S.army.garrison.n >= 20},
  {id:'boss5k', n:'Wound the Unbound', d:'Deal 5,000 damage to a Warband Boss in one fight.', r:8, ok:() => S.wb.best >= 5000},
+ {id:'warband', n:'Shield Brothers', d:'Join a warband.', r:5, ok:() => netOn()},
  {id:'arena1', n:'First Blood in the Ring', d:'Win an Arena fight.', r:5, ok:() => S.arena.wins + (S.arena.sparW || 0) >= 1},
  {id:'w100', n:'A Hundred Graves', d:'Win 100 fights.', r:15, ok:() => S.stats.wins >= 100},
 ];
@@ -2222,6 +2417,9 @@ function settingsSheet(){
   <div class="row" style="margin:14px 0 6px"><button class="btn" id="howBtn">How to play</button><button class="btn" id="tutBtn">Replay guide</button></div>
   <div class="row" style="margin:6px 0"><button class="btn" id="newBtn">What's new</button><button class="btn" id="updBtn">${UPD.ready ? 'Update now' : 'Check for updates'}</button></div>
   ${inst ? '<div class="row" style="margin:6px 0"><button class="btn blood" id="instBtn">Install on this phone</button></div>' : ''}
+  <h3 style="margin-top:16px;font-size:15px">Warband</h3>
+  <p style="margin:2px 0 8px;font-size:14px">${netOn() ? 'You are <b>' + escH(S.profile.name) + '</b> in <b style="color:#f0c060">' + escH(S.profile.group) + '</b>. Your group sees your name, warriors and relics, village and Garrison, scores and fight news. It is stored on Google Firebase, nothing else leaves this phone.' : 'Not in a warband. Everything stays on this phone.'}</p>
+  <div class="row">${netOn() ? '<button class="btn" id="wbName">Change name</button><button class="btn" id="wbLeave">Leave warband</button>' : '<button class="btn blood" id="wbJoin">Join a warband</button>'}</div>
   <h3 style="margin-top:16px;font-size:15px">Your save</h3>
   <p style="margin:2px 0 8px;font-size:14px">${storageOK ? 'Progress saves to this phone automatically. Copy a backup code now and then, so a cleared browser never costs you the saga.' : '<b style="color:#e0334a">This browser is not saving.</b> Install the game or copy a backup code before closing.'}</p>
   <div class="row"><button class="btn" id="bkBtn">Copy backup code</button><button class="btn" id="rsBtn">Restore</button></div>
@@ -2235,10 +2433,11 @@ function settingsSheet(){
  $('#newBtn').onclick = () => whatsNew(true);
  $('#updBtn').onclick = () => { if (UPD.ready) applyUpdate(); else checkUpdate(true); };
  const ib = $('#instBtn'); if (ib) ib.onclick = installFlow;
+ { const wj = $('#wbJoin'); if (wj) wj.onclick = () => joinSheet(); const wn = $('#wbName'); if (wn) wn.onclick = () => joinSheet(); const wl = $('#wbLeave'); if (wl) wl.onclick = () => { if (wl.dataset.sure){ leaveWarband(); closeSheet(); if (TAB === 'raid') renderWar(); } else { wl.dataset.sure = 1; wl.textContent = 'Tap again to leave'; } }; }
  $('#bkBtn').onclick = copyBackup;
  $('#rsBtn').onclick = restoreSheet;
  $('#verTap').onclick = () => toast('Ravenmarrow ' + VERSION + ' · ' + BUILD_DATE);
- let armed = false; $('#wipe').onclick = e => { if (!armed){ armed = true; e.target.textContent = 'Tap again to erase'; setTimeout(() => { armed = false; const w = $('#wipe'); if (w) w.textContent = 'Erase save'; }, 3000); return; } store.del(SAVE_KEY); S = freshSave(); save(); closeSheet(); location.reload(); };
+ let armed = false; $('#wipe').onclick = e => { if (!armed){ armed = true; e.target.textContent = 'Tap again to erase'; setTimeout(() => { armed = false; const w = $('#wipe'); if (w) w.textContent = 'Erase save'; }, 3000); return; } const out = S.profile.group ? withTimeout(leaveWarband(), 4000).catch(() => {}) : Promise.resolve(); e.target.textContent = 'Erasing...'; out.then(() => { store.del(SAVE_KEY); S = freshSave(); save(); closeSheet(); location.reload(); }); };
 }
 // cinematic opening: one line at a time over the scene
 function storyIntro(){
@@ -2269,7 +2468,7 @@ function mini(){
   {t:'The Village', p:`<div class="mrow"><svg viewBox="-50 -55 100 90" width="110" height="96">${ART.building('hall', 3)}</svg></div>`, l:['Tap any <b>building</b> on the map.', 'The <b>Jarl\'s Hall</b> caps every other level.', 'Collect what it <b>earns</b> while you are away.']},
   {t:'Troops', p:`<div class="mrow"><span class="mcard" style="width:90px">${ART.band('spear')}</span><span class="mcard" style="width:90px">${ART.band('bow')}</span></div>`, l:['Train troops in the <b>War Camp</b>.', '<b>Skirmish Band</b> fights beside your squad.', '<b>Garrison</b> stays home and defends.']},
   {t:'Night Raids', p:`<div class="mrow"><svg viewBox="-50 -55 100 90" width="90" height="80">${ART.building('tower', 3)}</svg><svg viewBox="-50 -40 100 70" width="90" height="70">${ART.building('pits', 3)}</svg></div>`, l:['Every <b>8 hours</b> the dead come. Tap <b>Defend</b>.', '<b>Walls, towers, pits</b> and Garrison fight back.', 'Lose and they <b>empty your coffers</b>.']},
-  {t:'Warband & Arena', p:`<div class="mrow"><span class="mb gold">&#5835;<small>BOSS</small></span><span class="mb">&#5854;<small>ARENA</small></span></div>`, l:['<b>Boss</b>: 8 rounds, hit as hard as you can.', '<b>Arena</b>: your village defends itself.', 'Play with <b>friends</b> once the warband is online.']},
+  {t:'Warband & Arena', p:`<div class="mrow"><span class="mb gold">&#5835;<small>BOSS</small></span><span class="mb">&#5854;<small>ARENA</small></span></div>`, l:['<b>Boss</b>: 8 rounds, hit as hard as you can.', '<b>Arena</b>: raid a friend\'s village.', '<b>Join</b> with your group\'s code in War.']},
   {t:'Raids', p:`<div class="mrow">${[1, 2, 3, 4].map(() => '<span class="mpip on"></span>').join('')}<span class="mpip boss"></span></div>`, l:['<b>Five waves</b> in a row.', 'Wounds carry over. <b>Double silver and iron</b>.', 'Keep everything you earned.']},
   {t:'Every Day', p:`<div class="mrow"><span class="mb gold">&#5835;<small>BLESSING</small></span><span class="mb">${ART.ICON.book}<small>JOURNAL</small></span></div>`, l:['Your <b>first win</b> each day pays extra.', 'The <b>Journal</b> holds lore, relics, deeds.', 'Missing a day costs nothing.']},
   {t:'Stuck?', p:`<div class="mrow"><span class="mb">&#8635;<small>REPLAY</small></span><span class="mb">&#8679;<small>LEVEL</small></span><span class="mb">&#5839;<small>FORGE</small></span></div>`, l:['Replay old fights for <b>silver</b>.', 'Level your <b>weakest</b> warrior.', 'Bring a <b>healer</b> to bosses.']},

@@ -1,6 +1,6 @@
 # Ravenmarrow: Roadmap
 
-**Current version:** 1.5 · Nov 16 2026
+**Current version:** 1.6 · Nov 16 2026
 **Live URL:** https://motbuchanan.github.io/ravenmarrow/ (repo: ravenmarrow, files at the root)
 **What it is:** A gothic Norse boss-battle game drawn entirely in code. A gift build inspired by a mobile Viking strategy RPG, built around boss fights, a warrior roster, and a light village. No money, no accounts, no data leaves the phone.
 
@@ -51,6 +51,18 @@ Her weekend feedback: had a blast, got far, played between Vikingard raids. Comb
 - Engine: PASSIVES (one per warrior), TRICKS per enemy shape (poison, bleed, blind, all-hit), AFFIXES elites (Armored, Frenzied, Vampiric, Hulking) from realm 2 on, DoT/miss/endure events. Tutorial fight has no tricks. Foe stats raised ~12% to offset passives (sim curve unchanged).
 - Village clarity: Now/Next numbers on every building, before/after squad stats on upgrade, bonus chips at the top of every fight, stat annotations on warrior pages.
 
+## Shipped in 1.6 (Nov 16 2026)
+Warband online. Firebase project ravenmarrow-99790 (Spark plan, anonymous auth, Firestore nam5). Config is baked into ui.js FIREBASE_CONFIG; SDK 10.12.2 loaded with dynamic import from gstatic only when a player joins.
+- Data: groups/g_<code>/players/<uid> (name, defense lineup, power, rating), groups/g_<code>/boss/<isoWeek>/hits/<uid> (weekly wounds), groups/g_<code>/feed (who raided whom). Rules: signed-in read; each player writes only their own docs; feed entries must carry the writer's uid.
+- Join screen in War (name + group code). Settings shows exactly what is shared, change name, leave (deletes own player doc).
+- Shared Warband Boss: life = 700 wounds per player, wounds = 1000 x damage / that player's boss life (fair across progress). Leaderboard, once-a-week spoils when slain.
+- Arena rivals: friends' saved defense lineups (cleaned and clamped by cleanLineup), rating +20/-10, feed lines, raids on you shown in red.
+- Offline: fights still count; the absolute weekly totals publish on the next connect. Background refresh at most once a minute.
+- Tests: v16check.py runs two phones plus a cheater against a mock store (window.RM_NET_MOCK).
+
+## Shipped in 1.5.1 (Nov 16 2026)
+- Close button on building sheets was covered by the building art (its glow filter stacked above the button). .sheet .close now z-index:5, .bart pointer-events:none.
+
 ## Shipped in 1.5 (Nov 16 2026)
 Mot: villages need to be defended (walls, lookouts, archer towers), spend to recruit troops and grow resources, squad units that defend plus skirmish groups for attacking players and bosses. Friendly visual UI, not blocks of text. Modeled on Clash of Clans (Town Hall gates levels; collect, upgrade, train, attack) and Vikings: War of Clans (infirmary, watchtower, walls).
 - Village is a drawn map (ART.villageMap), 12 buildings in engine BUILDINGS: hall (caps all others via bmax), mead/mine/lookout (idle silver/iron/runes, 10 h cap, one Collect), forge, altar, barracks (also troop strength + unlocks), camp (troop room), infirmary (saves 15%/lvl of fallen troops), wall/tower/pits (defense in night raids and Arena).
@@ -60,7 +72,7 @@ Mot: villages need to be defended (walls, lookouts, archer towers), spend to rec
 - War tab: Raid, Warband Boss (weekly rotating boss x40 life, 3 attempts/day, damage = rewards), Arena (fight a defense lineup: squad + garrison + fort; practice vs own shadow, 5/day). FIREBASE_CONFIG = null in ui.js keeps online parts dormant.
 - Review pass: Arena uses Battle opt pvp:3 (hero armor is tuned for monsters, so hero vs hero otherwise times out); practice spars have no fort and count in arena.sparW/sparL, not rating. Troops cost 2.5x and band attack scales n^0.7 and drops as men fall. Boss and Spar locked until the first boss. Map slots re-spaced so every tap opens its own building.
 
-## Multiplayer (next: wire Firebase)
+## Multiplayer (next)
 Options under discussion with Mot: async co-op World Boss (shared HP over a weekend, damage leaderboard), async Arena PvP (fight a friend's saved squad run by the AI), live co-op raid, live PvP. Needs Firebase (accounts or friend codes) and a change to the "nothing leaves your phone" stance.
 
 ## Locked decisions
