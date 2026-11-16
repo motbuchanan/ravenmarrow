@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<!-- Ravenmarrow v1.4 · Nov 16 2026 -->
+<!-- Ravenmarrow v1.5 · Nov 16 2026 -->
 <html lang="en"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-<meta name="build" content="1.4">
+<meta name="build" content="1.5">
 <meta name="build-date" content="Nov 16 2026">
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#050304">
@@ -332,6 +332,70 @@ textarea{-webkit-user-select:text;user-select:text;width:100%;min-height:80px;ba
 #vchips .vchip{font-size:11px;padding:2px 6px}
 .vtag{font-family:fell;font-style:italic;font-size:11px;color:#9fd8a0;margin-left:4px}
 @media (max-height:520px){#vchips{display:none}}
+/* v1.5 village map, troops, war */
+.vhead{display:flex;align-items:center;justify-content:space-between}
+.hallb{font-family:cinzeldec;font-size:12px;letter-spacing:1px;color:#f0c060;border:1px solid #8a6f4a;padding:4px 10px;background:rgba(0,0,0,.6)}
+#vmap{margin:0 -10px}
+.vmapsvg{display:block;max-height:58vh}
+.vmapsvg .bld{cursor:pointer}
+.vmapsvg .bld:active{opacity:.7}
+.vmapsvg .upar{animation:pulse 1.2s infinite}
+.coffers{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px}
+.cof{display:flex;gap:12px;flex-wrap:wrap}
+.cof span{display:flex;align-items:center;gap:4px;font-size:15px}
+.cof svg{width:18px;height:18px}
+.vrow{display:flex;gap:10px}
+.vcard{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:12px 8px;color:inherit;font-family:inherit;text-align:center}
+.vcard b{font-size:13px;letter-spacing:1px}
+.vcard small{font-family:fell;font-size:13px;color:#bba}
+.vcard .vic{font-family:serif;font-size:26px;color:#e0334a;text-shadow:0 0 8px #b3182a;height:40px;display:flex;align-items:center}
+.vcard .vic svg.mini{width:46px;height:40px}
+.vcard.alarm{border-color:#e0334a;box-shadow:0 0 18px rgba(224,51,74,.5),inset 0 0 18px #000;animation:pulse 1.2s infinite}
+.vcard.alarm small{color:#ff8a9a}
+.bsheet{text-align:center}
+.bart{display:flex;justify-content:center;margin:2px 0 4px;filter:drop-shadow(0 0 16px rgba(217,121,42,.35))}
+.nightart svg.fart{width:90px;height:110px}
+.bline{font-size:16px!important;margin:6px 0}
+.bwhat{font-family:fell;font-size:15px;color:#bba;margin:2px 0 10px}
+.nownext.big{justify-content:center;gap:16px;margin:8px 0 2px}
+.nownext.big b{font-size:24px}
+.pip.capd{border-style:dashed;opacity:.4}
+.costrow{margin:4px 0 10px;display:flex;justify-content:center;gap:10px;font-size:14px}
+.costrow .cost svg{width:16px;height:16px}
+.defgrid{display:flex;gap:8px;margin:8px 0;text-align:left}
+.defgrid>div{flex:1;border:1px solid #3a2a20;padding:8px;background:rgba(0,0,0,.35)}
+.defgrid small{display:block;font-size:8px;letter-spacing:1.5px;color:#8a7a68;margin-bottom:3px}
+.defgrid b{font-weight:400;font-family:fell;font-size:14px}
+.capbar{position:relative;height:22px;border:1px solid #6b5a44;background:#120608;margin:6px 0 12px}
+.capbar i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,#7a0c1a,#b3182a)}
+.capbar span{position:relative;display:block;text-align:center;font-size:11px;letter-spacing:1px;line-height:20px}
+.armysec{border:1px solid #3a2a20;padding:10px;margin-bottom:10px;background:rgba(0,0,0,.3)}
+.bandn{font-family:cinzeldec;font-size:28px;color:#f0c060;text-align:right;line-height:1}
+.bandn small{display:block;font-family:cinzel;font-size:9px;letter-spacing:1px;color:#c9b38f}
+.tcards{display:flex;gap:6px;margin-top:8px}
+.tcard{flex:1;border:1px solid #4a3a2c;background:linear-gradient(#1a1014,#0a0608);padding:4px 4px 6px;color:inherit;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:1px;min-width:0}
+.tcard svg.tart{width:100%;height:58px}
+.tcard b{font-size:10px;letter-spacing:.5px}
+.tcard small{font-family:fell;font-size:11px;color:#9a8a7a;line-height:1.15}
+.tcard.on{border-color:#d9a441;box-shadow:0 0 12px rgba(217,164,65,.45)}
+.tcard.lock{opacity:.45}
+.card.band{flex:.85}
+.card.band svg.art{opacity:.95}
+.bandct{font-size:10px;letter-spacing:1px;color:#f0c060;text-align:center;margin-top:1px}
+.foe.rival .fart{filter:drop-shadow(0 0 6px #e0334a)}
+.wcardx{display:flex;gap:10px;align-items:stretch}
+.wart{flex:none;width:88px;display:flex;align-items:flex-end;justify-content:center;border-right:1px solid #2a1e18;padding-right:8px}
+.wart svg.fart{width:84px;height:100px}
+.wart.lineup{gap:0}
+.wart.lineup span{width:30px;height:60px;position:relative;overflow:hidden}
+.wart.lineup svg{position:absolute;inset:0;width:100%;height:100%}
+.wbody{flex:1;display:flex;flex-direction:column;gap:4px;align-items:flex-start;min-width:0}
+.wcardx.boss{border-color:#8a6f4a}
+.wbar{position:relative;width:100%;height:16px;border:1px solid #6b5a44;background:#120608}
+.wbar i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(#e0334a,#7a0c1a);opacity:.35}
+.wbar span{position:relative;display:block;font-size:9px;letter-spacing:.5px;line-height:14px;text-align:center;color:#e9dcc8}
+.card.band .nm{font-size:9px;letter-spacing:0;bottom:22px}
+.wbar span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 4px}
 
 </style>
 </head><body>
@@ -352,7 +416,7 @@ textarea{-webkit-user-select:text;user-select:text;width:100%;min-height:80px;ba
    <button class="tab on" data-tab="saga"><span class="r">&#5835;</span>SAGA</button>
    <button class="tab" data-tab="warriors"><span class="r">&#5833;</span>WARRIORS</button>
    <button class="tab" data-tab="village"><span class="r">&#5839;</span>VILLAGE<span class="dot" id="vdot" style="display:none"></span></button>
-   <button class="tab" data-tab="raid"><span class="r">&#5854;</span>RAID</button>
+   <button class="tab" data-tab="raid"><span class="r">&#5854;</span>WAR</button>
   </nav>
  </section>
  <section class="screen" id="battle">
@@ -364,6 +428,7 @@ textarea{-webkit-user-select:text;user-select:text;width:100%;min-height:80px;ba
   <div id="skills"></div>
  </section>
  <div id="hurtflash"></div>
+ <div id="fortAnchor" style="position:absolute;top:22%;left:8%;width:2px;height:2px;pointer-events:none"></div>
  <div id="ultflash"><div class="ur"></div><div class="un"></div></div>
  <div id="bossintro"><div class="a"></div><div class="b"></div></div>
  <div class="banner" id="banner"><div class="t"></div><button class="btn small blood go">Update</button><button class="btn small x" aria-label="Dismiss">&#10005;</button></div>
@@ -554,15 +619,46 @@ function makeHero(id, level, village, relic){
 function power(id, level, village, relic){ const h = makeHero(id, level, village, relic); return Math.round(h.max/4 + h.atk*3 + h.def*2); }
 function levelCost(l){ return Math.round(25 * Math.pow(l, 1.5)); }
 function levelCap(barracks){ return 5 + 5 * (barracks||0); }
+// v1.5 village: the Jarl's Hall caps every other building's level
 const BUILDINGS = [
- {id:'forge', name:'The Forge', rune:'ᛏ', desc:'Blackened steel. Every warrior hits 8% harder per level.'},
- {id:'altar', name:'Rune Altar', rune:'ᛉ', desc:'Blood on old stone. Rage builds 10% faster per level.'},
- {id:'barracks', name:'Barracks', rune:'ᛟ', desc:'Bunks for the living and the almost. Raises the level cap by 5.'},
- {id:'mead', name:'Mead Hall', rune:'ᛗ', desc:'Warm fire, cold ale. +5% life for all, more silver while you are away, better rest during raids.'},
+ {id:'hall', grp:'core', name:'Jarl\'s Hall', rune:'ᛟ', f:1.6, desc:'The heart of the village. Every other building can only grow as high as the Hall.'},
+ {id:'mead', grp:'make', name:'Mead Hall', rune:'ᛗ', f:1, desc:'Silver while you are away, more life for everyone, better rest in raids.'},
+ {id:'mine', grp:'make', name:'Iron Mine', rune:'ᛁ', f:1, desc:'Digs iron while you are away.'},
+ {id:'lookout', grp:'make', name:'Lookout', rune:'ᛚ', f:1.1, desc:'Scouts find bone runes while you are away. Defenders act sooner.'},
+ {id:'forge', grp:'war', name:'The Forge', rune:'ᛏ', f:1, desc:'Every warrior and troop hits harder.'},
+ {id:'altar', grp:'war', name:'Rune Altar', rune:'ᛉ', f:1, desc:'Rage builds faster and Ultimates hit harder.'},
+ {id:'barracks', grp:'war', name:'Barracks', rune:'ᛞ', f:1, desc:'Raises the warrior level cap, unlocks and toughens troops.'},
+ {id:'camp', grp:'war', name:'War Camp', rune:'ᚦ', f:.8, desc:'Room for more troops.'},
+ {id:'infirmary', grp:'war', name:'Infirmary', rune:'ᛒ', f:.8, desc:'Saves some of the troops you lose in battle.'},
+ {id:'wall', grp:'def', name:'Palisade', rune:'ᛜ', f:.9, desc:'Defenders take less damage when the village is attacked.'},
+ {id:'tower', grp:'def', name:'Archer Tower', rune:'ᛊ', f:1, desc:'Shoots attackers every round of a defense.'},
+ {id:'pits', grp:'def', name:'Spike Pits', rune:'ᚾ', f:.7, desc:'Every attacker is wounded before the fight starts.'},
 ];
 const VMAX = 5;
-function buildCost(l){ return {silver:Math.round(140 * Math.pow(l + 1, 2.1)), iron:Math.round(25 * Math.pow(l + 1, 2))}; }
+function bmax(id, vil){ return id === 'hall' ? VMAX : Math.min(VMAX, (vil && vil.hall) || 1); }
+function buildCost(l, id){ const b = BUILDINGS.find(x => x.id === id), f = b ? b.f : 1; return {silver:Math.round(140 * f * Math.pow(l + 1, 2.1)), iron:Math.round(25 * f * Math.pow(l + 1, 2))}; }
 function idleRate(mead){ return 25 + 35 * (mead||0); } // silver per hour
+function mineRate(l){ return l ? 6 + 9 * l : 0; } // iron per hour
+function runeRate(l){ return l ? 0.25 * l : 0; } // bone runes per hour
+function campCap(l){ return 6 + 6 * (l||0); }
+// ---------- TROOPS (v1.5) ----------
+const TROOPS = [
+ {id:'spear', n:'Spearmen', needs:0, hp:46, atk:4.2, spd:7, skill:'strike', cost:{silver:35, iron:3}, d:'Sturdy. Soaks hits for your squad.'},
+ {id:'bow', n:'Bowmen', needs:1, hp:30, atk:5.8, spd:9, skill:'arrow', cost:{silver:45, iron:5}, d:'Fragile, but they hit from range.'},
+ {id:'berserk', n:'Berserk Band', needs:3, hp:36, atk:7.6, spd:12, skill:'strike', cost:{silver:75, iron:10}, d:'Fast and brutal. They do not last long.'},
+];
+function bandStats(type, n, vil){
+ const t = TROOPS.find(x => x.id === type), v = vil || {}, br = 1 + 0.15 * (v.barracks||0);
+ const unitHp = Math.round(t.hp * br * (1 + 0.05 * (v.mead||0)));
+ return {unitHp, hp:unitHp * n, atk:Math.round(t.atk * br * (1 + 0.08 * (v.forge||0)) * Math.pow(n, 0.7)), def:8 + 3 * (v.barracks||0), spd:t.spd};
+}
+function makeBand(type, n, vil, side){
+ const t = TROOPS.find(x => x.id === type); if (!t || n < 1) return null;
+ const st = bandStats(type, n, vil);
+ return {uid:'b_' + (side || 'hero') + '_' + type, id:'band_' + type, side:side || 'hero', troop:true, band:type, n, unitHp:st.unitHp, name:t.n + ' x' + n, title:'Troops', look:'band', skills:[t.skill],
+  max:st.hp, hp:st.hp, atk:st.atk, def:st.def, spd:st.spd, rage:0, cds:{}, buffs:[], alive:true, level:0, rageMult:1, ultPow:1, turns:0};
+}
+function survivors(b){ return b.alive ? Math.max(0, Math.min(b.n, Math.ceil(b.hp / b.unitHp))) : 0; }
 const IDLE_CAP_H = 10;
 
 // ---------- BATTLE ----------
@@ -574,15 +670,40 @@ class Battle {
  constructor(heroes, foes, opts){
   this.heroes = heroes; this.foes = foes; this.queue = []; this.round = 0; this.log = [];
   this.noTricks = !!(opts && opts.noTricks);
+  this.fort = (opts && opts.fort) || null; // {side, tower, wall, pits, lookout}
+  this.pvp = (opts && opts.pvp) || 0; this.roundLimit = (opts && opts.roundLimit) || 0; this.timeUp = false; this.dealt = 0; this.roundEv = [];
+  if (this.fort && this.fort.lookout) this.side(this.fort.side).forEach(u => { if (!u._lk){ u._lk = 1; u.spd += 2 * this.fort.lookout; } });
  }
- hasHero(id){ return this.heroes.some(h => h.id === id && h.alive); }
+ side(s){ return s === 'hero' ? this.heroes : this.foes; }
+ sideHas(s, id){ return this.side(s).some(h => h.id === id && h.alive); }
+ hasHero(id){ return this.sideHas('hero', id); }
+ enemiesOf(u){ return this.alive(u.side === 'hero' ? 'foe' : 'hero'); }
+ alliesOf(u){ return this.alive(u.side); }
+ // direct structure damage (tower arrows, spike pits)
+ hurt(tgt, amt, ev, struct){
+  if (!tgt.alive) return 0; const d = Math.max(1, Math.round(amt)); tgt.hp -= d;
+  ev.push({t:'dmg', src:struct, tgt:tgt.uid, amt:d, crit:false, struct});
+  if (tgt.hp <= 0){ if (tgt.oldBones){ tgt.hp = 1; tgt.oldBones = false; ev.push({t:'endure', u:tgt.uid}); } else { tgt.hp = 0; tgt.alive = false; tgt.buffs = []; ev.push({t:'die', u:tgt.uid}); } }
+  return d;
+ }
+ fortRound(){
+  const ev = [], F = this.fort; if (!F) return ev;
+  const atk = () => this.alive(F.side === 'hero' ? 'foe' : 'hero');
+  if (this.round === 1 && F.pits) atk().forEach(t => this.hurt(t, t.max * 0.05 * F.pits, ev, 'pits'));
+  if (F.tower){ const shots = 1 + Math.floor(F.tower / 2); for (let i = 0; i < shots; i++){ const al = atk(); if (!al.length) break; const t = pick(al); this.hurt(t, t.max * (0.04 + 0.015 * F.tower), ev, 'tower'); } }
+  return ev;
+ }
+ takeRoundEvents(){ const e = this.roundEv; this.roundEv = []; return e; }
  all(){ return this.heroes.concat(this.foes); }
  alive(side){ return (side === 'hero' ? this.heroes : this.foes).filter(u => u.alive); }
- result(){ if (!this.alive('foe').length) return 'win'; if (!this.alive('hero').length) return 'lose'; return null; }
+ result(){ if (!this.alive('foe').length) return 'win'; if (!this.alive('hero').length) return 'lose'; if (this.timeUp) return 'time'; return null; }
  next(){
   for (let guard = 0; guard < 50; guard++){
    if (!this.queue.length){
+    if (this.roundLimit && this.round >= this.roundLimit){ this.timeUp = true; return null; }
     this.round++;
+    this.roundEv = this.roundEv.concat(this.fortRound());
+    if (this.result()) return null;
     this.queue = this.all().filter(u => u.alive).sort((a, b) => (b.spd + rnd()) - (a.spd + rnd()));
    }
    const u = this.queue.shift();
@@ -599,8 +720,8 @@ class Battle {
   const stunned = hasBuff(u, 'stun');
   const dot = u.buffs.find(b => b.k === 'dot');
   if (dot && u.alive){ const d = Math.max(1, Math.round(u.max * dot.v)); u.hp -= d; ev.push({t:'dot', u:u.uid, amt:d}); if (u.hp <= 0){ if (u.oldBones){ u.hp = 1; u.oldBones = false; ev.push({t:'endure', u:u.uid}); } else { u.hp = 0; u.alive = false; u.buffs = []; ev.push({t:'die', u:u.uid}); return {ev, stunned:true}; } } }
-  if (u.alive && u.passive === 'aslaug'){ const al = this.alive('hero'); const lo = al.slice().sort((a, b) => a.hp / a.max - b.hp / b.max)[0]; if (lo && lo.hp < lo.max) this.heal(u, lo, lo.max * 0.05, ev); }
-  if (u.alive && u.passive === 'ragna'){ this.alive('hero').forEach(a => { a.rage = Math.min(100, a.rage + 8); }); ev.push({t:'hymn', u:u.uid}); }
+  if (u.alive && u.passive === 'aslaug'){ const al = this.alliesOf(u); const lo = al.slice().sort((a, b) => a.hp / a.max - b.hp / b.max)[0]; if (lo && lo.hp < lo.max) this.heal(u, lo, lo.max * 0.05, ev); }
+  if (u.alive && u.passive === 'ragna'){ this.alliesOf(u).forEach(a => { a.rage = Math.min(100, a.rage + 8); }); ev.push({t:'hymn', u:u.uid}); }
   if (u.regen && u.alive && u.hp < u.max){ const h = Math.round(Math.min(u.max * u.regen, u.max - u.hp)); u.hp += h; ev.push({t:'heal', src:u.uid, tgt:u.uid, amt:h}); }
   u.buffs.forEach(b => b.t--);
   u.buffs = u.buffs.filter(b => b.t > 0);
@@ -609,19 +730,23 @@ class Battle {
  }
  dmg(src, tgt, mult, ev, opts){
   if (!tgt.alive) return 0;
-  if ((hasBuff(src, 'blind') && rnd() < 0.5) || (src.side === 'foe' && tgt.side === 'hero' && this.hasHero('ylva') && rnd() < 0.1)){ ev.push({t:'miss', src:src.uid, tgt:tgt.uid}); return 0; }
+  if ((hasBuff(src, 'blind') && rnd() < 0.5) || (src.side !== tgt.side && this.sideHas(tgt.side, 'ylva') && rnd() < 0.1)){ ev.push({t:'miss', src:src.uid, tgt:tgt.uid}); return 0; }
   let atk = src.atk * (1 + buffVal(src, 'atkUp') - buffVal(src, 'atkDown'));
+  if (src.troop) atk *= Math.max(0.15, Math.pow(survivors(src) / src.n, 0.7));
   if (hasBuff(src, 'enrage')) atk *= 1.3;
   if (src.passive === 'bjorn' && src.hp < src.max * 0.5) atk *= 1.4;
   if (src.passive === 'ulfhild' && tgt.hp < tgt.max * 0.5) atk *= 1.25;
   let def = tgt.def * (1 + buffVal(tgt, 'defUp'));
   let d = atk * mult * (0.9 + rnd() * 0.2) * 100 / (100 + def);
+  if (this.pvp) d *= this.pvp;
   const crit = rnd() < 0.1 + (src.crit || 0); if (crit) d *= 1.5;
   if (tgt.guard) d *= 1 - tgt.guard;
   if (hasBuff(tgt, 'shield')) d *= 1 - buffVal(tgt, 'shield');
-  if (tgt.side === 'hero' && this.hasHero('sigrun')) d *= 0.9;
+  if (this.sideHas(tgt.side, 'sigrun')) d *= 0.9;
+  if (this.fort && this.fort.wall && tgt.side === this.fort.side) d *= 1 - 0.06 * this.fort.wall;
   d = Math.max(1, Math.round(d));
   const landed = Math.min(d, tgt.hp);
+  if (src.side === 'hero') this.dealt += landed;
   tgt.hp -= d;
   tgt.rage = Math.min(100, tgt.rage + 8 * (tgt.rageMult || 1));
   ev.push({t:'dmg', src:src.uid, tgt:tgt.uid, amt:d, crit, big:!!(opts&&opts.big)});
@@ -638,12 +763,12 @@ class Battle {
   ev.push({t:'heal', src:src.uid, tgt:tgt.uid, amt});
  }
  foeTarget(foe){
-  const al = this.alive('hero');
+  const al = this.enemiesOf(foe);
   const t = al.filter(h => hasBuff(h, 'taunt'));
   return t.length ? t[0] : pick(al);
  }
  canUse(u, sid){
-  const s = SKILLS[sid];
+  const s = SKILLS[sid]; if (!s) return false;
   if (s.kind === 'ult') return u.rage >= 100;
   if (s.kind === 'special') return !(u.cds[sid] > 0);
   return true;
@@ -651,29 +776,29 @@ class Battle {
  // hero acts. target = foe uid (optional)
  use(u, sid, tuid){
   const ev = [], s = SKILLS[sid];
-  const foes = this.alive('foe'), allies = this.alive('hero');
+  const foes = this.enemiesOf(u), allies = this.alliesOf(u);
   if (!foes.length) return ev;
   let tgt = foes.find(f => f.uid === tuid) || foes[0];
   ev.push({t:'act', u:u.uid, sid, name:s.name, kind:s.kind});
   const gain = (s.kind === 'basic' ? 25 : s.kind === 'special' ? 15 : 0) * (u.rageMult || 1);
   switch (sid){
    case 'strike': case 'hexbolt': case 'arrow': case 'peck': case 'claw': this.dmg(u, tgt, 1, ev); break;
-   case 'shieldwall': allies.forEach(a => addBuff(a, 'shield', 0.4, 3)); ev.push({t:'buff', side:'hero', k:'shield'}); break;
+   case 'shieldwall': allies.forEach(a => addBuff(a, 'shield', 0.4, 3)); ev.push({t:'buff', by:u.side, side:'hero', k:'shield'}); break;
    case 'frenzy': { const cost = Math.round(u.max * 0.08); u.hp = Math.max(1, u.hp - cost); ev.push({t:'self', u:u.uid, amt:cost}); this.dmg(u, tgt, 2, ev); break; }
    case 'mend': { const lo = allies.slice().sort((a, b) => a.hp / a.max - b.hp / b.max)[0]; this.heal(u, lo, lo.max * 0.35, ev); break; }
    case 'volley': foes.forEach(f => this.dmg(u, f, 0.7, ev)); break;
-   case 'boneward': addBuff(u, 'taunt', 1, 3); addBuff(u, 'defUp', 0.5, 3); ev.push({t:'buff', side:'self', u:u.uid, k:'taunt'}); break;
-   case 'omen': foes.forEach(f => addBuff(f, 'atkDown', 0.3, 3)); ev.push({t:'buff', side:'foe', k:'atkDown'}); break;
-   case 'dirge': allies.forEach(a => addBuff(a, 'atkUp', 0.3, 3)); ev.push({t:'buff', side:'hero', k:'atkUp'}); break;
+   case 'boneward': addBuff(u, 'taunt', 1, 3); addBuff(u, 'defUp', 0.5, 3); ev.push({t:'buff', by:u.side, side:'self', u:u.uid, k:'taunt'}); break;
+   case 'omen': foes.forEach(f => addBuff(f, 'atkDown', 0.3, 3)); ev.push({t:'buff', by:u.side, side:'foe', k:'atkDown'}); break;
+   case 'dirge': allies.forEach(a => addBuff(a, 'atkUp', 0.3, 3)); ev.push({t:'buff', by:u.side, side:'hero', k:'atkUp'}); break;
    case 'gravehunger': { const d = this.dmg(u, tgt, 1.5, ev); this.heal(u, u, d * 0.5, ev); break; }
-   case 'valkyrie': this.dmg(u, tgt, 2.8 * u.ultPow, ev, {big:true}); allies.forEach(a => addBuff(a, 'shield', 0.4, 3)); ev.push({t:'buff', side:'hero', k:'shield'}); break;
-   case 'redrage': for (let i = 0; i < 4; i++){ const al = this.alive('foe'); if (!al.length) break; this.dmg(u, pick(al), 1.1 * u.ultPow, ev, {big:true}); } break;
+   case 'valkyrie': this.dmg(u, tgt, 2.8 * u.ultPow, ev, {big:true}); allies.forEach(a => addBuff(a, 'shield', 0.4, 3)); ev.push({t:'buff', by:u.side, side:'hero', k:'shield'}); break;
+   case 'redrage': for (let i = 0; i < 4; i++){ const al = this.enemiesOf(u); if (!al.length) break; this.dmg(u, pick(al), 1.1 * u.ultPow, ev, {big:true}); } break;
    case 'norns': allies.forEach(a => { a.buffs = a.buffs.filter(b => b.k !== 'atkDown' && b.k !== 'stun' && b.k !== 'dot' && b.k !== 'blind'); this.heal(u, a, a.max * 0.4 * u.ultPow, ev); }); break;
    case 'fenris': foes.forEach(f => this.dmg(u, f, 1.7 * u.ultPow, ev, {big:true})); break;
    case 'barrowtoll': this.dmg(u, tgt, 2.6 * u.ultPow, ev, {big:true}); this.heal(u, u, u.max * 0.3, ev); break;
-   case 'hugin': foes.forEach(f => { this.dmg(u, f, 1.2 * u.ultPow, ev, {big:true}); if (f.alive) addBuff(f, 'stun', 1, 1); }); ev.push({t:'buff', side:'foe', k:'stun'}); break;
+   case 'hugin': foes.forEach(f => { this.dmg(u, f, 1.2 * u.ultPow, ev, {big:true}); if (f.alive) addBuff(f, 'stun', 1, 1); }); ev.push({t:'buff', by:u.side, side:'foe', k:'stun'}); break;
    case 'ballad': {
-    const dead = this.heroes.filter(h => !h.alive);
+    const dead = this.side(u.side).filter(h => !h.alive && !h.troop);
     if (dead.length){ const d = dead[0]; d.alive = true; d.hp = Math.round(d.max * 0.5); d.rage = 0; ev.push({t:'revive', u:d.uid}); }
     else allies.forEach(a => this.heal(u, a, a.max * 0.25, ev));
     break; }
@@ -685,10 +810,12 @@ class Battle {
  }
  // auto pick for heroes
  auto(u){
-  const allies = this.alive('hero'), foes = this.alive('foe');
+  const allies = this.alliesOf(u), foes = this.enemiesOf(u);
   const [b, sp, ul] = u.skills;
+  if (!foes.length) return {sid:b, tuid:null};
   const minPct = Math.min(...allies.map(a => a.hp / a.max));
-  const anyDead = this.heroes.some(h => !h.alive);
+  const anyDead = this.side(u.side).some(h => !h.alive && !h.troop);
+  if (!sp) return {sid:b, tuid:foes.slice().sort((a, c) => a.hp - c.hp)[0].uid};
   const bossUp = foes.some(f => f.boss);
   let sid = b;
   const ultOk = this.canUse(u, ul) && !hasBuff(u, 'blind') && !((ul === 'norns' && minPct > 0.75) || (ul === 'ballad' && !anyDead && minPct > 0.7));
@@ -731,7 +858,7 @@ function loot(r, s, raid){
  return o;
 }
 
-return {PASSIVES, TRICKS, AFFIXES, makeElite, sprinkleElites, RELICS, relicFx, WARRIORS, SKILLS, REALMS, STAGES, BUILDINGS, VMAX, IDLE_CAP_H, Battle, makeHero, makeFoe, encounter, loot, levelCost, levelCap, buildCost, idleRate, power, levelMult, realmFactor, hasBuff, pick};
+return {bmax, mineRate, runeRate, campCap, TROOPS, bandStats, makeBand, survivors, PASSIVES, TRICKS, AFFIXES, makeElite, sprinkleElites, RELICS, relicFx, WARRIORS, SKILLS, REALMS, STAGES, BUILDINGS, VMAX, IDLE_CAP_H, Battle, makeHero, makeFoe, encounter, loot, levelCost, levelCap, buildCost, idleRate, power, levelMult, realmFactor, hasBuff, pick};
 })();
 
 
@@ -900,7 +1027,63 @@ function seer(){ // the guide: a hooded seer with a raven on her shoulder
  <path d="M58 40 q6 -9 15 -5 q-2 3 -5 5 l7 3 q-9 4 -16 1z" fill="#050305"/><circle cx="67" cy="37" r="1" fill="#e0334a"/>
  </svg>`;
 }
-return {ICON, sceneSVG, heroArt, foeArt, raven, seer};
+// ---------- v1.5: troops, buildings, village map ----------
+function band(type, cls){ // three silhouettes holding their weapons
+ const w = {spear:(x) => `<path d="M${x + 10} 18 L${x + 10} 96" stroke="#6b5a44" stroke-width="2"/><path d="M${x + 7} 20 L${x + 10} 8 L${x + 13} 20z" fill="#c9b38f"/>`,
+  bow:(x) => `<path d="M${x + 12} 30 Q${x + 2} 56 ${x + 12} 82" stroke="#6b5a44" stroke-width="2" fill="none"/><path d="M${x + 12} 30 L${x + 12} 82" stroke="#9fbf7a" stroke-width=".7"/>`,
+  berserk:(x) => `<path d="M${x - 2} 44 L${x + 12} 70" stroke="#6b5a44" stroke-width="3"/><path d="M${x - 8} 38 Q${x + 2} 32 ${x + 4} 46 Q${x - 6} 50 ${x - 8} 38z" fill="#b3182a"/>`}[type] || (() => '');
+ const man = (x, y, s) => `<g transform="translate(${x} ${y}) scale(${s})"><path d="M-14 60 C-14 34 -8 26 0 24 C8 26 14 34 14 60z" fill="#2e1c20"/><path d="M-8 14 C-9 2 9 2 8 14 C8 24 -8 24 -8 14z" fill="#2e1c20"/>${type === 'berserk' ? '<path d="M-9 10 l-6 -8 l9 4z M9 10 l6 -8 l-9 4z" fill="#d8c8b0"/>' : '<path d="M-9 9 q9 -8 18 0 l-1 3 q-8 -5 -16 0z" fill="#6b5a44"/>'}<circle cx="-3" cy="14" r="1.2" fill="#e8dcc8"/><circle cx="3" cy="14" r="1.2" fill="#e8dcc8"/></g>`;
+ return `<svg class="${cls || 'art'}" viewBox="0 0 110 120" preserveAspectRatio="xMidYMax meet">${w(18)}${man(26, 50, .9)}${w(80)}${man(84, 50, .9)}${w(48)}${man(55, 44, 1.1)}</svg>`;
+}
+const BCOL = {hall:'#d9792a', mead:'#d9a441', mine:'#a8a0b0', lookout:'#f0603a', forge:'#ff6a3a', altar:'#5ff0c0', barracks:'#c9b38f', camp:'#c9b38f', infirmary:'#9fd8a0', wall:'#8a6f4a', tower:'#f0c060', pits:'#b3182a'};
+function building(id, l){ // drawn around 0,0, about 80 wide
+ const D = '#2a1c1a', E = '#3a2822', glow = BCOL[id] || '#d9792a';
+ const win = (x, y, w, h) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${glow}" opacity="${l ? .75 : .15}"/>`;
+ let g = '';
+ switch (id){
+  case 'hall': g = `<path d="M-46 4 L0 -36 L46 4z" fill="${D}"/><rect x="-40" y="2" width="80" height="26" fill="${E}"/><path d="M-46 4 q-8 -12 -2 -18 q4 6 2 18z M46 4 q8 -12 2 -18 q-4 6 -2 18z" fill="${D}"/><path d="M0 -36 L0 -50 M-6 -44 L6 -44" stroke="${D}" stroke-width="3"/>${win(-6, 10, 12, 18)}${win(-28, 12, 7, 7)}${win(21, 12, 7, 7)}`; break;
+  case 'mead': g = `<path d="M-34 0 L0 -24 L34 0z" fill="${D}"/><rect x="-28" y="-2" width="56" height="24" fill="${E}"/>${win(-5, 6, 10, 16)}<g fill="#3a3036" opacity=".5"><circle cx="16" cy="-30" r="5"/><circle cx="20" cy="-42" r="7"/></g><ellipse cx="-34" cy="18" rx="7" ry="5" fill="#2a1a10"/>`; break;
+  case 'mine': g = `<path d="M-36 22 Q-30 -20 0 -24 Q30 -20 36 22z" fill="${D}"/><path d="M-12 22 L-12 2 Q0 -10 12 2 L12 22z" fill="#000"/>${win(-8, 6, 16, 3)}<path d="M18 -6 L34 -22 M28 -24 L38 -16" stroke="#8a8a90" stroke-width="3"/><rect x="-34" y="12" width="16" height="9" fill="#3a2a20"/>`; break;
+  case 'lookout': g = `<path d="M-14 26 L-8 -24 M14 26 L8 -24 M-12 10 L12 -6 M12 10 L-12 -6" stroke="${D}" stroke-width="4"/><rect x="-14" y="-34" width="28" height="12" fill="${E}"/><path d="M-18 -34 L0 -48 L18 -34z" fill="${D}"/>${l ? `<circle cx="0" cy="-28" r="4" fill="${glow}"><animate attributeName="opacity" values="1;.5;1" dur="1.6s" repeatCount="indefinite"/></circle>` : ''}`; break;
+  case 'forge': g = `<path d="M-28 2 L0 -18 L28 2z" fill="${D}"/><rect x="-24" y="0" width="48" height="22" fill="${E}"/><rect x="14" y="-26" width="8" height="18" fill="${D}"/>${win(-18, 6, 14, 14)}<path d="M8 22 L8 14 L26 14 L26 22 M12 14 L12 10 L22 10" fill="#3a3640"/>${l ? '<circle cx="-11" cy="13" r="9" fill="#ff6a3a" opacity=".25"/>' : ''}`; break;
+  case 'altar': g = `<rect x="-26" y="-14" width="10" height="36" fill="${D}"/><rect x="16" y="-14" width="10" height="36" fill="${D}"/><rect x="-30" y="-20" width="60" height="9" fill="${E}"/><rect x="-10" y="4" width="20" height="18" fill="${D}"/>${l ? `<path d="M0 -4 L0 14 M-5 2 L5 8" stroke="${glow}" stroke-width="2"/><circle cx="0" cy="6" r="14" fill="${glow}" opacity=".12"/>` : ''}`; break;
+  case 'barracks': g = `<path d="M-34 22 L-18 -10 L-2 22z M2 22 L18 -10 L34 22z" fill="${D}"/><circle cx="-18" cy="10" r="6" fill="#3a2a20" stroke="#6b5a44"/><circle cx="18" cy="10" r="6" fill="#3a2a20" stroke="#6b5a44"/>${win(-20, 16, 4, 6)}${win(16, 16, 4, 6)}`; break;
+  case 'camp': g = `<path d="M-30 22 L-16 -2 L-2 22z M-4 22 L10 -8 L24 22z M14 22 L26 4 L38 22z" fill="${D}"/><path d="M-6 22 l4 -6 l4 6" fill="${glow}" opacity="${l ? .6 : .15}"/>`; break;
+  case 'infirmary': g = `<path d="M-26 2 L0 -18 L26 2z" fill="${D}"/><rect x="-22" y="0" width="44" height="22" fill="${E}"/>${win(-4, 8, 8, 14)}<path d="M-14 -4 L-14 -12 M-18 -8 L-10 -8" stroke="${glow}" stroke-width="2.5" opacity="${l ? 1 : .3}"/>`; break;
+  case 'tower': g = `<path d="M-12 26 L-9 -20 L9 -20 L12 26z" fill="${D}"/><rect x="-16" y="-30" width="32" height="12" fill="${E}"/><path d="M-16 -30 L-16 -36 L-10 -36 L-10 -30 M-3 -30 L-3 -36 L3 -36 L3 -30 M10 -30 L10 -36 L16 -36 L16 -30" fill="${E}"/>${win(-3, -10, 6, 10)}`; break;
+  case 'pits': g = `<ellipse cx="0" cy="16" rx="34" ry="9" fill="#000"/>${[-24, -14, -4, 6, 16, 26].map((x, i) => `<path d="M${x - 3} 18 L${x} ${l ? -2 - (i % 2) * 6 : 10} L${x + 3} 18z" fill="#6b5a44"/>`).join('')}`; break;
+ }
+ return g;
+}
+// slots on the village map (viewBox 0 0 390 430)
+const SLOTS = {hall:[195, 208], mead:[88, 168], forge:[302, 168], lookout:[195, 88], barracks:[84, 262], altar:[306, 270], camp:[195, 322], infirmary:[100, 356], mine:[292, 362], tower:[45, 80], pits:[345, 80]};
+function villageMap(vil, badges){
+ const wl = vil.wall || 0;
+ let stakes = '';
+ const N = 46;
+ for (let i = 0; i < N; i++){
+  const a = (i / N) * Math.PI * 2, x = 195 + Math.cos(a) * 178, y = 225 + Math.sin(a) * 175;
+  if (Math.abs(a - Math.PI / 2) < 0.12) continue; // the gate
+  stakes += wl ? `<path d="M${x - 3} ${y + 6} L${x} ${y - 8 - wl * 3} L${x + 3} ${y + 6}z" fill="#3a2a20" stroke="#6b5a44" stroke-width=".6"/>` : `<circle cx="${x}" cy="${y}" r="1.4" fill="#6b5a44" opacity=".5"/>`;
+ }
+ let b = '';
+ for (const id of Object.keys(SLOTS).sort((a, c) => SLOTS[a][1] - SLOTS[c][1])){
+  const [x, y] = SLOTS[id], l = vil[id] || 0, s = 0.95 + 0.07 * l, bd = badges[id] || {};
+  b += `<g class="bld ${l ? '' : 'empty'}" data-b="${id}" transform="translate(${x} ${y})"><rect x="-38" y="-44" width="76" height="78" fill="transparent"/>
+   <g transform="scale(${s})" ${l ? 'filter="url(#bglow)"' : 'opacity=".3"'}>${building(id, l)}</g>
+   ${l ? '' : '<circle cx="0" cy="0" r="12" fill="#0a0608" stroke="#d9a441" stroke-dasharray="3 2"/><text x="0" y="5" text-anchor="middle" font-size="16" fill="#f0c060">+</text>'}
+   ${l ? `<g transform="translate(28 -26)"><circle r="9" fill="#120608" stroke="${bd.up ? '#f0c060' : '#6b5a44'}"/><text y="4" text-anchor="middle" font-size="10" fill="${bd.up ? '#f0c060' : '#c9b38f'}" font-family="cinzel">${l}</text></g>` : ''}
+   ${l && bd.up ? '<g class="upar" transform="translate(28 -44)"><path d="M0 -6 L6 2 L2 2 L2 6 L-2 6 L-2 2 L-6 2z" fill="#f0c060"/></g>' : ''}
+   <text y="46" text-anchor="middle" font-size="9" fill="#c9b38f" font-family="cinzel" letter-spacing="1">${bd.name || ''}</text></g>`;
+ }
+ return `<svg viewBox="0 0 390 430" width="100%" class="vmapsvg"><defs><radialGradient id="vgr" cx=".5" cy=".55" r=".6"><stop offset="0" stop-color="#1e140f"/><stop offset="1" stop-color="#060405"/></radialGradient><filter id="bglow" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="0" stdDeviation="2" flood-color="#d9792a" flood-opacity=".45"/></filter><radialGradient id="vfire"><stop offset="0" stop-color="#d9792a" stop-opacity=".35"/><stop offset="1" stop-color="#d9792a" stop-opacity="0"/></radialGradient></defs>
+ <ellipse cx="195" cy="225" rx="190" ry="186" fill="url(#vgr)"/><circle cx="195" cy="225" r="120" fill="url(#vfire)"/>
+ <path d="M195 400 L195 300 M195 300 Q120 260 88 190 M195 300 Q270 260 302 190 M195 245 L195 120" stroke="#2a1e18" stroke-width="10" fill="none" stroke-linecap="round" opacity=".7"/>
+ ${stakes}<g class="bld" data-b="wall" transform="translate(195 424)"><rect x="-30" y="-14" width="60" height="26" fill="transparent"/><text y="2" text-anchor="middle" font-size="9" fill="${wl ? '#c9b38f' : '#8a6f4a'}" font-family="cinzel" letter-spacing="1">GATE · PALISADE ${wl}</text></g>
+ ${b}</svg>`;
+}
+
+return {ICON, sceneSVG, heroArt, foeArt, raven, seer, band, building, villageMap, SLOTS};
 })();
 
 // ===== RAVENMARROW UI =====
@@ -908,6 +1091,14 @@ const VERSION = document.querySelector('meta[name="build"]').content; // e.g. "1
 const BUILD_DATE = document.querySelector('meta[name="build-date"]').content;
 // Newest first. Every update adds an entry; it shows once after the update lands.
 const CHANGELOG = [
+ {v:'1.5', d:'Nov 16 2026', notes:[
+  'Your village is now a map you can see grow. Tap any building to build or upgrade it.',
+  'The Jarl\'s Hall caps how high everything else can grow. Raise it to unlock bigger upgrades.',
+  'New buildings: Iron Mine and Lookout (they earn while you are away), War Camp and Infirmary (for troops), and three defenses: Palisade, Archer Tower and Spike Pits.',
+  'Troops: train Spearmen, Bowmen and Berserkers. Your Skirmish Band fights beside your squad. Your Garrison guards the village.',
+  'Night Raids: every 8 hours the dead come for your village. Walls, towers and your Garrison fight back. Win for loot, lose and they empty your coffers.',
+  'The War tab: Raids, the weekly Warband Boss (8 rounds, hit as hard as you can), and the Arena, where your village defends itself. Online play with friends switches on soon.',
+ ]},
  {v:'1.4', d:'Nov 16 2026', notes:[
   'Every warrior fights in their own style: Sigrun thrusts, Bjorn cleaves and spins, Aslaug and Ylva cast, Ulfhild shoots, Grimwald slams, Ragna sends sound, Eirik claws. Each strike varies in timing and movement, so no two hits look the same.',
   'Enemies have their own attacks too: claws, bites, dives, screams, strikes and fire.',
@@ -961,7 +1152,9 @@ const SAVE_KEY = 'ravenmarrow.save';
 const SAVE_V = 1;
 function freshSave(){
  return {v:SAVE_V, owned:{sigrun:1, bjorn:1, aslaug:1}, squad:['sigrun','bjorn','aslaug'],
-  vil:{forge:0, altar:0, barracks:0, mead:0}, silver:0, iron:0, runes:0,
+  vil:{hall:1, mead:0, mine:0, lookout:0, forge:0, altar:0, barracks:0, camp:0, infirmary:0, wall:0, tower:0, pits:0}, silver:0, iron:0, runes:0,
+  prod:{ironAt:Date.now(), runeAt:Date.now()}, army:{skirmish:{type:'spear', n:0}, garrison:{type:'spear', n:0}}, night:{next:0, wins:0, losses:0},
+  wb:{day:'', used:0, best:0, total:0}, arena:{day:'', used:0, rating:1000, wins:0, losses:0}, profile:{name:'', group:''},
   cleared:RM.REALMS.map(() => 0), raid:{best:0, runs:0, clears:0}, idleAt:Date.now(),
   set:{sfx:true, music:false, auto:false, speed:1}, tut:{done:false, stage:0}, seenVer:VERSION,
   stats:{wins:0, losses:0, bosses:0, created:Date.now(), flawless:0, collects:0, ultKills:0},
@@ -972,7 +1165,11 @@ function migrate(s){
  const f = freshSave();
  if (!s || typeof s !== 'object') return f;
  for (const k in f) if (s[k] === undefined) s[k] = f[k];
+ const hadHall = s.vil.hall !== undefined;
  for (const k in f.vil) if (s.vil[k] === undefined) s.vil[k] = 0;
+ if (!hadHall) s.vil.hall = Math.max(1, ...['forge','altar','barracks','mead'].map(k => s.vil[k] || 0)); // older saves: Hall matches what they built
+ for (const k of ['prod','army','night','wb','arena','profile']) for (const kk in f[k]) if (s[k][kk] === undefined) s[k][kk] = f[k][kk];
+ if (!s.army.skirmish || !s.army.garrison) s.army = f.army;
  for (const k in f.set) if (s.set[k] === undefined) s.set[k] = f.set[k];
  for (const k in f.raid) if (s.raid[k] === undefined) s.raid[k] = f.raid[k];
  for (const k in f.stats) if (s.stats[k] === undefined) s.stats[k] = f.stats[k];
@@ -1066,12 +1263,12 @@ let TAB = 'saga';
 function renderTop(){
  $('#curs').innerHTML = ['silver','iron','runes'].map(k => `<div class="cur" id="cur-${k}">${ART.ICON[k]}<span>${fmt(S[k])}</span></div>`).join('');
  $('#gearDot').style.display = (UPD.ready || installable()) && !S.set.seenInstall ? 'block' : 'none';
- $('#vdot').style.display = idleNow() >= 50 ? 'block' : 'none';
+ { const g = idleAll(), ns = nightState(); $('#vdot').style.display = (g.silver >= 50 || g.iron >= 10 || g.runes >= 1 || ns.ready) ? 'block' : 'none'; }
 }
 function go(tab){
  TAB = tab; $$('.tab').forEach(t => t.classList.toggle('on', t.dataset.tab === tab));
  setBG(tab === 'village' ? 0 : frontier(), tab === 'village');
- ({saga:renderSaga, warriors:renderWarriors, village:renderVillage, raid:renderRaid})[tab]();
+ ({saga:renderSaga, warriors:renderWarriors, village:renderVillage, raid:renderWar})[tab]();
  renderTop(); $('#panel').scrollTop = 0; Coach.emit('tab:' + tab);
 }
 function renderSaga(){
@@ -1156,14 +1353,6 @@ function warriorSheet(id){
 }
 function avgLevel(){ const v = Object.values(S.owned); return v.reduce((a, b) => a + b, 0) / v.length; }
 // what each building level actually does, in numbers (v1.4)
-function bEffect(id, l){
- switch (id){
-  case 'forge': return {big:'+' + (8 * l) + '%', what:'damage for every warrior'};
-  case 'altar': return {big:'+' + (10 * l) + '%', what:'faster Rage and stronger Ultimates'};
-  case 'barracks': return {big:'Level ' + RM.levelCap(l), what:'level cap'};
-  case 'mead': return {big:RM.idleRate(l) + '/hr', what:'silver while away, +' + (5 * l) + '% life, ' + (10 + 6 * l) + '% raid rest'};
- }
-}
 function villageChips(){
  const v = S.vil, out = [];
  if (v.forge) out.push(`<span class="vchip" data-tip="The Forge: every warrior deals ${8 * v.forge}% more damage.">ᛏ +${8 * v.forge}%</span>`);
@@ -1186,49 +1375,224 @@ function upgradeReveal(id, before){
   <p style="margin:0 0 8px">${now.big} ${now.what}</p><div style="text-align:left;margin:0 0 14px">${rows}</div><button class="btn blood" id="upOk">Good</button></div>`);
  $('#upOk').onclick = closeSheet;
 }
+// ---------- VILLAGE 2.0 (v1.5) ----------
+const BNAME = {hall:'HALL', mead:'MEAD HALL', mine:'MINE', lookout:'LOOKOUT', forge:'FORGE', altar:'ALTAR', barracks:'BARRACKS', camp:'WAR CAMP', infirmary:'INFIRMARY', tower:'TOWER', pits:'PITS'};
+function hoursSince(t){ return Math.max(0, Math.min(RM.IDLE_CAP_H, (Date.now() - t) / 3600000)); }
+function idleAll(){ return {silver:Math.floor(hoursSince(S.idleAt) * RM.idleRate(S.vil.mead)), iron:Math.floor(hoursSince(S.prod.ironAt) * RM.mineRate(S.vil.mine)), runes:Math.floor(hoursSince(S.prod.runeAt) * RM.runeRate(S.vil.lookout))}; }
+function collectAll(){
+ const g = idleAll(); if (!g.silver && !g.iron && !g.runes) return null;
+ S.silver += g.silver; S.iron += g.iron; S.runes += g.runes;
+ const now = Date.now(); if (g.silver){ S.idleAt = now; S.stats.collects++; if (g.silver >= RM.idleRate(S.vil.mead) * RM.IDLE_CAP_H) FLAGS.fullCoffers = true; }
+ if (g.iron) S.prod.ironAt = now; if (g.runes) S.prod.runeAt = now;
+ save(); return g;
+}
+function canUpgrade(id){ const l = S.vil[id] || 0; return l < RM.bmax(id, S.vil) && afford(RM.buildCost(l, id)); }
 function renderVillage(){
- const idle = idleNow(), rate = RM.idleRate(S.vil.mead);
- let h = `<div class="vscene"></div><h2>The Village</h2><p class="sub">Spend what the dead leave behind.</p>
-  ${villageChips() ? `<div class="vsum"><span class="lockmsg">Your village gives every fight:</span><div class="row" style="gap:6px;margin-top:4px">${villageChips()}${S.vil.barracks ? `<span class="vchip">ᛟ Cap ${RM.levelCap(S.vil.barracks)}</span>` : ''}</div></div>` : '<p class="lockmsg" style="margin:-6px 0 10px">Nothing built yet. Each building makes every fight easier.</p>'}
-  <div class="box" id="meadBox"><div class="row" style="justify-content:space-between;flex-wrap:nowrap"><div><div class="bname">Mead Hall Coffers</div><div class="bdesc">${rate} silver an hour while you are away, up to ${RM.IDLE_CAP_H} hours.</div><div class="cost" style="font-size:16px">${ART.ICON.silver}${fmt(idle)} waiting</div></div><button class="btn blood small" id="collect" ${idle < 1 ? 'disabled' : ''}>Collect</button></div></div>`;
- RM.BUILDINGS.forEach(b => {
-  const l = S.vil[b.id], c = RM.buildCost(l), max = l >= RM.VMAX;
-  const now = bEffect(b.id, l), nxt = max ? null : bEffect(b.id, l + 1);
-  h += `<div class="box"><div class="brow"><div class="brune">${b.rune}</div><div style="flex:1"><div class="bname">${b.name}</div><div class="pips">${Array.from({length:RM.VMAX}, (_, i) => `<i class="pip ${i < l ? 'on' : ''}"></i>`).join('')}</div>
-   <div class="nownext"><div><small>NOW</small><b>${l ? now.big : 'Nothing yet'}</b></div>${nxt ? `<span class="arrow">&#8594;</span><div class="nx"><small>NEXT</small><b>${nxt.big}</b></div>` : ''}</div><div class="bdesc">${now.what.charAt(0).toUpperCase() + now.what.slice(1)}.</div>
-   <div class="row" style="justify-content:space-between;margin-top:6px">${max ? '<span class="lockmsg">Fully built</span>' : `<span>${costHTML(c)}</span><button class="btn small" data-b="${b.id}" ${afford(c) ? '' : 'disabled'}>Upgrade</button>`}</div></div></div></div>`;
- });
+ const g = idleAll(), badges = {};
+ RM.BUILDINGS.forEach(b => { badges[b.id] = {up:canUpgrade(b.id), name:BNAME[b.id]}; });
+ const cap = RM.campCap(S.vil.camp), used = S.army.skirmish.n + S.army.garrison.n;
+ const nr = nightState();
+ let h = `<div class="vhead"><h2>The Village</h2><span class="hallb">Hall ${toRoman(S.vil.hall)}</span></div>
+  <div id="vmap">${ART.villageMap(S.vil, badges)}</div>
+  <div class="box coffers" id="coffers"><div class="cof">${['silver','iron','runes'].map(k => `<span>${ART.ICON[k]}<b>${fmt(g[k])}</b></span>`).join('')}</div><button class="btn blood small" id="collect" ${g.silver || g.iron || g.runes ? '' : 'disabled'}>Collect</button></div>
+  <div class="vrow">
+   <button class="box vcard ${nr.ready ? 'alarm' : ''}" id="nightCard"><div class="vic">&#5835;</div><b>Night Raid</b><small>${nr.locked ? 'After the first boss' : nr.ready ? 'The dead are here!' : 'Next in ' + nr.left}</small></button>
+   <button class="box vcard" id="armyCard"><div class="vic">${ART.band(S.army.skirmish.type, 'mini')}</div><b>Troops</b><small>${used} / ${cap} mustered</small></button>
+  </div>
+  ${villageChips() ? `<div class="vsum"><div class="row" style="gap:6px;justify-content:center">${villageChips()}</div></div>` : ''}`;
  $('#panel').innerHTML = h;
- $('#panel .vscene').innerHTML = '';
+ $$('#vmap .bld').forEach(el => el.addEventListener('click', () => { sfx('tap'); buildingSheet(el.dataset.b); }));
  $$('.vsum .vchip').forEach(c => c.onclick = () => { if (c.dataset.tip) toast(c.dataset.tip, 3000); });
- $('#collect').onclick = () => { const n = idleNow(); if (n < 1) return; S.silver += n; S.idleAt = Date.now(); S.stats.collects++; if (n >= RM.idleRate(S.vil.mead) * RM.IDLE_CAP_H) FLAGS.fullCoffers = true; save(); sfx('coin'); toast('Collected ' + fmt(n) + ' silver.'); Coach.emit('collect'); renderVillage(); renderTop(); checkDeeds(); };
- $$('#panel [data-b]').forEach(btn => btn.onclick = () => {
-  const id = btn.dataset.b, l = S.vil[id], c = RM.buildCost(l); if (!afford(c)) return;
-  if (id === 'mead'){ S.silver += idleNow(); S.idleAt = Date.now(); }
+ $('#collect').onclick = () => { const r = collectAll(); if (!r) return; sfx('coin'); toast('Collected ' + ['silver','iron','runes'].filter(k => r[k]).map(k => fmt(r[k]) + ' ' + (k === 'runes' ? 'runes' : k)).join(', ') + '.'); Coach.emit('collect'); renderVillage(); renderTop(); checkDeeds(); };
+ $('#nightCard').onclick = () => { sfx('tap'); nightSheet(); };
+ $('#armyCard').onclick = () => { sfx('tap'); armySheet(); };
+}
+function bEffect(id, l){
+ const F = {
+  hall:{big:'Level ' + Math.max(1, l), what:'every building can grow this high'},
+  forge:{big:'+' + (8 * l) + '%', what:'damage for every warrior and troop'},
+  altar:{big:'+' + (10 * l) + '%', what:'faster Rage and stronger Ultimates'},
+  barracks:{big:'Cap ' + RM.levelCap(l), what:'warrior level cap, troops +' + (15 * l) + '% stronger' + (l < 1 ? ', Bowmen at Lv 1' : l < 3 ? ', Berserkers at Lv 3' : '')},
+  mead:{big:RM.idleRate(l) + '/hr', what:'silver while away, +' + (5 * l) + '% life, ' + (10 + 6 * l) + '% raid rest'},
+  mine:{big:RM.mineRate(l) + '/hr', what:'iron while away'},
+  lookout:{big:RM.runeRate(l).toFixed(2).replace(/\.?0+$/, '') + '/hr', what:'bone runes while away, defenders +' + (2 * l) + ' speed'},
+  camp:{big:RM.campCap(l) + ' troops', what:'room in your War Camp'},
+  infirmary:{big:(15 * l) + '%', what:'of fallen troops saved after each fight'},
+  wall:{big:'-' + (6 * l) + '%', what:'damage to defenders in a night raid or Arena'},
+  tower:{big:(1 + Math.floor(l / 2)) + ' arrows', what:l ? 'each round, ' + Math.round((4 + 1.5 * l)) + '% of a target\'s life each' : 'shoots attackers every round'},
+  pits:{big:(5 * l) + '%', what:'of every attacker\'s life, before the fight starts'},
+ };
+ return F[id] || {big:'', what:''};
+}
+function buildingSheet(id){
+ const b = RM.BUILDINGS.find(x => x.id === id), l = S.vil[id] || 0, mx = RM.bmax(id, S.vil), c = RM.buildCost(l, id);
+ const now = bEffect(id, l), nxt = bEffect(id, l + 1), atMax = l >= RM.VMAX, hallCap = !atMax && l >= mx;
+ const art = id === 'wall' ? `<svg viewBox="-60 -50 120 90" width="150" height="110"><g>${[-40, -26, -12, 2, 16, 30].map((x, i) => `<path d="M${x} 30 L${x + 6} ${-10 - Math.max(1, l) * 4} L${x + 12} 30z" fill="#3a2a20" stroke="#6b5a44"/>`).join('')}</g></svg>`
+  : `<svg viewBox="-60 -60 120 100" width="150" height="120"><g transform="scale(${0.9 + 0.08 * l})">${ART.building(id, Math.max(1, l))}</g></svg>`;
+ sheet(`<button class="btn small close" id="xs">Close</button><div class="bsheet"><div class="bart">${art}</div><h3>${b.name}</h3><div class="pips" style="justify-content:center">${Array.from({length:RM.VMAX}, (_, i) => `<i class="pip ${i < l ? 'on' : ''} ${i >= mx ? 'capd' : ''}"></i>`).join('')}</div>
+  <p class="bline">${b.desc}</p>
+  <div class="nownext big"><div><small>NOW</small><b>${l ? now.big : 'Not built'}</b></div>${atMax ? '' : `<span class="arrow">&#8594;</span><div class="nx"><small>${l ? 'NEXT' : 'BUILD'}</small><b>${nxt.big}</b></div>`}</div>
+  <p class="bwhat">${(atMax ? now : nxt).what}</p>
+  ${atMax ? '<p class="lockmsg">Fully built.</p>' : hallCap ? `<p class="lockmsg" style="color:#f0c060">Raise the Jarl's Hall to ${toRoman(l + 1)} first.</p><button class="btn wide" id="toHall">Go to the Hall</button>` : `<div class="costrow">${costHTML(c)}</div><button class="btn blood wide" id="bUp" ${afford(c) ? '' : 'disabled'}>${l ? 'Upgrade' : 'Build'}</button>`}</div>`);
+ $('#xs').onclick = closeSheet;
+ const th = $('#toHall'); if (th) th.onclick = () => buildingSheet('hall');
+ const u = $('#bUp'); if (u) u.onclick = () => {
+  const l0 = S.vil[id] || 0, c0 = RM.buildCost(l0, id); if (!afford(c0) || l0 >= RM.bmax(id, S.vil)) return;
+  if (id === 'mead' || id === 'mine' || id === 'lookout') collectAll();
   const before = S.squad.map(w => RM.makeHero(w, S.owned[w], S.vil, S.equip[w]));
-  pay(c); S.vil[id]++; save(); sfx('up'); renderVillage(); renderTop(); upgradeReveal(id, before); checkDeeds();
+  pay(c0); S.vil[id] = l0 + 1; if (!l0 && id === 'mine') S.prod.ironAt = Date.now(); if (!l0 && id === 'lookout') S.prod.runeAt = Date.now(); save(); sfx('up'); vibe([20, 30, 40]);
+  renderVillage(); renderTop(); upgradeReveal(id, before); checkDeeds();
+ };
+}
+function fortChips(F){
+ if (!F) return '';
+ const o = [];
+ if (F.wall) o.push(`<span class="vchip" data-tip="Palisade: defenders take ${6 * F.wall}% less damage.">ᛜ -${6 * F.wall}%</span>`);
+ if (F.tower) o.push(`<span class="vchip" data-tip="Archer Tower: ${1 + Math.floor(F.tower / 2)} arrows at attackers every round.">ᛊ x${1 + Math.floor(F.tower / 2)}</span>`);
+ if (F.pits) o.push(`<span class="vchip" data-tip="Spike Pits: attackers lose ${5 * F.pits}% of their life before the fight.">ᚾ ${5 * F.pits}%</span>`);
+ if (F.lookout) o.push(`<span class="vchip" data-tip="Lookout: defenders get +${2 * F.lookout} speed.">ᛚ +${2 * F.lookout}</span>`);
+ return o.join('');
+}
+function myFort(){ return {side:'hero', tower:S.vil.tower || 0, wall:S.vil.wall || 0, pits:S.vil.pits || 0, lookout:S.vil.lookout || 0}; }
+
+// ---------- TROOPS ----------
+function bandFor(which, side){ const a = S.army[which]; return a.n > 0 ? RM.makeBand(a.type, a.n, S.vil, side || 'hero') : null; }
+function armySheet(){
+ const cap = RM.campCap(S.vil.camp), used = S.army.skirmish.n + S.army.garrison.n;
+ const sect = (which, title, blurb) => {
+  const a = S.army[which];
+  const types = RM.TROOPS.map(t => { const lock = (S.vil.barracks || 0) < t.needs, on = a.type === t.id;
+   return `<button class="tcard ${on ? 'on' : ''} ${lock ? 'lock' : ''}" data-w="${which}" data-t="${t.id}">${ART.band(t.id, 'tart')}<b>${t.n}</b><small>${lock ? 'Barracks ' + t.needs : t.d}</small></button>`; }).join('');
+  const t = RM.TROOPS.find(x => x.id === a.type), st = RM.bandStats(a.type, Math.max(1, a.n), S.vil);
+  const room = cap - used;
+  const c1 = {silver:t.cost.silver, iron:t.cost.iron}, c5 = {silver:t.cost.silver * 5, iron:t.cost.iron * 5};
+  return `<div class="armysec"><div class="row" style="justify-content:space-between"><div><div class="bname">${title}</div><div class="lockmsg">${blurb}</div></div><div class="bandn">${a.n}<small>${t.n}</small></div></div>
+   <div class="tcards">${types}</div>
+   <div class="row" style="justify-content:space-between;margin-top:8px"><span class="lockmsg">${a.n ? 'Band: ' + st.hp + ' life, ' + st.atk + ' attack' : 'Empty band'}</span>
+   <span class="row" style="gap:6px"><button class="btn small" data-tr="${which}" data-k="1" ${room >= 1 && afford(c1) ? '' : 'disabled'}>+1 ${costHTML(c1)}</button><button class="btn small blood" data-tr="${which}" data-k="5" ${room >= 5 && afford(c5) ? '' : 'disabled'}>+5</button></span></div></div>`;
+ };
+ sheet(`<button class="btn small close" id="xs">Close</button><h3>Troops</h3><div class="capbar"><i style="width:${Math.min(100, 100 * used / cap)}%"></i><span>${used} / ${cap} in the War Camp</span></div>
+  ${sect('skirmish', 'Skirmish Band', 'Fights beside your squad: saga, raids, bosses, Arena.')}
+  ${sect('garrison', 'Garrison', 'Stays home and defends the village.')}
+  <p class="lockmsg" style="margin-top:8px">Troops who fall in battle are gone. The Infirmary saves some of them.</p>`);
+ $('#xs').onclick = closeSheet;
+ $$('.tcard').forEach(b => b.onclick = () => {
+  const w = b.dataset.w, t = b.dataset.t, a = S.army[w], def = RM.TROOPS.find(x => x.id === t);
+  if ((S.vil.barracks || 0) < def.needs){ toast('Raise the Barracks to ' + def.needs + ' to train ' + def.n + '.'); return; }
+  if (a.type === t) return;
+  if (a.n > 0){ if (!b._armed){ b._armed = true; toast('Tap again to dismiss your ' + a.n + ' ' + RM.TROOPS.find(x => x.id === a.type).n + ' and switch.'); setTimeout(() => { b._armed = false; }, 2500); return; } a.n = 0; }
+  a.type = t; save(); sfx('tap'); armySheet();
+ });
+ $$('[data-tr]').forEach(b => b.onclick = () => {
+  const w = b.dataset.tr, k = +b.dataset.k, a = S.army[w], t = RM.TROOPS.find(x => x.id === a.type);
+  const c = {silver:t.cost.silver * k, iron:t.cost.iron * k};
+  if (RM.campCap(S.vil.camp) - (S.army.skirmish.n + S.army.garrison.n) < k || !afford(c)) return;
+  pay(c); a.n += k; save(); sfx('up'); vibe(15); armySheet(); renderTop(); if ($('#hub').classList.contains('on') && TAB === 'village') renderVillage();
  });
 }
-function raidRealm(){ let r = -1; S.cleared.forEach((c, i) => { if (c >= RM.STAGES) r = i; }); return r; }
-function renderRaid(){
- const rr = raidRealm();
- let h = `<h2>Raids</h2><p class="sub">The long hunt, for when you have time.</p>`;
- if (rr < 0){ h += `<div class="box locked"><div class="bname">Sealed</div><div class="bdesc">Raids open after you defeat the Barrow-King. Five waves in a row, no healing between fights except what the Mead Hall gives. A boss waits at the end.</div></div>`; }
- else {
-  const R = RM.REALMS[rr];
-  h += `<div class="box"><div class="bname">Raid on ${R.name}</div><div class="bdesc">Four waves of ${R.name.replace('The ', '')} dead, then ${R.boss.n} returns, stronger than before. Your squad keeps its wounds between waves. The Mead Hall heals ${10 + 6 * S.vil.mead}% between waves. Fallen warriors stay down.</div>
-   <div class="bdesc">Loot doubles in raids, and you keep everything from the waves you clear.</div>
-   <div class="stat"><span>BEST</span><span>${S.raid.best ? S.raid.best + ' of 5 waves' : 'None yet'}</span></div><div class="stat"><span>FULL CLEARS</span><span>${S.raid.clears}</span></div>
-   <button class="btn blood wide" id="raidBtn" style="margin-top:12px">Begin the raid</button></div>`;
- }
- h += `<div class="box locked"><div class="bname">Coming in later chapters</div><div class="bdesc">Weekly hunts and deeper raids.</div></div>`;
+// after a fight: count who is left, the Infirmary saves some of the fallen
+function settleBand(which, unit){
+ if (!unit) return '';
+ const a = S.army[which], left = RM.survivors(unit), lost = Math.max(0, a.n - left);
+ const saved = Math.min(lost, Math.floor(lost * 0.15 * (S.vil.infirmary || 0) + (lost && S.vil.infirmary ? 0.5 : 0)));
+ a.n = left + saved; save();
+ return lost ? `<p class="lockmsg">${RM.TROOPS.find(x => x.id === a.type).n}: ${lost} fell${saved ? ', ' + saved + ' saved by the Infirmary' : ''}. ${a.n} left.</p>` : '';
+}
+
+// ---------- NIGHT RAIDS ----------
+const NIGHT_MS = 8 * 3600000;
+function nightState(){
+ if (S.cleared[0] < RM.STAGES) return {locked:true};
+ const left = S.night.next - Date.now();
+ if (left <= 0) return {ready:true};
+ const hh = Math.floor(left / 3600000), mm = hh ? Math.floor((left % 3600000) / 60000) : Math.max(1, Math.ceil(left / 60000));
+ return {left:hh ? hh + 'h ' + mm + 'm' : mm + 'm'};
+}
+function nightRealm(){ return Math.max(0, raidRealm()); }
+function nightHorde(){
+ const r = nightRealm(), hall = S.vil.hall || 1, n = hall >= 4 ? 4 : 3, list = [];
+ for (let i = 0; i < n; i++) list.push(RM.makeFoe(r, 2, RM.REALMS[r].foes[i % 3], false, 0.85 + 0.08 * hall));
+ return RM.sprinkleElites(list, Math.max(1, r), 0.3);
+}
+function nightSheet(){
+ const st = nightState(), r = nightRealm(), L = nightLoot();
+ const gar = S.army.garrison;
+ sheet(`<button class="btn small close" id="xs">Close</button><div class="bsheet"><div class="bart nightart">${ART.foeArt('draugr', RM.REALMS[r].eye, false, RM.REALMS[r].moon)}${ART.foeArt('draugr', RM.REALMS[r].eye, false, RM.REALMS[r].moon)}</div>
+  <h3>Night Raid</h3><p class="bline">${st.locked ? 'Once the Barrow-King falls, the dead start coming for your village at night.' : 'The dead of ' + RM.REALMS[r].name.replace('The ', 'the ') + ' come for your village every 8 hours.'}</p>
+  <div class="defgrid"><div><small>DEFENDERS</small><b>Your squad${gar.n ? ' + ' + gar.n + ' ' + RM.TROOPS.find(x => x.id === gar.type).n : ''}</b></div><div><small>WALLS AND TOWERS</small><b>${fortChips(myFort()) || 'None built'}</b></div></div>
+  <p class="lockmsg">Win: ${costHTML(L)}. Lose: they empty your coffers.</p>
+  ${st.locked ? '' : st.ready ? '<button class="btn blood wide" id="defend">Defend the village</button>' : `<button class="btn wide" disabled>Next raid in ${st.left}</button>`}</div>`);
+ $('#xs').onclick = closeSheet;
+ const d = $('#defend'); if (d) d.onclick = () => { closeSheet(); startNight(); };
+}
+function nightLoot(){ const r = nightRealm(), L = RM.loot(r, 2); return {silver:Math.round(L.silver * 1.6), iron:Math.round(L.iron * 1.6), runes:4 + 2 * r}; }
+function startNight(){
+ CTX = {type:'night', r:nightRealm()};
+ const h = heroesFor(false); const g = bandFor('garrison'); if (g) h.push(g);
+ CTX.band = g; CTX.bandKey = 'garrison';
+ runFight(h, nightHorde(), {fort:myFort()});
+}
+
+// ---------- WARBAND BOSS + ARENA ----------
+// Online play turns on when FIREBASE_CONFIG is filled in. Until then both run as practice.
+const FIREBASE_CONFIG = null;
+function weekId(){ const d = new Date(); const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())); const day = t.getUTCDay() || 7; t.setUTCDate(t.getUTCDate() + 4 - day); const y = new Date(Date.UTC(t.getUTCFullYear(), 0, 1)); return t.getUTCFullYear() + '-W' + Math.ceil(((t - y) / 86400000 + 1) / 7); }
+function weekBoss(){ const n = parseInt(weekId().split('W')[1], 10) || 1, r = n % RM.REALMS.length; return {r, def:RM.REALMS[r].boss}; }
+function usedToday(o, max){ if (o.day !== today()){ o.day = today(); o.used = 0; } return max - o.used; }
+function startBoss(){
+ if (usedToday(S.wb, 3) <= 0){ toast('No attempts left today. They come back at midnight.'); return; }
+ S.wb.used++; save();
+ const wb = weekBoss(), r = Math.max(wb.r, 0), lvl = Math.max(0, raidRealm());
+ const boss = RM.makeFoe(Math.max(lvl, 0), 3, wb.def, true, 1);
+ boss.max = boss.hp = boss.max * 40; boss.atk = Math.round(boss.atk * 0.9); // a wall of life, not a one-shot machine
+ boss.name = wb.def.n + ', Unbound'; boss.title = 'Warband Boss of the week';
+ CTX = {type:'boss', r:wb.r};
+ const h = heroesFor(); runFight(h, [boss], {roundLimit:8});
+}
+function defenseLineup(){ return {squad:S.squad.map(id => ({id, lv:S.owned[id], relic:S.equip[id] || null})), garrison:Object.assign({}, S.army.garrison), fort:{tower:S.vil.tower || 0, wall:S.vil.wall || 0, pits:S.vil.pits || 0, lookout:S.vil.lookout || 0}, vil:Object.assign({}, S.vil), name:S.profile.name || 'You'}; }
+function lineupFoes(L, shadow){
+ const f = L.squad.map(s => { const h = RM.makeHero(s.id, s.lv, L.vil, s.relic); h.side = 'foe'; h.uid = 'f_' + s.id; h.realm = 0; if (shadow) h.name = 'Shadow ' + h.name; return h; });
+ if (L.garrison && L.garrison.n > 0){ const b = RM.makeBand(L.garrison.type, L.garrison.n, L.vil, 'foe'); b.realm = 0; f.push(b); }
+ return f;
+}
+function startArena(L, practice){
+ if (usedToday(S.arena, 5) <= 0){ toast('No Arena fights left today. They come back at midnight.'); return; }
+ S.arena.used++; save();
+ CTX = {type:'arena', r:2, foeName:practice ? 'your own shadow' : L.name, practice};
+ runFight(heroesFor(), lineupFoes(L, practice), practice ? {roundLimit:15, pvp:3} : {fort:Object.assign({side:'foe'}, L.fort), roundLimit:15, pvp:3});
+}
+function renderWar(){
+ const rr = raidRealm(), wb = weekBoss(), R = RM.REALMS[wb.r], left = usedToday(S.wb, 3), aleft = usedToday(S.arena, 5), online = !!FIREBASE_CONFIG;
+ let h = `<h2>War</h2><p class="sub">Raids, the Warband Boss, and the Arena.</p>`;
+ // raid card
+ h += `<div class="box wcardx"><div class="wart">${ART.foeArt(rr >= 0 ? RM.REALMS[rr].boss.shape : 'draugr', rr >= 0 ? RM.REALMS[rr].eye : '#5ff0c0', true, rr >= 0 ? RM.REALMS[rr].moon : '#b3182a')}</div><div class="wbody"><div class="bname">Raid</div>
+  <div class="bdesc">${rr < 0 ? 'Opens after the Barrow-King.' : '5 waves, wounds carry over, double loot.'}</div>
+  <div class="lockmsg">${S.raid.best ? 'Best: ' + S.raid.best + ' of 5' : 'No raids yet'}</div>
+  <button class="btn blood small" id="raidBtn" ${rr < 0 ? 'disabled' : ''}>Begin raid</button></div></div>`;
+ // warband boss
+ h += `<div class="box wcardx boss"><div class="wart">${ART.foeArt(wb.def.shape, R.eye, true, R.moon)}</div><div class="wbody"><div class="bname">Warband Boss</div>
+  <div class="bdesc"><b style="color:#f0c060">${wb.def.n}, Unbound</b>. 8 rounds to hit as hard as you can.</div>
+  <div class="wbar"><i style="width:100%"></i><span>${online ? 'Shared warband life' : 'Shared life: soon'}</span></div>
+  <div class="lockmsg">Best hit: ${fmt(S.wb.best)} · Attempts today: ${left} of 3</div>
+  <button class="btn blood small" id="bossBtn" ${left > 0 && rr >= 0 ? '' : 'disabled'}>${rr >= 0 ? 'Fight' : 'After the first boss'}</button></div></div>`;
+ // arena
+ const L = defenseLineup();
+ h += `<div class="box wcardx"><div class="wart lineup">${L.squad.map(s => `<span>${ART.heroArt(wdef(s.id).look)}</span>`).join('')}</div><div class="wbody"><div class="bname">Arena</div>
+  <div class="bdesc">Your defense: this squad, your Garrison, and your walls and towers. Friends fight it while the game plays your side.</div>
+  <div class="lockmsg">Rating ${S.arena.rating} · ${S.arena.wins} won, ${S.arena.losses} lost · Fights today: ${aleft} of 5</div>
+  <div class="row" style="gap:6px"><button class="btn small" id="sparBtn" ${aleft > 0 && rr >= 0 ? '' : 'disabled'}>Spar with your shadow</button><button class="btn small blood" disabled>${online ? 'Find rivals' : 'Rivals: soon'}</button></div></div></div>`;
+ if (!online) h += `<p class="lockmsg" style="text-align:center">The warband goes online soon: shared boss, rival villages, and a leaderboard.</p>`;
  $('#panel').innerHTML = h;
  const b = $('#raidBtn'); if (b) b.onclick = () => { sfx('tap'); startRaid(rr); };
+ $('#bossBtn').onclick = () => { sfx('tap'); startBoss(); };
+ $('#sparBtn').onclick = () => { sfx('tap'); startArena(defenseLineup(), true); };
 }
+
+function raidRealm(){ let r = -1; S.cleared.forEach((c, i) => { if (c >= RM.STAGES) r = i; }); return r; }
 
 // ---------- BATTLE ----------
 let B = null, CTX = null, TGT = null, PICK = null, FLEE = false, BID = 0, LASTKIND = '', BOSSULT = false, HERODOWN = false;
-function heroesFor(){ return S.squad.map(id => RM.makeHero(id, S.owned[id], S.vil, S.equip[id])); }
+function heroesFor(withBand){ const h = S.squad.map(id => RM.makeHero(id, S.owned[id], S.vil, S.equip[id])); if (withBand !== false && S.tut.done){ const b = bandFor('skirmish'); if (b){ h.push(b); if (CTX){ CTX.band = b; CTX.bandKey = 'skirmish'; } } } return h; }
 function startSaga(r, s, foes){ CTX = {type:'saga', r, s}; runFight(heroesFor(), foes || RM.encounter(r, s)); }
 function startRaid(rr){
  CTX = {type:'raid', r:rr, wave:0, loot:{silver:0, iron:0, runes:0}};
@@ -1239,21 +1603,26 @@ function raidWave(r, w){
  if (w === 4){ const b = RM.makeFoe(r, 3, RM.REALMS[r].boss, true, 1.15); const l = [b]; if (r >= 1) l.push(RM.makeFoe(r, 2, RM.pick(RM.REALMS[r].foes), false, 0.9)); return l; }
  const n = w < 2 ? 2 : 3, list = []; for (let i = 0; i < n; i++) list.push(RM.makeFoe(r, Math.min(2, w), RM.REALMS[r].foes[(w + i) % 3], false, 0.95 + w * 0.05)); return RM.sprinkleElites(list, r, 0.35);
 }
-async function runFight(heroes, foes){
+async function runFight(heroes, foes, bopts){
  const my = ++BID; // a newer fight cancels any older loop still waiting on a timer
  if (PICK){ const r = PICK; PICK = null; r({sid:'strike'}); }
  heroes.forEach(h => { h.oldBones = h.passive === 'grimwald'; });
- B = new RM.Battle(heroes, foes, {noTricks:!S.tut.done}); FLEE = false; TGT = null; PICK = null; BOSSULT = false; LASTKIND = '';
+ B = new RM.Battle(heroes, foes, Object.assign({noTricks:!S.tut.done}, bopts || {})); FLEE = false; TGT = null; PICK = null; BOSSULT = false; LASTKIND = '';
  if (!(CTX && CTX.type === 'raid' && CTX.wave > 0)) HERODOWN = false; // raids remember a fall across waves
  setBG(CTX.r); showScreen('battle');
  const R = RM.REALMS[CTX.r], bossF = foes.find(f => f.boss);
- $('#bn').textContent = CTX.type === 'raid' ? 'Raid: Wave ' + (CTX.wave + 1) + ' of 5' : bossF ? bossF.name : R.name;
- $('#bs').textContent = CTX.type === 'raid' ? R.name : bossF ? bossF.title : 'Fight ' + toRoman(CTX.s + 1) + ' of ' + RM.STAGES;
- renderBattle(); syncToggles(); $('#vchips').innerHTML = villageChips(); $$('#vchips .vchip').forEach(c => c.onclick = () => toast(c.dataset.tip, 3000)); log(CTX.type === 'raid' ? 'The raid presses on.' : bossF ? 'The ground splits.' : 'Shapes move in the fog.');
+ const T = {raid:['Raid: Wave ' + ((CTX.wave || 0) + 1) + ' of 5', R.name], night:['Night Raid', 'Hold the village'], boss:['Warband Boss', (bossF ? bossF.name : '') + ' · ' + B.roundLimit + ' rounds'], arena:['Arena', 'Against ' + (CTX.foeName || 'a rival')]}[CTX.type];
+ $('#bn').textContent = T ? T[0] : bossF ? bossF.name : R.name;
+ $('#bs').textContent = T ? T[1] : bossF ? bossF.title : 'Fight ' + toRoman(CTX.s + 1) + ' of ' + RM.STAGES;
+ renderBattle(); syncToggles(); $('#vchips').innerHTML = (CTX.type === 'night' || CTX.type === 'arena') ? fortChips(B.fort) : villageChips(); $$('#vchips .vchip').forEach(c => c.onclick = () => toast(c.dataset.tip, 3000)); log(CTX.type === 'raid' ? 'The raid presses on.' : bossF ? 'The ground splits.' : 'Shapes move in the fog.');
  if (bossF){ await wait(300); $('#bossintro .a').textContent = bossF.name; $('#bossintro .b').textContent = bossF.title; const bi = $('#bossintro'); bi.classList.remove('on'); void bi.offsetWidth; bi.classList.add('on'); sfx('boss'); await wait(1600); }
  await Coach.battleStart();
  while (my === BID && !B.result() && !FLEE){
-  const u = B.next(); if (!u) break;
+  const u = B.next();
+  const rev = B.takeRoundEvents(); if (rev.length){ CUR = null; await playEvents(rev); updateUnits(); }
+  if (CTX.type === 'boss') $('#bs').textContent = 'Round ' + Math.min(B.round, B.roundLimit) + ' of ' + B.roundLimit + ' · ' + fmt(B.dealt) + ' damage';
+  if (!u || my !== BID || FLEE) break;
+  if (!u.alive) continue;
   const st = B.startTurn(u);
   const pre = st.ev.filter(e => e.t !== 'stunned'); // poison ticks, passive heals, deaths at turn start
   if (pre.length){ CUR = null; await playEvents(pre); }
@@ -1263,7 +1632,8 @@ async function runFight(heroes, foes){
   if (st.stunned){ setActive(u); floatAt(u.uid, 'Stunned', 'txt'); await pace(750); continue; }
   setActive(u);
   let ev;
-  if (u.side === 'hero'){
+  if (u.troop || (u.side === 'foe' && !u.shape)){ showSkills(null); await pace(380); const c = B.auto(u); ev = B.use(u, c.sid, c.tuid); }
+  else if (u.side === 'hero'){
    await Coach.heroTurn(u);
    let choice;
    if (S.set.auto && !Coach.forceManual()){ showSkills(u, true); await pace(450); choice = B.auto(u); }
@@ -1281,15 +1651,17 @@ async function runFight(heroes, foes){
  }
  if (my !== BID) return;
  setActive(null); showSkills(null);
- if (FLEE){ toast('You fall back into the fog.'); afterFight('flee'); return; }
+ if (FLEE){ const lostB = CTX && CTX.type === 'saga' && CTX.band ? CTX.band.n - RM.survivors(CTX.band) : 0; toast('You fall back into the fog.' + (lostB > 0 ? ' ' + lostB + ' troops were lost.' : '')); afterFight('flee'); return; }
  await wait(400);
  if (my !== BID) return;
  afterFight(B.result());
 }
 function log(t){ $('#blog').textContent = t; }
 function renderBattle(){
- $('#foes').innerHTML = B.foes.map(f => { const R = RM.REALMS[f.realm]; return `<div class="foe ${f.boss ? 'boss' : ''} ${f.affix ? 'elite' : ''}" data-uid="${f.uid}" style="--rim:${f.affix ? '#f0c060aa' : R.moon + '66'}">${ART.foeArt(f.shape, R.eye, f.boss, R.moon)}<div class="hp"><i style="width:100%"></i></div><div class="fname">${f.name}</div></div>`; }).join('');
- $('#party').innerHTML = B.heroes.map(h => `<button class="card" data-uid="${h.uid}">${ART.heroArt(h.look)}<div class="buffs"></div><div class="nm">${h.name}</div><div class="bars"><div class="bar life"><i></i></div><div class="bar rage"><i></i></div></div></button>`).join('');
+ $('#foes').innerHTML = B.foes.map(f => { const R = RM.REALMS[f.realm || 0];
+  const art = f.troop ? ART.band(f.band, 'fart') : f.shape ? ART.foeArt(f.shape, R.eye, f.boss, R.moon) : ART.heroArt(f.look).replace('class="art"', 'class="fart"');
+  return `<div class="foe ${f.boss ? 'boss' : ''} ${f.affix ? 'elite' : ''} ${f.shape ? '' : 'rival'}" data-uid="${f.uid}" style="--rim:${f.affix ? '#f0c060aa' : f.shape ? R.moon + '66' : '#e0334a88'}">${art}<div class="hp"><i style="width:100%"></i></div><div class="fname">${f.name}</div></div>`; }).join('');
+ $('#party').innerHTML = B.heroes.map(h => `<button class="card ${h.troop ? 'band' : ''}" data-uid="${h.uid}">${h.troop ? ART.band(h.band) : ART.heroArt(h.look)}<div class="buffs"></div><div class="nm">${h.troop ? RM.TROOPS.find(t => t.id === h.band).n.split(' ')[0] : h.name}</div><div class="bars"><div class="bar life"><i></i></div>${h.troop ? '<div class="bandct">x' + h.n + '</div>' : '<div class="bar rage"><i></i></div>'}</div></button>`).join('');
  $$('#foes .foe').forEach(el => el.onclick = () => { const f = B.foes.find(x => x.uid === el.dataset.uid); if (!f || !f.alive) return; TGT = f; sfx('tap'); updateUnits(); Coach.emit('target'); });
  $$('#party .card').forEach(el => el.onclick = () => { const h = B.heroes.find(x => x.uid === el.dataset.uid); if (h) toast(h.name + ': ' + Math.ceil(h.hp) + ' / ' + h.max + ' life, ' + Math.floor(h.rage) + '% rage'); });
  updateUnits();
@@ -1299,7 +1671,9 @@ function updateUnits(){
  if (!B) return;
  if (TGT && !TGT.alive) TGT = null;
  B.foes.forEach(f => { const el = document.querySelector(`.foe[data-uid="${f.uid}"]`); if (!el) return; el.querySelector('.hp i').style.width = (100 * f.hp / f.max) + '%'; el.classList.toggle('dead', !f.alive); el.classList.toggle('tgt', !!TGT && TGT.uid === f.uid); });
- B.heroes.forEach(h => { const el = document.querySelector(`.card[data-uid="${h.uid}"]`); if (!el) return; el.querySelector('.life i').style.width = (100 * h.hp / h.max) + '%'; el.querySelector('.rage i').style.width = h.rage + '%'; el.querySelector('.rage').classList.toggle('full', h.rage >= 100); el.classList.toggle('dead', !h.alive);
+ B.heroes.forEach(h => { const el = document.querySelector(`.card[data-uid="${h.uid}"]`); if (!el) return; el.querySelector('.life i').style.width = (100 * h.hp / h.max) + '%';
+  if (h.troop){ const c = el.querySelector('.bandct'); if (c) c.textContent = 'x' + RM.survivors(h); } else { el.querySelector('.rage i').style.width = h.rage + '%'; el.querySelector('.rage').classList.toggle('full', h.rage >= 100); }
+  el.classList.toggle('dead', !h.alive);
   el.querySelector('.buffs').innerHTML = h.buffs.map(b => BUFFTXT[b.k] ? `<b class="${BUFFTXT[b.k][1] ? 'bad' : ''}">${BUFFTXT[b.k][0]}</b>` : '').join(''); });
 }
 function setActive(u){ $$('#party .card').forEach(c => c.classList.toggle('act', !!u && c.dataset.uid === u.uid)); }
@@ -1330,6 +1704,7 @@ function floatAt(uid, text, cls){
 }
 function flash(el, cls, ms){ if (!el) return; el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); clearTimeout(el['_f' + cls]); el['_f' + cls] = setTimeout(() => el.classList.remove(cls), ms || 420); }
 function shakeScreen(){ flash($('#battle'), 'shake'); }
+const BUFFLOG_FOE = {shield:'The enemy raises a shield wall.', atkUp:'The enemy\'s blood runs hot.', atkDown:'An ill omen falls on your squad.', stun:'Ravens blind your squad.', taunt:'Their shield-bearer draws every eye.'};
 const BUFFLOG = {shield:'The squad raises a shield wall.', atkUp:'The squad\'s blood runs hot.', atkDown:'An ill omen falls on the enemy.', stun:'The ravens blind them.', taunt:'Grimwald draws every eye.'};
 // pacing: 1x is deliberate so every hit lands; 2x and 3x speed it up
 function pace(ms){ return wait(ms / [1, 1.8, 3][Math.max(0, Math.min(2, S.set.speed - 1))]); }
@@ -1433,18 +1808,19 @@ async function playEvents(ev){
     const el = document.querySelector(`[data-uid="${e.u}"]`);
     // wind-up: the attacker rears back and its rune flares
     if (el){ el.classList.add('windup'); }
-    if (u.side === 'hero'){ const sk = RM.SKILLS[e.sid]; if (sk) floatAt(e.u, sk.rune, 'rune ' + e.kind); }
+    if (u.look && !u.troop){ const sk = RM.SKILLS[e.sid]; if (sk) floatAt(e.u, sk.rune, 'rune ' + e.kind); }
     if (e.kind === 'ult'){ const f = $('#ultflash'); f.querySelector('.ur').textContent = RM.SKILLS[e.sid].rune; f.querySelector('.un').textContent = e.name; f.style.animationDuration = (0.9 / [1, 1.8, 3][Math.max(0, Math.min(2, S.set.speed - 1))]) + 's'; f.classList.remove('on'); void f.offsetWidth; f.classList.add('on'); sfx('ult'); vibe([30, 40, 60]); log(u.name + ' unleashes ' + e.name + '!'); await pace(1000); }
     if (e.kind === 'sig'){ log(u.name + ' unleashes ' + e.name + '!'); sfx('boss'); shakeHard(); hurtFlash(true); vibe([60, 40, 90]); await pace(700); }
     else if (e.kind === 'trick'){ log(u.name + ' uses ' + e.name + '!'); sfx('buff'); floatAt(e.u, e.name, 'txt'); await pace(jit(520)); }
-    else if (e.kind !== 'ult'){ log(u.name + (u.side === 'hero' ? ' uses ' + e.name + '.' : ' attacks.')); await pace(jit(u.side === 'hero' ? 360 : 460)); }
+    else if (e.kind !== 'ult'){ log(u.name + (u.look && !u.troop ? ' uses ' + e.name + '.' : ' attacks.')); await pace(jit(u.side === 'hero' ? 360 : 460)); }
     const isH = u.side === 'hero';
-    const style = isH ? (HSTYLE[u.look] || 'thrust') : (FSTYLE[u.shape] || 'claw');
-    CUR = {src:e.u, style, v:Math.floor(R01() * 3), col:isH ? (e.kind === 'ult' ? '#f0c060' : HCOL[u.look] || '#f1e6d2') : (e.kind === 'sig' || e.kind === 'trick' ? '#c040ff' : RM.REALMS[u.realm].eye), side:u.side};
+    const style = u.troop ? ({spear:'thrust', bow:'shoot', berserk:'cleave'}[u.band] || 'thrust') : u.look && !u.shape ? (HSTYLE[u.look] || 'thrust') : (FSTYLE[u.shape] || 'claw');
+    CUR = {src:e.u, style, v:Math.floor(R01() * 3), col:e.kind === 'ult' ? '#f0c060' : u.troop ? '#c9b38f' : u.look && !u.shape ? (HCOL[u.look] || '#f1e6d2') : (e.kind === 'sig' || e.kind === 'trick' ? '#c040ff' : RM.REALMS[u.realm || 0].eye), side:u.side};
     if (el){ el.classList.remove('windup'); await release(el, style, CUR.v, isH); }
     await pace(jit(90)); break; }
    case 'dmg': {
     const el = document.querySelector(`[data-uid="${e.tgt}"]`); const isHero = unit && unit.side === 'hero';
+    if (e.struct){ if (e.struct === 'tower'){ const anc = $('#fortAnchor'); anc.style.left = (unit.side === 'hero' ? 92 : 8) + '%'; await projectile(anc, el, 'shoot', '#f0c060'); impact(e.tgt, 'shoot', '#f0c060', false, false); } else impact(e.tgt, 'claw', '#8a6f4a', true, false); flash(el, 'hit'); floatAt(e.tgt, e.amt, isHero ? 'hurt' : ''); sfx('hit'); updateUnits(); await pace(300); break; }
     const cs = CUR && CUR.src === e.src ? CUR : {style:'cleave', col:isHero ? '#c040ff' : '#f1e6d2'};
     if (RANGED[cs.style]){ if (cs.flewAt !== e.src + ':' + playEvents.n){ cs.flewAt = e.src + ':' + playEvents.n; await projectile(document.querySelector(`[data-uid="${e.src}"]`), el, cs.style, cs.col); } else { projectile(document.querySelector(`[data-uid="${e.src}"]`), el, cs.style, cs.col); await pace(140); } }
     impact(e.tgt, cs.style, cs.col, e.big, e.crit);
@@ -1455,8 +1831,8 @@ async function playEvents(ev){
     updateUnits(); await pace(jit(e.big ? 260 : 400)); break; }
    case 'heal': fxAt(e.tgt, 'heal'); floatAt(e.tgt, '+' + e.amt, 'heal'); sfx('heal'); updateUnits(); await pace(340); break;
    case 'self': floatAt(e.u, '-' + e.amt, 'hurt'); flash(document.querySelector(`[data-uid="${e.u}"]`), 'hit'); updateUnits(); await pace(220); break;
-   case 'die': if (unit.boss && LASTKIND === 'ult') BOSSULT = true; if (unit.side === 'hero') HERODOWN = true; sfx('die'); if (unit.boss){ shakeHard(); vibe([80, 50, 120]); } log(unit.name + (unit.side === 'hero' ? ' has fallen.' : ' is destroyed.')); updateUnits(); await pace(unit.boss ? 1100 : 650); break;
-   case 'buff': sfx('buff'); log(BUFFLOG[e.k] || ''); updateUnits(); await pace(500); break;
+   case 'die': if (unit.boss && LASTKIND === 'ult') BOSSULT = true; if (unit.side === 'hero' && !unit.troop) HERODOWN = true; sfx('die'); if (unit.boss){ shakeHard(); vibe([80, 50, 120]); } log(unit.name + (unit.side === 'hero' ? ' has fallen.' : ' is destroyed.')); updateUnits(); await pace(unit.boss ? 1100 : 650); break;
+   case 'buff': sfx('buff'); log((e.by === 'foe' ? BUFFLOG_FOE[e.k] : BUFFLOG[e.k]) || ''); updateUnits(); await pace(500); break;
    case 'enrage': floatAt(e.u, 'ENRAGED', 'crit'); log(unit.name + ' is enraged!'); sfx('boss'); shakeHard(); hurtFlash(true); vibe([60, 30, 60]); await pace(900); break;
    case 'revive': fxAt(e.u, 'heal', true); floatAt(e.u, 'Rises!', 'heal'); log(unit.name + ' rises again.'); sfx('heal'); updateUnits(); await pace(600); break;
    case 'miss': floatAt(e.tgt, 'Miss', 'txt'); if (S.set.sfx) noise(.12, .12, 3000); { const el = document.querySelector(`[data-uid="${e.tgt}"]`); animEl(el && (el.querySelector('.fart') || el), [{transform:'none'}, {transform:'translateX(-18px) rotate(-3deg)'}, {transform:'none'}], 320); } await pace(jit(380)); break;
@@ -1479,6 +1855,10 @@ function setAuto(on){
 }
 function afterFight(res){
  const R = RM.REALMS[CTX.r];
+ if (CTX.type === 'night') return afterNight(res);
+ if (CTX.type === 'boss') return afterBoss(res);
+ if (CTX.type === 'arena') return afterArena(res);
+ const bandMsg = CTX.type === 'saga' ? settleBand(CTX.bandKey, CTX.band) : '';
  if (CTX.type === 'raid'){
   if (res === 'win'){
    const L = RM.loot(CTX.r, CTX.wave === 4 ? 3 : Math.min(2, CTX.wave), true);
@@ -1515,7 +1895,7 @@ function afterFight(res){
   const REL = hadBoss ? rollRelic(CTX.r, first ? 1 : 0.4) : null;
   save(); sfx('win'); if (REL) setTimeout(() => sfx('ult'), 500);
   const nextS = CTX.s + 1 < RM.STAGES ? {r:CTX.r, s:CTX.s + 1} : (CTX.r + 1 < RM.REALMS.length ? {r:CTX.r + 1, s:0} : null);
-  sheet(`<div class="result"><div class="lockmsg">${bossDown ? R.boss.n + ' is destroyed' : 'The fog thins'}</div><div class="big">Victory</div>${bossDown ? `<p>${CTX.r + 1 < RM.REALMS.length ? RM.REALMS[CTX.r + 1].name + ' is open.' : 'You have broken every realm, for now.'}${CTX.r === 0 ? ' Raids are open.' : ''}</p>` : ''}<div class="loot">${lootHTML(L)}</div>${DB}${relicFoundHTML(REL)}
+  sheet(`<div class="result"><div class="lockmsg">${bossDown ? R.boss.n + ' is destroyed' : 'The fog thins'}</div><div class="big">Victory</div>${bossDown ? `<p>${CTX.r + 1 < RM.REALMS.length ? RM.REALMS[CTX.r + 1].name + ' is open.' : 'You have broken every realm, for now.'}${CTX.r === 0 ? ' Raids are open.' : ''}</p>` : ''}<div class="loot">${lootHTML(L)}</div>${DB}${relicFoundHTML(REL)}${bandMsg}
    <div class="row" style="justify-content:center"><button class="btn" id="rBack">Saga</button><button class="btn" id="rAgain">Again</button>${nextS ? '<button class="btn blood" id="rNext">Next</button>' : ''}</div></div>`);
   $('#veil')._lock = true;
   $('#rBack').onclick = () => { closeSheet(); toHub('saga'); };
@@ -1525,7 +1905,7 @@ function afterFight(res){
   checkDeeds();
  } else if (res === 'lose'){
   S.stats.losses++; save(); sfx('lose');
-  sheet(`<div class="result"><div class="lockmsg">The fog closes</div><div class="big" style="color:#a99">Fallen</div><p>Level up your warriors, recruit new ones with bone runes, or build up the Forge. Replaying fights you already won earns silver.</p>
+  sheet(`<div class="result"><div class="lockmsg">The fog closes</div><div class="big" style="color:#a99">Fallen</div><p>Level up your warriors, recruit new ones with bone runes, or build up the Forge. Replaying fights you already won earns silver.</p>${bandMsg}
    <div class="row" style="justify-content:center"><button class="btn" id="rBack">Saga</button><button class="btn" id="rWar">Warriors</button><button class="btn blood" id="rAgain">Retry</button></div></div>`);
   $('#veil')._lock = true;
   $('#rBack').onclick = () => { closeSheet(); toHub('saga'); };
@@ -1533,12 +1913,51 @@ function afterFight(res){
   $('#rAgain').onclick = () => { closeSheet(); startSaga(CTX.r, CTX.s); };
  } else toHub('saga');
 }
+function afterNight(res){
+ const bandMsg = settleBand('garrison', CTX.band), win = res === 'win';
+ S.night.next = Date.now() + NIGHT_MS;
+ let L = null;
+ if (win){ L = nightLoot(); S.silver += L.silver; S.iron += L.iron; S.runes += L.runes; S.night.wins++; }
+ else { const now = Date.now(); S.idleAt = now; S.prod.ironAt = now; S.prod.runeAt = now; S.night.losses++; }
+ save(); sfx(win ? 'win' : 'lose');
+ sheet(`<div class="result"><div class="lockmsg">${win ? 'The gates held' : 'The dead got through'}</div><div class="big" ${win ? '' : 'style="color:#a99"'}>${win ? 'Village Held' : 'Overrun'}</div>
+  <p>${win ? 'The night is quiet again.' : 'They emptied your coffers. Walls, towers and a Garrison make the next night easier.'}</p>${L ? `<div class="loot">${lootHTML(L)}</div>` : ''}${bandMsg}
+  <div class="row" style="justify-content:center"><button class="btn blood" id="rDone">Back to the village</button></div></div>`);
+ $('#veil')._lock = true;
+ $('#rDone').onclick = () => { closeSheet(); toHub('village'); };
+ checkDeeds();
+}
+function afterBoss(res){
+ const bandMsg = settleBand(CTX.bandKey, CTX.band), dealt = Math.round(B.dealt);
+ const best = dealt > S.wb.best; if (best) S.wb.best = dealt; S.wb.total += dealt;
+ const L = {silver:Math.round(dealt * 0.12), iron:Math.round(dealt * 0.012), runes:Math.min(15, 2 + Math.floor(dealt / 2500))};
+ S.silver += L.silver; S.iron += L.iron; S.runes += L.runes; save(); sfx('win');
+ sheet(`<div class="result"><div class="lockmsg">${CTX.type === 'boss' ? 'The boss withdraws, wounded' : ''}</div><div class="big">${fmt(dealt)}</div><p>damage dealt${best ? ', your best yet' : ''}. Attempts left today: ${usedToday(S.wb, 3)} of 3.</p>
+  <div class="loot">${lootHTML(L)}</div>${bandMsg}<div class="row" style="justify-content:center"><button class="btn blood" id="rDone">Back to War</button></div></div>`);
+ $('#veil')._lock = true;
+ $('#rDone').onclick = () => { closeSheet(); toHub('raid'); };
+ checkDeeds();
+}
+function afterArena(res){
+ const bandMsg = settleBand(CTX.bandKey, CTX.band), win = res === 'win', r = Math.max(0, raidRealm());
+ if (!CTX.practice){ if (win){ S.arena.rating += 20; S.arena.wins++; } else { S.arena.rating = Math.max(0, S.arena.rating - 10); S.arena.losses++; } }
+ else if (win) S.arena.sparW = (S.arena.sparW || 0) + 1; else S.arena.sparL = (S.arena.sparL || 0) + 1;
+ const L = win ? {silver:Math.round(90 * Math.pow(1.8, r)), iron:6 + 6 * r, runes:2 + r} : {silver:Math.round(25 * Math.pow(1.8, r)), iron:0, runes:0};
+ S.silver += L.silver; S.iron += L.iron; S.runes += L.runes; save(); sfx(win ? 'win' : 'lose');
+ sheet(`<div class="result"><div class="lockmsg">${res === 'time' ? 'Time ran out, the defense holds' : CTX.foeName}</div><div class="big" ${win ? '' : 'style="color:#a99"'}>${win ? 'Victory' : 'Repelled'}</div>
+  <p>${CTX.practice ? 'A practice spar. Rivals arrive when the warband goes online.' : 'Rating ' + S.arena.rating + '.'}</p><div class="loot">${lootHTML(L)}</div>${bandMsg}
+  <div class="row" style="justify-content:center"><button class="btn blood" id="rDone">Back to War</button></div></div>`);
+ $('#veil')._lock = true;
+ $('#rDone').onclick = () => { closeSheet(); toHub('raid'); };
+ checkDeeds();
+}
 function endRaid(full, lost){
  const L = CTX.loot, waves = CTX.wave;
+ const bandMsg = settleBand(CTX.bandKey, CTX.band);
  S.raid.runs++;
  if (waves > S.raid.best) S.raid.best = waves; if (full) S.raid.clears++;
  save(); setTimeout(checkDeeds, 400); sfx(full ? 'win' : lost ? 'lose' : 'coin');
- sheet(`<div class="result"><div class="lockmsg">${waves} of 5 waves</div><div class="big">${full ? 'Raid Cleared' : lost ? 'Overrun' : 'Withdrawn'}</div><p>${full ? 'The boss falls a second time. It will be back.' : 'You keep everything from the waves you cleared.'}${L.blessed ? ' Includes today\'s Daily Blessing.' : ''}</p><div class="loot">${lootHTML(L)}</div>${relicFoundHTML(CTX.relic)}<button class="btn blood" id="rDone">Back to camp</button></div>`);
+ sheet(`<div class="result"><div class="lockmsg">${waves} of 5 waves</div><div class="big">${full ? 'Raid Cleared' : lost ? 'Overrun' : 'Withdrawn'}</div><p>${full ? 'The boss falls a second time. It will be back.' : 'You keep everything from the waves you cleared.'}${L.blessed ? ' Includes today\'s Daily Blessing.' : ''}</p><div class="loot">${lootHTML(L)}</div>${relicFoundHTML(CTX.relic)}${bandMsg}<button class="btn blood" id="rDone">Back to camp</button></div>`);
  $('#veil')._lock = true;
  $('#rDone').onclick = () => { closeSheet(); toHub('raid'); };
 }
@@ -1640,6 +2059,7 @@ const Coach = (() => {
   await show({who:'The Seer', text:'Tap <b>Bjorn</b>. He hits hardest.', target:'.wcard[data-id="bjorn"]', wait:'sheet:bjorn'});
   if (!T()) return;
   const lvb = $('#lvBtn');
+  if (lvb) lvb.scrollIntoView({block:'center'});
   if (lvb && !lvb.disabled) await show({who:'The Seer', text:'Spend silver. <b>Level him up</b>.', target:'#lvBtn', wait:'levelup'});
   else await show({who:'The Seer', text:'Silver levels warriors up, <b>right here</b>.', next:'Go on'});
   if (!T()) return;
@@ -1648,11 +2068,11 @@ const Coach = (() => {
   if (!T()) return;
   await show({who:'The Seer', text:'Now the <b>Village</b>.', target:'.tab[data-tab="village"]', wait:'tab:village'});
   if (!T()) return;
-  await show({who:'The Seer', text:'The Mead Hall earns silver <b>while you are away</b>. Collect it here.', target:'#meadBox', next:'Go on'});
+  await show({who:'The Seer', text:'Your village earns <b>while you are away</b>. Collect it here.', target:'#coffers', next:'Go on'});
   if (!T()) return;
-  await show({who:'The Seer', text:'Upgrades make <b>everyone</b> stronger.', target:() => $$('#panel .box')[1], next:'Go on'});
+  await show({who:'The Seer', text:'Each <b>building</b> opens to show what it does. Walls and towers <b>defend</b> you.', target:'#vmap', next:'Go on'});
   if (!T()) return;
-  await show({who:'The Seer', text:'<b>Raids</b>: five waves, wounds carry over, <b>big loot</b>.', target:'.tab[data-tab="raid"]', wait:'tab:raid'});
+  await show({who:'The Seer', text:'<b>War</b>: raids, the weekly <b>boss</b>, and the <b>Arena</b>.', target:'.tab[data-tab="raid"]', wait:'tab:raid'});
   if (!T()) return;
   await show({who:'The Seer', text:'They open after the <b>first boss</b>. Back to the <b>Saga</b>.', target:'.tab[data-tab="saga"]', wait:'tab:saga'});
   if (!T()) return;
@@ -1720,13 +2140,19 @@ const DEEDS = [
  {id:'lv10', n:'Seasoned', d:'Raise a warrior to level 10.', r:6, ok:() => maxLv() >= 10},
  {id:'lv20', n:'Hardened', d:'Raise a warrior to level 20.', r:12, ok:() => maxLv() >= 20},
  {id:'build3', n:'Stone on Stone', d:'Raise any building to level 3.', r:5, ok:() => Object.values(S.vil).some(v => v >= 3)},
- {id:'build5', n:'The Long Hall', d:'Fully build all four buildings.', r:25, ok:() => Object.values(S.vil).every(v => v >= RM.VMAX)},
+ {id:'build5', n:'The Long Hall', d:'Fully build every building.', r:25, ok:() => Object.values(S.vil).every(v => v >= RM.VMAX)},
  {id:'coffers', n:'Patience Pays', d:'Collect a full Mead Hall (10 hours of silver).', r:5, ok:() => !!FLAGS.fullCoffers},
  {id:'raid3', n:'Still Standing', d:'Survive three raid waves.', r:6, ok:() => S.raid.best >= 3},
  {id:'raid5', n:'Raider', d:'Clear a full raid.', r:10, ok:() => S.raid.clears >= 1},
  {id:'raidflaw', n:'Nobody Stays Down', d:'Clear a full raid with no warrior falling.', r:15, ok:() => !!FLAGS.raidFlawless},
  {id:'relic5', n:'Cursed Collector', d:'Find five relics.', r:8, ok:() => RM.RELICS.filter(x => S.relics[x.id]).length >= 5},
  {id:'relic15', n:'The Hoard', d:'Find all fifteen relics.', r:30, ok:() => RM.RELICS.every(x => S.relics[x.id])},
+ {id:'night1', n:'Hold the Gate', d:'Win a night raid.', r:6, ok:() => S.night.wins >= 1},
+ {id:'night10', n:'Ten Long Nights', d:'Win ten night raids.', r:15, ok:() => S.night.wins >= 10},
+ {id:'hall3', n:'A Proper Village', d:'Raise the Jarl\'s Hall to III.', r:8, ok:() => S.vil.hall >= 3},
+ {id:'army20', n:'A Real Warband', d:'Muster 20 troops at once.', r:6, ok:() => S.army.skirmish.n + S.army.garrison.n >= 20},
+ {id:'boss5k', n:'Wound the Unbound', d:'Deal 5,000 damage to a Warband Boss in one fight.', r:8, ok:() => S.wb.best >= 5000},
+ {id:'arena1', n:'First Blood in the Ring', d:'Win an Arena fight.', r:5, ok:() => S.arena.wins + (S.arena.sparW || 0) >= 1},
  {id:'w100', n:'A Hundred Graves', d:'Win 100 fights.', r:15, ok:() => S.stats.wins >= 100},
 ];
 let deedQueue = [], deedShowing = false;
@@ -1840,7 +2266,10 @@ function mini(){
   {t:'Bosses', p:`<div class="mboss">${ART.foeArt('draugr', '#5ff0c0', true, '#b3182a')}</div>`, l:['Every <b>3rd turn</b>: a hit on everyone.', 'Below half life: <b>enraged</b>.', 'Save shields and Ultimates for that.']},
   {t:'Enemy Tricks', p:`<div class="mrow"><span class="mb" style="color:#9acd32">&#9760;<small>POISON</small></span><span class="mb">&#9673;<small>BLIND</small></span><span class="mb gold">&#5835;<small>ELITE</small></span></div>`, l:['Some enemies <b>poison</b> or <b>blind</b> you.', '<b>Gold names</b> are elites: tougher, nastier.', 'Norn\'s Weave <b>cleanses</b> curses.']},
   {t:'Warriors & Relics', p:`<div class="mrow"><span class="mcard act">${ART.heroArt('raven')}</span><span class="mrelic">&#5847;</span></div>`, l:['<b>Silver</b> levels up. <b>Runes</b> recruit.', 'Each warrior has a <b>passive</b> trait.', 'Bosses drop <b>relics</b>. One per warrior.']},
-  {t:'The Village', p:`<div class="mrow"><span class="mb">&#5839;<small>FORGE</small></span><span class="mb">&#5833;<small>ALTAR</small></span><span class="mb">&#5855;<small>BARRACKS</small></span><span class="mb">&#5847;<small>MEAD</small></span></div>`, l:['<b>Forge</b>: harder hits. <b>Altar</b>: faster rage.', '<b>Barracks</b>: higher level cap.', '<b>Mead Hall</b>: silver while you are away.']},
+  {t:'The Village', p:`<div class="mrow"><svg viewBox="-50 -55 100 90" width="110" height="96">${ART.building('hall', 3)}</svg></div>`, l:['Tap any <b>building</b> on the map.', 'The <b>Jarl\'s Hall</b> caps every other level.', 'Collect what it <b>earns</b> while you are away.']},
+  {t:'Troops', p:`<div class="mrow"><span class="mcard" style="width:90px">${ART.band('spear')}</span><span class="mcard" style="width:90px">${ART.band('bow')}</span></div>`, l:['Train troops in the <b>War Camp</b>.', '<b>Skirmish Band</b> fights beside your squad.', '<b>Garrison</b> stays home and defends.']},
+  {t:'Night Raids', p:`<div class="mrow"><svg viewBox="-50 -55 100 90" width="90" height="80">${ART.building('tower', 3)}</svg><svg viewBox="-50 -40 100 70" width="90" height="70">${ART.building('pits', 3)}</svg></div>`, l:['Every <b>8 hours</b> the dead come. Tap <b>Defend</b>.', '<b>Walls, towers, pits</b> and Garrison fight back.', 'Lose and they <b>empty your coffers</b>.']},
+  {t:'Warband & Arena', p:`<div class="mrow"><span class="mb gold">&#5835;<small>BOSS</small></span><span class="mb">&#5854;<small>ARENA</small></span></div>`, l:['<b>Boss</b>: 8 rounds, hit as hard as you can.', '<b>Arena</b>: your village defends itself.', 'Play with <b>friends</b> once the warband is online.']},
   {t:'Raids', p:`<div class="mrow">${[1, 2, 3, 4].map(() => '<span class="mpip on"></span>').join('')}<span class="mpip boss"></span></div>`, l:['<b>Five waves</b> in a row.', 'Wounds carry over. <b>Double silver and iron</b>.', 'Keep everything you earned.']},
   {t:'Every Day', p:`<div class="mrow"><span class="mb gold">&#5835;<small>BLESSING</small></span><span class="mb">${ART.ICON.book}<small>JOURNAL</small></span></div>`, l:['Your <b>first win</b> each day pays extra.', 'The <b>Journal</b> holds lore, relics, deeds.', 'Missing a day costs nothing.']},
   {t:'Stuck?', p:`<div class="mrow"><span class="mb">&#8635;<small>REPLAY</small></span><span class="mb">&#8679;<small>LEVEL</small></span><span class="mb">&#5839;<small>FORGE</small></span></div>`, l:['Replay old fights for <b>silver</b>.', 'Level your <b>weakest</b> warrior.', 'Bring a <b>healer</b> to bosses.']},
