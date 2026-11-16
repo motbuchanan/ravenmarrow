@@ -1,6 +1,6 @@
 # Ravenmarrow: Roadmap
 
-**Current version:** 1.6.1 · Nov 16 2026
+**Current version:** 1.7 · Nov 16 2026
 **Live URL:** https://motbuchanan.github.io/ravenmarrow/ (repo: ravenmarrow, files at the root)
 **What it is:** A gothic Norse boss-battle game drawn entirely in code. A gift build inspired by a mobile Viking strategy RPG, built around boss fights, a warrior roster, and a light village. No money, no accounts, no data leaves the phone.
 
@@ -50,6 +50,13 @@ Her weekend feedback: had a blast, got far, played between Vikingard raids. Comb
 - Attack styles per warrior look (HSTYLE) and per enemy shape (FSTYLE) in ui.js: body moves (release), projectiles (orb, arrow, ravens, sound ring, embers), impact variants (stab, cleave, claw marks, bite, slam rings), random variant + timing jitter on every strike.
 - Engine: PASSIVES (one per warrior), TRICKS per enemy shape (poison, bleed, blind, all-hit), AFFIXES elites (Armored, Frenzied, Vampiric, Hulking) from realm 2 on, DoT/miss/endure events. Tutorial fight has no tricks. Foe stats raised ~12% to offset passives (sim curve unchanged).
 - Village clarity: Now/Next numbers on every building, before/after squad stats on upgrade, bonus chips at the top of every fight, stat annotations on warrior pages.
+
+## Shipped in 1.7 (Nov 16 2026)
+Art and juice pass, no gameplay changes (players are testing the balance).
+- ATMO module (ui.js): #atmo canvas behind the UI for weather, #fxc above it for combat sparks and lightning, #skyflash overlay. Weather per realm (Barrow ash + red heat lightning, Ironwood fireflies + leaves, Hel snow + blue lightning, Roots rising embers + ground glow, Drowned rain + storms, village embers + fireflies). Off on menu tabs, paused when hidden, about 30 fps when only weather runs.
+- Combat: Ultimates gather sparks and strike with lightning, big hits crackle, crits burst, buffs/heals lift motes, boss signature and enrage call a sky strike, boss deaths throw embers.
+- Safety: full-screen flashes limited to one per 450 ms of real time at any speed (counting the hurt flash); reduced motion turns the canvas off and skips bolts and flashes. Settings: Weather & Magic switch (S.set.fx), the old CSS ash returns when it is off.
+- Buildings redrawn in art.js with helpers (bGl soft glow, bTorch, bSmoke, bEmbers, bPlanks, bStones, bRoof, bBanner, bWin, bShield). Level steps: torches at 2, stone footing at 3, banners at 4, gold trim at 5. Moon rays in every scene.
 
 ## Shipped in 1.6 (Nov 16 2026)
 Warband online. Firebase project ravenmarrow-99790 (Spark plan, anonymous auth, Firestore nam5). Config is baked into ui.js FIREBASE_CONFIG; SDK 10.12.2 loaded with dynamic import from gstatic only when a player joins.

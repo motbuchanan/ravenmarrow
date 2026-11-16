@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<!-- Ravenmarrow v1.6.1 · Nov 16 2026 -->
+<!-- Ravenmarrow v1.7 · Nov 16 2026 -->
 <html lang="en"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-<meta name="build" content="1.6.1">
+<meta name="build" content="1.7">
 <meta name="build-date" content="Nov 16 2026">
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#050304">
@@ -422,12 +422,46 @@ textarea{-webkit-user-select:text;user-select:text;width:100%;min-height:80px;ba
 .rchip{font-size:11px;padding:2px 6px;border:1px solid #6b5a44;color:#c9b38f;white-space:nowrap}
 .jshake{animation:jshake .4s}
 @keyframes jshake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+/* ---------- v1.7 building motion ---------- */
+.flame{transform-box:fill-box;transform-origin:50% 100%;animation:flick .45s ease-in-out infinite alternate}
+.flame.f2{animation-duration:.33s}
+@keyframes flick{0%{transform:scale(1,1) skewX(0)}50%{transform:scale(.9,1.12) skewX(4deg)}100%{transform:scale(1.06,.92) skewX(-3deg)}}
+.tglow{animation:tglow 2.2s ease-in-out infinite alternate}
+@keyframes tglow{from{opacity:.12}to{opacity:.28}}
+.wglow{animation:wglow 3.4s ease-in-out infinite alternate}
+@keyframes wglow{from{opacity:.65}to{opacity:.95}}
+.forgeglow{animation:forge 1.1s ease-in-out infinite alternate}
+@keyframes forge{from{opacity:.7}to{opacity:1}}
+.smk{transform-box:fill-box;transform-origin:center;animation:smk 4s linear infinite}
+@keyframes smk{0%{transform:translate(0,0) scale(.6);opacity:0}15%{opacity:.7}100%{transform:translate(8px,-30px) scale(2.2);opacity:0}}
+.emb{animation:emb 2.4s linear infinite}
+@keyframes emb{0%{transform:translate(0,0);opacity:0}10%{opacity:1}100%{transform:translate(var(--dx,3px),-34px);opacity:0}}
+.glint{animation:glint 2.2s ease-in-out infinite}
+@keyframes glint{0%,70%,100%{opacity:.25}80%{opacity:1}}
+.runeglow{animation:rune 2.6s ease-in-out infinite alternate;filter:drop-shadow(0 0 2px currentColor)}
+@keyframes rune{from{opacity:.55}to{opacity:1}}
+.orbit{transform-box:fill-box;transform-origin:center;animation:orbit 6s linear infinite}
+@keyframes orbit{to{transform:rotate(360deg)}}
+.flag{transform-box:fill-box;transform-origin:0 50%;animation:flag 1.8s ease-in-out infinite alternate}
+@keyframes flag{from{transform:skewY(-4deg) scaleX(1)}to{transform:skewY(5deg) scaleX(.9)}}
+@media (prefers-reduced-motion:reduce){.flame,.tglow,.wglow,.forgeglow,.smk,.emb,.glint,.runeglow,.orbit,.flag{animation:none}.smk,.emb{display:none}}
+.sglow{animation:sglow 2.2s ease-in-out infinite alternate}
+@keyframes sglow{from{opacity:.65}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.sglow{animation:none}}
+/* ---------- v1.7 atmosphere ---------- */
+#atmo{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+#skyflash{position:absolute;inset:0;pointer-events:none;opacity:0;mix-blend-mode:screen}
+#fxc{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:28}
+.rays{transform-origin:285px 200px;animation:rays 14s ease-in-out infinite alternate}
+@keyframes rays{from{transform:rotate(-3deg);opacity:.1}to{transform:rotate(3deg);opacity:.2}}
+@media (prefers-reduced-motion:reduce){.rays{animation:none}}
 
 </style>
 </head><body>
 <div id="app">
  <div id="bg"></div>
  <div class="ash" id="ash"></div>
+ <canvas id="atmo"></canvas><div id="skyflash"></div>
  <section class="screen on" id="title">
   <div id="ravenMark" style="margin-bottom:6px"></div>
   <div class="logo">RAVENMARROW</div>
@@ -453,6 +487,7 @@ textarea{-webkit-user-select:text;user-select:text;width:100%;min-height:80px;ba
   <div id="party"></div>
   <div id="skills"></div>
  </section>
+ <canvas id="fxc"></canvas>
  <div id="hurtflash"></div>
  <div id="fortAnchor" style="position:absolute;top:22%;left:8%;width:2px;height:2px;pointer-events:none"></div>
  <div id="ultflash"><div class="ur"></div><div class="un"></div></div>
@@ -918,6 +953,7 @@ function sceneSVG(R, opts){
 <rect width="390" height="844" fill="url(#${id}sky)"/>
 <circle cx="285" cy="200" r="160" fill="url(#${id}mg)" style="animation:pulse 6s ease-in-out infinite"/>
 <circle cx="285" cy="200" r="58" fill="url(#${id}mn)"/>
+<defs><linearGradient id="${id}ry" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${moon}" stop-opacity=".5"/><stop offset=".6" stop-color="${moon}" stop-opacity="0"/></linearGradient></defs><g class="rays" fill="url(#${id}ry)" opacity=".16" style="mix-blend-mode:screen"><path d="M285 200 L-40 900 L20 900z"/><path d="M285 200 L60 900 L100 900z"/><path d="M285 200 L150 900 L220 900z"/><path d="M285 200 L250 900 L295 900z"/><path d="M285 200 L330 900 L390 900z"/></g>
 <g fill="#000" opacity=".35"><path d="M250 190 q20 -8 30 4 q-14 4 -30 -4z M300 228 q12 -2 18 6 q-10 2 -18 -6z"/></g>
 <g fill="#050305"><path d="M120 140 q8 -6 14 0 q6 -6 14 0 q-7 -2 -14 3 q-7 -5 -14 -3z"/><path d="M165 112 q5 -4 9 0 q4 -4 9 0 q-4 -1 -9 2 q-5 -3 -9 -2z"/><path d="M335 112 q6 -5 11 0 q5 -5 11 0 q-5 -1 -11 2 q-6 -3 -11 -2z"/></g>
 <path d="M0 420 L40 360 L70 390 L120 320 L160 380 L210 340 L260 395 L300 350 L350 400 L390 360 L390 540 L0 540z" fill="#120a0e" opacity=".9"/>
@@ -1061,28 +1097,101 @@ function band(type, cls){ // three silhouettes holding their weapons
  const man = (x, y, s) => `<g transform="translate(${x} ${y}) scale(${s})"><path d="M-14 60 C-14 34 -8 26 0 24 C8 26 14 34 14 60z" fill="#2e1c20"/><path d="M-8 14 C-9 2 9 2 8 14 C8 24 -8 24 -8 14z" fill="#2e1c20"/>${type === 'berserk' ? '<path d="M-9 10 l-6 -8 l9 4z M9 10 l6 -8 l-9 4z" fill="#d8c8b0"/>' : '<path d="M-9 9 q9 -8 18 0 l-1 3 q-8 -5 -16 0z" fill="#6b5a44"/>'}<circle cx="-3" cy="14" r="1.2" fill="#e8dcc8"/><circle cx="3" cy="14" r="1.2" fill="#e8dcc8"/></g>`;
  return `<svg class="${cls || 'art'}" viewBox="0 0 110 120" preserveAspectRatio="xMidYMax meet">${w(18)}${man(26, 50, .9)}${w(80)}${man(84, 50, .9)}${w(48)}${man(55, 44, 1.1)}</svg>`;
 }
-const BCOL = {hall:'#d9792a', mead:'#d9a441', mine:'#a8a0b0', lookout:'#f0603a', forge:'#ff6a3a', altar:'#5ff0c0', barracks:'#c9b38f', camp:'#c9b38f', infirmary:'#9fd8a0', wall:'#8a6f4a', tower:'#f0c060', pits:'#b3182a'};
-function building(id, l){ // drawn around 0,0, about 80 wide
- const D = '#2a1c1a', E = '#3a2822', glow = BCOL[id] || '#d9792a';
- const win = (x, y, w, h) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${glow}" opacity="${l ? .75 : .15}"/>`;
+const BCOL = {hall:'#d9792a', mead:'#d9a441', mine:'#ffb347', lookout:'#f0603a', forge:'#ff6a3a', altar:'#5ff0c0', barracks:'#c9b38f', camp:'#c9b38f', infirmary:'#9fd8a0', wall:'#8a6f4a', tower:'#f0c060', pits:'#b3182a'};
+// v1.7 detailed buildings: texture, a light source, motion, and visible upgrades per level
+// (torches at 2, stone footing at 3, banners at 4, gold trim at 5)
+const BK = {wood:'#3a2822', wood2:'#2e201b', line:'#1a100d', roof:'#24161a', roofl:'#150c0f', rim:'#6a4c3c', stone:'#3d373b', stone2:'#2c272a', sline:'#1b1719', gold:'#d9a441'};
+function bGl(cx, cy, r, col, cls){ const k = 'bg' + col.slice(1); return `<defs><radialGradient id="${k}"><stop offset="0" stop-color="${col}" stop-opacity=".75"/><stop offset=".45" stop-color="${col}" stop-opacity=".25"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></radialGradient></defs><circle cx="${cx}" cy="${cy}" r="${r}" fill="url(#${k})" class="${cls || 'sglow'}"/>`; }
+function bTorch(x, y, lit){ return `<g transform="translate(${x} ${y})"><rect x="-1" y="0" width="2" height="12" fill="#2a1c14"/><rect x="-2.2" y="-1" width="4.4" height="2.5" fill="#4a3424"/>${lit ? `${bGl(0, -4, 9, '#ff8a3a')}<path class="flame" d="M0 -10 C3 -6 3 -3 0 -1 C-3 -3 -3 -6 0 -10z" fill="#ffb347"/><path class="flame f2" d="M0 -7 C1.6 -5 1.6 -3 0 -2 C-1.6 -3 -1.6 -5 0 -7z" fill="#fff0b0"/>` : ''}</g>`; }
+function bSmoke(x, y, n){ let s = ''; for (let i = 0; i < (n || 3); i++) s += `<circle cx="${x}" cy="${y}" r="${3 + i}" fill="url(#bsmk)" class="smk" style="animation-delay:-${(i * 1.3).toFixed(1)}s"/>`; return `<defs><radialGradient id="bsmk"><stop offset="0" stop-color="#a89ca6" stop-opacity=".7"/><stop offset="1" stop-color="#a89ca6" stop-opacity="0"/></radialGradient></defs><g opacity=".6">${s}</g>`; }
+function bEmbers(x, y, n, col){ let s = ''; for (let i = 0; i < n; i++) s += `<circle cx="${x + ((i * 7) % 9) - 4}" cy="${y}" r="${i % 2 ? .9 : 1.3}" fill="${col || '#ffb347'}" class="emb" style="animation-delay:-${(i * .55).toFixed(2)}s;--dx:${((i * 13) % 11) - 5}px"/>`; return s; }
+function bPlanks(x, y, w, h, step){ let s = ''; for (let px = x + (step || 6); px < x + w; px += (step || 6)) s += `M${px} ${y} L${px} ${y + h} `; return `<path d="${s}" stroke="${BK.line}" stroke-width=".7" opacity=".8"/>`; }
+function bStones(x, y, w, h){ let s = `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${BK.stone}"/>`, d = ''; const rows = Math.max(1, Math.round(h / 5)); for (let r = 0; r < rows; r++){ const yy = y + r * h / rows; if (r) d += `M${x} ${yy} L${x + w} ${yy} `; for (let px = x + (r % 2 ? 4 : 8); px < x + w; px += 8) d += `M${px} ${yy} L${px} ${yy + h / rows} `; } return s + `<path d="${d}" stroke="${BK.sline}" stroke-width=".7"/>`; }
+function bRoof(hw, apexY, baseY, gold){ // a shingled gable roof centered on 0
+ let d = ''; const H = baseY - apexY;
+ for (let t = 1; t < 5; t++){ const yy = apexY + t * H / 5, w = hw * (yy - apexY) / H; d += `M${-w} ${yy} L${w} ${yy} `; }
+ return `<path d="M${-hw} ${baseY} L0 ${apexY} L${hw} ${baseY}z" fill="${BK.roof}"/><path d="${d}" stroke="${BK.roofl}" stroke-width="1"/><path d="M0 ${apexY} L${hw} ${baseY}" stroke="${gold ? BK.gold : BK.rim}" stroke-width="${gold ? 1.6 : 1}" opacity="${gold ? 1 : .7}"/>${gold ? `<path d="M0 ${apexY} L${-hw} ${baseY}" stroke="${BK.gold}" stroke-width="1.6"/>` : ''}`;
+}
+function bBanner(x, y, col){ return `<g transform="translate(${x} ${y})"><rect x="-.8" y="-4" width="1.6" height="24" fill="#2a1c14"/><path class="flag" d="M.8 -3 L10 -3 L10 9 L5.4 6 L.8 9z" fill="${col}"/><path d="M3 1 l4 0 M5 -1 l0 5" stroke="#f1e6d2" stroke-width=".7" opacity=".7"/></g>`; }
+function bWin(x, y, w, h, col, lit){ return `<rect x="${x - .8}" y="${y - .8}" width="${w + 1.6}" height="${h + 1.6}" fill="${BK.line}"/><rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${col}" opacity="${lit ? .85 : .15}" class="${lit ? 'wglow' : ''}"/>`; }
+function bShield(x, y, col){ return `<circle cx="${x}" cy="${y}" r="4.2" fill="${col}" stroke="#1a100d" stroke-width=".8"/><circle cx="${x}" cy="${y}" r="1.2" fill="#c9b38f"/><path d="M${x - 4} ${y} L${x + 4} ${y}" stroke="#1a100d" stroke-width=".6"/>`; }
+function building(id, l){ // drawn around 0,0, about 90 wide, y from about -52 to 30
+ const glow = BCOL[id] || '#d9792a', lit = l > 0, t2 = l >= 2, t3 = l >= 3, t4 = l >= 4, gold = l >= 5;
  let g = '';
  switch (id){
-  case 'hall': g = `<path d="M-46 4 L0 -36 L46 4z" fill="${D}"/><rect x="-40" y="2" width="80" height="26" fill="${E}"/><path d="M-46 4 q-8 -12 -2 -18 q4 6 2 18z M46 4 q8 -12 2 -18 q-4 6 -2 18z" fill="${D}"/><path d="M0 -36 L0 -50 M-6 -44 L6 -44" stroke="${D}" stroke-width="3"/>${win(-6, 10, 12, 18)}${win(-28, 12, 7, 7)}${win(21, 12, 7, 7)}`; break;
-  case 'mead': g = `<path d="M-34 0 L0 -24 L34 0z" fill="${D}"/><rect x="-28" y="-2" width="56" height="24" fill="${E}"/>${win(-5, 6, 10, 16)}<g fill="#3a3036" opacity=".5"><circle cx="16" cy="-30" r="5"/><circle cx="20" cy="-42" r="7"/></g><ellipse cx="-34" cy="18" rx="7" ry="5" fill="#2a1a10"/>`; break;
-  case 'mine': g = `<path d="M-36 22 Q-30 -20 0 -24 Q30 -20 36 22z" fill="${D}"/><path d="M-12 22 L-12 2 Q0 -10 12 2 L12 22z" fill="#000"/>${win(-8, 6, 16, 3)}<path d="M18 -6 L34 -22 M28 -24 L38 -16" stroke="#8a8a90" stroke-width="3"/><rect x="-34" y="12" width="16" height="9" fill="#3a2a20"/>`; break;
-  case 'lookout': g = `<path d="M-14 26 L-8 -24 M14 26 L8 -24 M-12 10 L12 -6 M12 10 L-12 -6" stroke="${D}" stroke-width="4"/><rect x="-14" y="-34" width="28" height="12" fill="${E}"/><path d="M-18 -34 L0 -48 L18 -34z" fill="${D}"/>${l ? `<circle cx="0" cy="-28" r="4" fill="${glow}"><animate attributeName="opacity" values="1;.5;1" dur="1.6s" repeatCount="indefinite"/></circle>` : ''}`; break;
-  case 'forge': g = `<path d="M-28 2 L0 -18 L28 2z" fill="${D}"/><rect x="-24" y="0" width="48" height="22" fill="${E}"/><rect x="14" y="-26" width="8" height="18" fill="${D}"/>${win(-18, 6, 14, 14)}<path d="M8 22 L8 14 L26 14 L26 22 M12 14 L12 10 L22 10" fill="#3a3640"/>${l ? '<circle cx="-11" cy="13" r="9" fill="#ff6a3a" opacity=".25"/>' : ''}`; break;
-  case 'altar': g = `<rect x="-26" y="-14" width="10" height="36" fill="${D}"/><rect x="16" y="-14" width="10" height="36" fill="${D}"/><rect x="-30" y="-20" width="60" height="9" fill="${E}"/><rect x="-10" y="4" width="20" height="18" fill="${D}"/>${l ? `<path d="M0 -4 L0 14 M-5 2 L5 8" stroke="${glow}" stroke-width="2"/><circle cx="0" cy="6" r="14" fill="${glow}" opacity=".12"/>` : ''}`; break;
-  case 'barracks': g = `<path d="M-34 22 L-18 -10 L-2 22z M2 22 L18 -10 L34 22z" fill="${D}"/><circle cx="-18" cy="10" r="6" fill="#3a2a20" stroke="#6b5a44"/><circle cx="18" cy="10" r="6" fill="#3a2a20" stroke="#6b5a44"/>${win(-20, 16, 4, 6)}${win(16, 16, 4, 6)}`; break;
-  case 'camp': g = `<path d="M-30 22 L-16 -2 L-2 22z M-4 22 L10 -8 L24 22z M14 22 L26 4 L38 22z" fill="${D}"/><path d="M-6 22 l4 -6 l4 6" fill="${glow}" opacity="${l ? .6 : .15}"/>`; break;
-  case 'infirmary': g = `<path d="M-26 2 L0 -18 L26 2z" fill="${D}"/><rect x="-22" y="0" width="44" height="22" fill="${E}"/>${win(-4, 8, 8, 14)}<path d="M-14 -4 L-14 -12 M-18 -8 L-10 -8" stroke="${glow}" stroke-width="2.5" opacity="${l ? 1 : .3}"/>`; break;
-  case 'tower': g = `<path d="M-12 26 L-9 -20 L9 -20 L12 26z" fill="${D}"/><rect x="-16" y="-30" width="32" height="12" fill="${E}"/><path d="M-16 -30 L-16 -36 L-10 -36 L-10 -30 M-3 -30 L-3 -36 L3 -36 L3 -30 M10 -30 L10 -36 L16 -36 L16 -30" fill="${E}"/>${win(-3, -10, 6, 10)}`; break;
-  case 'pits': g = `<ellipse cx="0" cy="16" rx="34" ry="9" fill="#000"/>${[-24, -14, -4, 6, 16, 26].map((x, i) => `<path d="M${x - 3} 18 L${x} ${l ? -2 - (i % 2) * 6 : 10} L${x + 3} 18z" fill="#6b5a44"/>`).join('')}`; break;
+  case 'hall': g = `${bSmoke(0, -36, 3)}
+   ${t3 ? bStones(-46, 24, 92, 6) : `<rect x="-44" y="24" width="88" height="5" fill="${BK.wood2}"/>`}
+   <rect x="-42" y="2" width="84" height="23" fill="${BK.wood}"/>${bPlanks(-42, 2, 84, 23, 6)}
+   <rect x="-44" y="1" width="5" height="25" fill="${BK.wood2}"/><rect x="39" y="1" width="5" height="25" fill="${BK.wood2}"/>
+   ${bRoof(50, -34, 4, gold)}
+   <path d="M0 -34 q-12 -12 -20 -6 q8 0 13 9z M0 -34 q12 -12 20 -6 q-8 0 -13 9z" fill="${BK.roof}" stroke="${gold ? BK.gold : BK.rim}" stroke-width=".8"/>
+   <path d="M-50 4 q-9 -12 -3 -19 q4 7 3 19z M50 4 q9 -12 3 -19 q-4 7 -3 19z" fill="${BK.roof}"/>
+   <path d="M-8 25 L-8 12 Q0 4 8 12 L8 25z" fill="${BK.line}"/><path d="M-6 25 L-6 13 Q0 7 6 13 L6 25z" fill="${glow}" opacity="${lit ? .8 : .15}" class="${lit ? 'wglow' : ''}"/>
+   ${bWin(-31, 10, 7, 6, glow, lit)}${bWin(24, 10, 7, 6, glow, lit)}${bWin(-20, 10, 5, 6, glow, lit && t3)}${bWin(15, 10, 5, 6, glow, lit && t3)}
+   ${t2 ? bTorch(-50, 12, true) + bTorch(50, 12, true) : ''}${t4 ? bBanner(-30, -16, '#7a0c1a') + bBanner(22, -16, '#7a0c1a') : ''}`; break;
+  case 'mead': g = `${bSmoke(18, -32, 3)}<rect x="15" y="-30" width="7" height="14" fill="${BK.stone2}"/>
+   ${t3 ? bStones(-34, 18, 68, 6) : ''}<rect x="-30" y="-2" width="60" height="${t3 ? 21 : 25}" fill="${BK.wood}"/>${bPlanks(-30, -2, 60, t3 ? 21 : 25, 6)}
+   ${bRoof(36, -24, 0, gold)}
+   <path d="M-6 ${t3 ? 19 : 23} L-6 8 Q0 3 6 8 L6 ${t3 ? 19 : 23}z" fill="${glow}" opacity="${lit ? .8 : .15}" class="${lit ? 'wglow' : ''}"/>${bWin(-22, 6, 7, 6, glow, lit)}${bWin(15, 6, 7, 6, glow, lit)}
+   <g transform="translate(-40 14)"><ellipse rx="7" ry="9" fill="#4a3020"/><path d="M-7 -4 L7 -4 M-7 4 L7 4" stroke="#8a6f4a" stroke-width="1.2"/></g>${t2 ? '<g transform="translate(-40 -2)"><ellipse rx="5.5" ry="7" fill="#4a3020"/><path d="M-5.5 -3 L5.5 -3 M-5.5 3 L5.5 3" stroke="#8a6f4a" stroke-width="1"/></g>' : ''}
+   <path d="M32 -6 q8 -2 10 6 q-6 -2 -10 0z" fill="#d9c49a" opacity=".9"/>${t2 ? bTorch(36, 10, true) : ''}${t4 ? bBanner(-26, -20, '#a87a1a') : ''}`; break;
+  case 'mine': g = `<path d="M-46 28 Q-38 -18 -8 -26 Q24 -30 44 -4 L48 28z" fill="#2a2428"/><path d="M-30 -2 l10 -6 l6 8 M18 -14 l10 4 l2 10 M-38 18 l8 -4" stroke="#1a1618" stroke-width="1.2" fill="none"/>
+   <path d="M-40 -6 Q-30 -20 -8 -26" stroke="#5a5058" stroke-width="1" fill="none" opacity=".7"/>
+   <path d="M-14 28 L-14 4 Q0 -8 14 4 L14 28z" fill="#050304"/><path d="M-17 28 L-17 2 L17 2 L17 28 M-19 1 L19 1" stroke="${BK.wood}" stroke-width="3.5" fill="none"/>
+   ${lit ? `${bGl(0, 14, 10, glow)}` : ''}
+   ${[[-30, 6], [28, -2], [-22, -14], [34, 14], [8, -20]].slice(0, 1 + l).map(([x, y], i) => `<path d="M${x} ${y - 3} l2.5 3 l-2.5 3 l-2.5 -3z" fill="#c8c0e0" class="glint" style="animation-delay:-${i * .7}s"/>`).join('')}
+   <path d="M-46 26 L48 26" stroke="#4a4048" stroke-width="1.5"/><g transform="translate(26 18)"><path d="M-9 -6 L9 -6 L7 4 L-7 4z" fill="#4a3424"/><circle cx="-5" cy="6" r="2.5" fill="#1a1618" stroke="#6b5a44"/><circle cx="5" cy="6" r="2.5" fill="#1a1618" stroke="#6b5a44"/><path d="M-6 -6 l3 -4 l4 2 l3 -3 l3 5" fill="#8a8a98"/></g>
+   ${t2 ? bTorch(-21, 6, true) : ''}${t3 ? bTorch(21, 6, true) : ''}<path d="M30 -12 L44 -28 M38 -30 L48 -22" stroke="#8a8a90" stroke-width="2.5"/>${gold ? '<path d="M-17 1 L17 1" stroke="#d9a441" stroke-width="2"/>' : ''}`; break;
+  case 'lookout': g = `<path d="M-15 28 L-9 -22 M15 28 L9 -22" stroke="${BK.wood}" stroke-width="4.5"/><path d="M-13 14 L12 -2 M13 14 L-12 -2 M-11 -4 L10 -18 M11 -4 L-10 -18" stroke="${BK.wood2}" stroke-width="2.5"/>
+   <path d="M4 28 L2 -20 M8 28 L6 -20" stroke="${BK.line}" stroke-width="1"/>${[24, 18, 12, 6, 0, -6, -12].map(y => `<path d="M2 ${y} L7 ${y}" stroke="${BK.line}" stroke-width="1"/>`).join('')}
+   <rect x="-18" y="-28" width="36" height="6" fill="${BK.wood}"/>${bPlanks(-18, -28, 36, 6, 4)}<path d="M-18 -28 L-18 -36 M18 -28 L18 -36 M-18 -35 L18 -35 M-9 -28 L-9 -35 M0 -28 L0 -35 M9 -28 L9 -35" stroke="${BK.wood2}" stroke-width="1.6"/>
+   ${t3 ? bRoof(22, -50, -38, gold) : ''}
+   ${lit ? `${bGl(0, -38, 10 + l * 2, glow)}<path class="flame" d="M0 -46 C5 -40 5 -36 0 -33 C-5 -36 -5 -40 0 -46z" fill="#ff8a3a"/><path class="flame f2" d="M0 -42 C2.5 -39 2.5 -36 0 -35 C-2.5 -36 -2.5 -39 0 -42z" fill="#ffe08a"/>${bEmbers(0, -44, 3, '#ffb347')}` : ''}
+   ${t4 ? bBanner(18, -50, '#7a0c1a') : ''}`; break;
+  case 'forge': g = `${lit ? bEmbers(20, -32, 4 + l, '#ff9a4a') : ''}${bSmoke(20, -34, 2)}<rect x="15" y="-32" width="10" height="20" fill="${BK.stone2}"/>${bStones(15, -32, 10, 20)}
+   <rect x="-28" y="0" width="56" height="24" fill="${BK.wood}"/>${bPlanks(-28, 0, 56, 24, 7)}${t3 ? bStones(-30, 20, 60, 6) : ''}
+   ${bRoof(32, -18, 2, gold)}
+   <path d="M-22 22 L-22 6 Q-14 -1 -6 6 L-6 22z" fill="#1a0806"/><path d="M-20 22 L-20 8 Q-14 2 -8 8 L-8 22z" fill="#ff6a3a" opacity="${lit ? .9 : .15}" class="${lit ? 'forgeglow' : ''}"/>
+   ${lit ? bGl(-14, 14, 14, '#ff6a3a') : ''}
+   <g transform="translate(14 18)"><path d="M-9 -4 L9 -4 L7 0 L4 0 L4 6 L-4 6 L-4 0 L-7 0z" fill="#4a4652"/><path d="M-9 -4 L9 -4" stroke="#8a8698" stroke-width=".8"/></g>
+   <path d="M22 14 l8 -10 l3 2 l-8 10z" fill="#5a4a3a"/>${t2 ? bTorch(-32, 10, true) : ''}${t4 ? bBanner(-24, -14, '#a83a1a') : ''}`; break;
+  case 'altar': g = `${[[-28, -16, 12, 42], [16, -16, 12, 42], [-5, -26, 10, 20]].map(([x, y, w, h], i) => `<path d="M${x} ${y + h} L${x + 1} ${y + 3} Q${x + w / 2} ${y - 3} ${x + w - 1} ${y + 3} L${x + w} ${y + h}z" fill="${i === 2 ? BK.stone : BK.stone2}"/><path d="M${x + 2} ${y + 6} L${x + 2} ${y + h - 4}" stroke="#4a4448" stroke-width=".8"/>`).join('')}
+   <rect x="-32" y="-20" width="64" height="8" fill="${BK.stone}"/><path d="M-32 -16 L32 -16" stroke="${BK.sline}" stroke-width=".7"/>
+   <rect x="-12" y="8" width="24" height="18" fill="${BK.stone}"/><path d="M-12 12 L12 12" stroke="${BK.sline}" stroke-width=".7"/>
+   ${lit ? `<path d="M-22 -8 L-22 6 M-25 -4 L-19 0 M22 -8 L22 6 M19 -4 L25 0 M0 -22 L0 -12 M-3 -19 L3 -16" stroke="${glow}" stroke-width="1.4" class="runeglow"/>
+    ${bGl(0, 2, 12 + l * 2, glow)}<g class="orbit"><circle cx="0" cy="-6" r="1.6" fill="${glow}"/><circle cx="10" cy="4" r="1.2" fill="${glow}"/><circle cx="-10" cy="4" r="1.2" fill="${glow}"/></g>
+    <path class="flame" d="M0 0 C3 4 3 6 0 8 C-3 6 -3 4 0 0z" fill="${glow}"/>` : ''}
+   ${gold ? '<rect x="-32" y="-20" width="64" height="8" fill="none" stroke="#d9a441" stroke-width="1.2"/>' : ''}${t4 ? bTorch(-36, 12, true) + bTorch(36, 12, true) : ''}`; break;
+  case 'barracks': g = `${t3 ? bStones(-42, 20, 84, 6) : ''}<rect x="-38" y="0" width="76" height="${t3 ? 21 : 25}" fill="${BK.wood}"/>${bPlanks(-38, 0, 76, t3 ? 21 : 25, 6)}
+   ${bRoof(44, -20, 2, gold)}
+   ${bShield(-26, 10, '#7a0c1a')}${bShield(-14, 10, '#2a4a6a')}${l >= 2 ? bShield(14, 10, '#6a5a1a') : ''}${l >= 3 ? bShield(26, 10, '#7a0c1a') : ''}
+   <path d="M-5 ${t3 ? 20 : 24} L-5 8 L5 8 L5 ${t3 ? 20 : 24}z" fill="${glow}" opacity="${lit ? .6 : .12}" class="${lit ? 'wglow' : ''}"/>
+   <g transform="translate(44 4)"><path d="M-3 22 L-3 -14 M2 22 L2 -18 M7 22 L7 -12" stroke="#6b5a44" stroke-width="1.4"/><path d="M-5 -14 l2 -5 l2 5z M0 -18 l2 -5 l2 5z M5 -12 l2 -5 l2 5z" fill="#c9b38f"/><path d="M-6 10 L10 10" stroke="${BK.wood2}" stroke-width="2"/></g>
+   ${t2 ? bTorch(-44, 10, true) : ''}${t4 ? bBanner(-6, -32, '#7a0c1a') : ''}`; break;
+  case 'camp': g = `${[[-28, -4, 15], [2, -10, 17], [26, 2, 12]].map(([x, y, w], i) => `<path d="M${x - w} 24 L${x} ${y} L${x + w} 24z" fill="${i % 2 ? '#4a3a2c' : '#3e3024'}"/><path d="M${x} ${y} L${x} 24" stroke="#1a100d" stroke-width=".8"/><path d="M${x - 3} 24 L${x} 14 L${x + 3} 24z" fill="#120a08"/><path d="M${x} ${y} L${x + w} 24" stroke="#6a5444" stroke-width=".8"/>`).join('')}
+   ${lit ? `${bGl(-8, 24, 11, '#ff8a3a')}<path d="M-13 27 L-3 23 M-13 23 L-3 27" stroke="#3a2418" stroke-width="2"/><path class="flame" d="M-8 15 C-4 20 -4 23 -8 25 C-12 23 -12 20 -8 15z" fill="#ff8a3a"/><path class="flame f2" d="M-8 19 C-6 21 -6 23 -8 24 C-10 23 -10 21 -8 19z" fill="#ffe08a"/>${bEmbers(-8, 16, 3)}` : ''}
+   ${t2 ? bBanner(38, -14, '#7a0c1a') : ''}${t4 ? bBanner(-42, -10, '#2a4a6a') : ''}${gold ? '<path d="M2 -10 L19 24 M2 -10 L-15 24" stroke="#d9a441" stroke-width="1.2"/>' : ''}`; break;
+  case 'infirmary': g = `${bSmoke(-12, -24, 2)}${t3 ? bStones(-30, 20, 60, 6) : ''}<rect x="-26" y="0" width="52" height="${t3 ? 21 : 25}" fill="${BK.wood}"/>${bPlanks(-26, 0, 52, t3 ? 21 : 25, 6)}
+   ${bRoof(32, -20, 2, gold)}
+   ${[-18, -12, 14, 20].map((x, i) => `<path d="M${x} 2 L${x} 7" stroke="#6b5a44" stroke-width=".6"/><path d="M${x - 2} 7 q2 6 4 0z" fill="${i % 2 ? '#6a8a4a' : '#8aa85a'}"/>`).join('')}
+   <path d="M-5 ${t3 ? 20 : 24} L-5 9 Q0 5 5 9 L5 ${t3 ? 20 : 24}z" fill="${glow}" opacity="${lit ? .75 : .15}" class="${lit ? 'wglow' : ''}"/>
+   <path d="M0 -14 L0 -4 M-4 -9 L4 -9" stroke="${glow}" stroke-width="2" opacity="${lit ? 1 : .3}" class="${lit ? 'runeglow' : ''}"/>
+   ${lit ? `<g transform="translate(30 6)"><path d="M0 -8 L0 -2" stroke="#2a1c14"/><rect x="-3" y="-2" width="6" height="7" fill="${glow}" opacity=".85" class="wglow"/>${bGl(0, 1, 8, glow)}</g>` : ''}${t4 ? bBanner(-34, -8, '#2a5a3a') : ''}`; break;
+  case 'tower': g = `<path d="M-13 28 L-10 -20 L10 -20 L13 28z" fill="${BK.stone}"/>${(() => { let d = ''; for (let y = -16; y < 28; y += 6){ const w = 10 + (y + 20) * 3 / 48; d += `M${-w} ${y} L${w} ${y} `; for (let x = -8 + ((y / 6) % 2 ? 4 : 0); x < 10; x += 8) d += `M${x} ${y} L${x} ${y + 6} `; } return `<path d="${d}" stroke="${BK.sline}" stroke-width=".7"/>`; })()}
+   <path d="M10 -20 L13 28" stroke="#6a6266" stroke-width="1"/>
+   <rect x="-17" y="-30" width="34" height="11" fill="${BK.stone2}"/><path d="M-17 -30 L-17 -37 L-11 -37 L-11 -30 M-4 -30 L-4 -37 L4 -37 L4 -30 M11 -30 L11 -37 L17 -37 L17 -30" fill="${BK.stone2}"/><path d="M-17 -24 L17 -24" stroke="${BK.sline}" stroke-width=".7"/>
+   <rect x="-1.5" y="-12" width="3" height="10" fill="${glow}" opacity="${lit ? .85 : .15}" class="${lit ? 'wglow' : ''}"/><rect x="-1.5" y="6" width="3" height="8" fill="${glow}" opacity="${lit && t2 ? .85 : .15}"/>
+   ${lit ? `${bGl(0, -36, 8 + l * 2, '#ffb347')}<path class="flame" d="M-3 -38 C1 -34 1 -32 -3 -30 C-7 -32 -7 -34 -3 -38z" fill="#ff8a3a"/>` : ''}
+   ${t3 ? bBanner(10, -50, '#7a0c1a') : ''}${gold ? '<path d="M-17 -30 L17 -30" stroke="#d9a441" stroke-width="1.4"/>' : ''}${t4 ? bTorch(-17, 8, true) : ''}`; break;
+  case 'pits': g = `<ellipse cx="0" cy="18" rx="38" ry="11" fill="#2a1c14"/><ellipse cx="0" cy="18" rx="34" ry="9" fill="#000"/><ellipse cx="0" cy="20" rx="26" ry="5" fill="#2a0508" opacity="${l ? .7 : .2}"/>
+   ${[-26, -17, -8, 1, 10, 19, 27].map((x, i) => `<path d="M${x - 3} 20 L${x} ${l ? -4 - (i % 3) * 5 - l : 12} L${x + 3} 20z" fill="#6b5a44"/><path d="M${x} ${l ? -4 - (i % 3) * 5 - l : 12} L${x + 3} 20" stroke="#2a1c14" stroke-width=".6"/>${l >= 2 && i % 2 ? `<path d="M${x - .6} ${l ? -1 - (i % 3) * 5 - l : 13} L${x} ${l ? 4 - (i % 3) * 5 : 15}" stroke="#8a0a1a" stroke-width="1.2"/>` : ''}`).join('')}
+   ${t3 ? '<path d="M-30 24 q4 -3 8 0 M20 25 q3 -2 7 0" stroke="#d8c8b0" stroke-width="1.6" fill="none"/><circle cx="-14" cy="25" r="2.4" fill="#d8c8b0"/>' : ''}
+   ${t2 ? bTorch(-40, 8, true) + bTorch(40, 8, true) : ''}${gold ? '<ellipse cx="0" cy="18" rx="38" ry="11" fill="none" stroke="#d9a441" stroke-width="1"/>' : ''}`; break;
  }
  return g;
 }
 // slots on the village map (viewBox 0 0 390 430)
-const SLOTS = {hall:[195, 208], mead:[88, 168], forge:[302, 168], lookout:[195, 88], barracks:[84, 262], altar:[306, 270], camp:[195, 322], infirmary:[100, 356], mine:[292, 362], tower:[45, 80], pits:[345, 80]};
+const SLOTS = {hall:[195, 208], mead:[88, 168], forge:[302, 168], lookout:[195, 88], barracks:[84, 262], altar:[306, 270], camp:[195, 322], infirmary:[100, 356], mine:[292, 362], tower:[57, 80], pits:[333, 80]};
 function villageMap(vil, badges){
  const wl = vil.wall || 0;
  let stakes = '';
@@ -1117,6 +1226,13 @@ const VERSION = document.querySelector('meta[name="build"]').content; // e.g. "1
 const BUILD_DATE = document.querySelector('meta[name="build-date"]').content;
 // Newest first. Every update adds an entry; it shows once after the update lands.
 const CHANGELOG = [
+ {v:'1.7', d:'Nov 16 2026', notes:[
+  'Every realm has its own weather now: ash and blood-red heat lightning in the Barrow, fireflies in the Ironwood, snow at Hel\'s Gate, rising embers under the Roots, and storms over the Drowned Sea.',
+  'Magic crackles in battle. Ultimates gather lightning and strike with it, crits throw sparks, buffs and heals lift glowing motes, and bosses call bolts from the sky.',
+  'Every village building was redrawn: plank walls, shingled roofs, torches, chimney smoke, forge embers and glowing runes. Each upgrade level adds something you can see.',
+  'Moonlight now falls across every scene.',
+  'Settings has a Weather & Magic switch if you want it calm.',
+ ]},
  {v:'1.6.1', d:'Nov 16 2026', notes:['Joining a warband now says clearly what went wrong, if anything does.']},
  {v:'1.6', d:'Nov 16 2026', notes:[
   'The warband is online. Open War, tap Join a warband, and type the same group code as your friends.',
@@ -1283,7 +1399,120 @@ function toast(t, ms){ const el = $('#toast'); el.textContent = t; el.classList.
 function sheet(html, cls){ const v = $('#veil'); v.innerHTML = `<div class="sheet ${cls || ''}" style="position:relative">${html}</div>`; v.classList.add('on'); v.onclick = e => { if (e.target === v && !v._lock) closeSheet(); }; return v.firstChild; }
 function closeSheet(){ const v = $('#veil'); v.classList.remove('on'); v.innerHTML = ''; v._lock = false; }
 function showScreen(id){ $$('.screen').forEach(s => s.classList.toggle('on', s.id === id)); }
-function setBG(r, village){ $('#bg').innerHTML = ART.sceneSVG(RM.REALMS[r], {village}); }
+// ---------- ATMOSPHERE + MAGIC (v1.7) ----------
+// Two canvases: #atmo sits behind the UI for weather, #fxc sits above it for combat sparks and lightning.
+const ATMO = (() => {
+ const W = {mode:'', parts:[], fx:[], bolts:[], next:0, raf:0, last:0, w:0, h:0, dpr:1, on:true, low:false, flashA:0, flashC:'#fff', want:'', lastFlash:0, skip:false, glowG:null};
+ let cv, cx, fv, fc, sprites = {};
+ const PRESET = {
+  barrow:{ash:28, ember:12, emberCol:'#ff4a3a', bolt:[14, 28], boltCol:'#ff5a5a', sheet:true},
+  ironwood:{fly:22, flyCol:'#d8f060', leaf:10},
+  helgate:{snow:70, bolt:[16, 30], boltCol:'#bfe0ff'},
+  roots:{ember:46, emberCol:'#ff8a3a', ash:10, glow:'#ff6a2a'},
+  drowned:{rain:110, bolt:[6, 14], boltCol:'#d8f4ff'},
+  village:{ember:22, emberCol:'#ffb347', fly:10, flyCol:'#f0d070'},
+ };
+ const rnd = (a, b) => a + Math.random() * (b - a);
+ function flashOK(){ const t = performance.now(); if (W.low || t - W.lastFlash < 450) return false; W.lastFlash = t; return true; }
+ function sprite(col, r){ const k = col + r; if (sprites[k]) return sprites[k]; const c = document.createElement('canvas'), s = r * 2; c.width = c.height = s; const g = c.getContext('2d'), gr = g.createRadialGradient(r, r, 0, r, r, r); gr.addColorStop(0, col); gr.addColorStop(.25, col); gr.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = gr; g.fillRect(0, 0, s, s); return (sprites[k] = c); }
+ function size(){ if (!cv) return; const a = $('#app').getBoundingClientRect(); W.w = a.width; W.h = a.height; W.dpr = Math.min(2, window.devicePixelRatio || 1); [cv, fv].forEach(c => { c.width = Math.round(W.w * W.dpr); c.height = Math.round(W.h * W.dpr); }); cx.setTransform(W.dpr, 0, 0, W.dpr, 0, 0); fc.setTransform(W.dpr, 0, 0, W.dpr, 0, 0); W.glowG = null; }
+ function spawn(kind, P, fresh){
+  const p = {k:kind, x:rnd(0, W.w), y:fresh ? rnd(0, W.h) : 0, a:rnd(.3, 1)};
+  if (kind === 'ash'){ p.y = fresh ? p.y : -6; p.vx = rnd(-6, 10); p.vy = rnd(10, 26); p.r = rnd(.8, 1.8); p.c = '#cbb8b0'; }
+  if (kind === 'ember'){ p.y = fresh ? p.y : W.h + 6; p.vx = rnd(-8, 8); p.vy = -rnd(18, 48); p.r = rnd(1, 2.4); p.c = P.emberCol; p.ph = rnd(0, 6); }
+  if (kind === 'fly'){ p.vx = rnd(-10, 10); p.vy = rnd(-6, 6); p.r = rnd(1.6, 2.6); p.c = P.flyCol; p.ph = rnd(0, 6); p.y = rnd(W.h * .35, W.h * .95); }
+  if (kind === 'leaf'){ p.y = fresh ? p.y : -8; p.vx = rnd(4, 16); p.vy = rnd(18, 32); p.r = rnd(2, 3.4); p.c = ['#8a4a1a', '#6a3a14', '#a8641e'][Math.floor(rnd(0, 3))]; p.ph = rnd(0, 6); }
+  if (kind === 'snow'){ p.y = fresh ? p.y : -6; p.vx = rnd(-14, 4); p.vy = rnd(14, 40); p.r = rnd(.8, 2.4); p.c = '#eef4ff'; p.ph = rnd(0, 6); }
+  if (kind === 'rain'){ p.y = fresh ? p.y : -20; p.vx = -90; p.vy = rnd(560, 760); p.r = rnd(10, 18); p.c = '#9fc4d8'; p.a = rnd(.15, .4); }
+  return p;
+ }
+ function setMode(m){
+  if (W.mode === m) return; W.mode = m; W.parts = []; W.glowG = null; const P = PRESET[m]; if (!P || W.low) return;
+  const cut = W.low ? 3 : 1;
+  ['ash', 'ember', 'fly', 'leaf', 'snow', 'rain'].forEach(k => { for (let i = 0; i < Math.round((P[k] || 0) / cut); i++) W.parts.push(spawn(k, P, true)); });
+  W.next = performance.now() + (P.bolt ? rnd(3, 8) * 1000 : 1e12);
+  wake();
+ }
+ // a jagged bolt with forks, as a list of polylines
+ function bolt(x1, y1, x2, y2, rough, forks){
+  const lines = [], main = [[x1, y1]], n = 9, dx = x2 - x1, dy = y2 - y1, len = Math.hypot(dx, dy), nx = -dy / len, ny = dx / len;
+  for (let i = 1; i < n; i++){ const t = i / n, o = rnd(-1, 1) * rough * Math.sin(Math.PI * t); main.push([x1 + dx * t + nx * o, y1 + dy * t + ny * o]); }
+  main.push([x2, y2]); lines.push(main);
+  for (let f = 0; f < (forks || 0); f++){ const s = main[Math.floor(rnd(2, n - 2))], br = [s]; let [bx, by] = s; for (let j = 0; j < 4; j++){ bx += rnd(-1, 1) * rough * .8 + dx * .06; by += rnd(.2, 1) * len * .07; br.push([bx, by]); } lines.push(br); }
+  return lines;
+ }
+ function strokeBolt(ctx, lines, col, a, wdt){
+  ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+  [[wdt * 4, .18], [wdt * 1.8, .45], [wdt * .7, 1]].forEach(([lw, al], i) => { ctx.strokeStyle = i === 2 ? '#ffffff' : col; ctx.globalAlpha = a * al; ctx.lineWidth = lw; lines.forEach((ln, k) => { ctx.lineWidth = k ? lw * .5 : lw; ctx.beginPath(); ln.forEach(([x, y], j) => j ? ctx.lineTo(x, y) : ctx.moveTo(x, y)); ctx.stroke(); }); });
+  ctx.restore();
+ }
+ function sky(col){ // a weather strike from the top of the screen
+  const P = PRESET[W.mode] || {}; if (W.low) return;
+  if (P.sheet && Math.random() < .55){ if (flashOK()){ W.flashA = .35; W.flashC = col; } return; } // distant heat lightning, no bolt
+  const x = rnd(W.w * .1, W.w * .9);
+  W.bolts.push({lines:bolt(x, -10, x + rnd(-60, 60), rnd(W.h * .3, W.h * .55), 38, 3), col, t:0, life:.55, w:2.4, layer:'back'});
+  if (flashOK()){ W.flashA = .5; W.flashC = col; }
+ }
+ function frame(now){
+  W.raf = 0; if (!W.on || document.hidden) return;
+  const busy = W.fx.length || W.bolts.length || W.flashA > .01;
+  if (!busy && W.last && now - W.last < 30){ wake(); return; } // weather alone runs at about 30 fps to save battery
+  const dt = Math.min(.05, (now - (W.last || now)) / 1000); W.last = now;
+  const P = PRESET[W.mode] || {};
+  cx.clearRect(0, 0, W.w, W.h); fc.clearRect(0, 0, W.w, W.h);
+  // weather
+  if (P.glow){ if (!W.glowG){ W.glowG = cx.createLinearGradient(0, W.h, 0, W.h * .55); W.glowG.addColorStop(0, P.glow); W.glowG.addColorStop(1, 'rgba(0,0,0,0)'); } const g = W.glowG; cx.globalAlpha = .1 + .06 * Math.sin(now / 900); cx.fillStyle = g; cx.fillRect(0, W.h * .55, W.w, W.h * .45); cx.globalAlpha = 1; }
+  cx.globalCompositeOperation = 'lighter';
+  for (const p of W.parts){
+   p.x += p.vx * dt; p.y += p.vy * dt;
+   if (p.k === 'ember'){ p.ph += dt * 3; p.x += Math.sin(p.ph) * .3; const f = .6 + .4 * Math.sin(p.ph * 2.3); cx.globalAlpha = p.a * f; cx.drawImage(sprite(p.c, 6), p.x - p.r * 2.5, p.y - p.r * 2.5, p.r * 5, p.r * 5); if (p.y < -10) Object.assign(p, spawn('ember', P)); }
+   else if (p.k === 'fly'){ p.ph += dt * 1.4; p.vx += Math.sin(p.ph * 1.7) * 4 * dt; p.vy += Math.cos(p.ph * 1.3) * 4 * dt; const f = Math.max(0, Math.sin(p.ph * 2)); cx.globalAlpha = p.a * f; cx.drawImage(sprite(p.c, 8), p.x - 8, p.y - 8, 16, 16); if (p.x < -20 || p.x > W.w + 20 || p.y < W.h * .2 || p.y > W.h + 20) Object.assign(p, spawn('fly', P)); }
+   else if (p.k === 'rain'){ cx.globalAlpha = p.a; cx.strokeStyle = p.c; cx.lineWidth = 1; cx.beginPath(); cx.moveTo(p.x, p.y); cx.lineTo(p.x - p.vx * .02, p.y - p.r); cx.stroke(); if (p.y > W.h + 20) Object.assign(p, spawn('rain', P)); }
+   else { // ash, snow, leaf fall
+    if (p.ph !== undefined){ p.ph += dt * 2; p.x += Math.sin(p.ph) * (p.k === 'leaf' ? .9 : .35); }
+    cx.globalAlpha = p.a * (p.k === 'ash' ? .5 : .85);
+    if (p.k === 'leaf'){ cx.globalCompositeOperation = 'source-over'; cx.fillStyle = p.c; cx.save(); cx.translate(p.x, p.y); cx.rotate(p.ph); cx.fillRect(-p.r, -p.r / 2, p.r * 2, p.r); cx.restore(); cx.globalCompositeOperation = 'lighter'; }
+    else { cx.fillStyle = p.c; cx.beginPath(); cx.arc(p.x, p.y, p.r, 0, 6.283); cx.fill(); }
+    if (p.y > W.h + 10 || p.x < -20 || p.x > W.w + 20) Object.assign(p, spawn(p.k, P));
+   }
+  }
+  cx.globalAlpha = 1; cx.globalCompositeOperation = 'source-over';
+  if (P.bolt && now > W.next){ sky(P.boltCol); W.next = now + rnd(P.bolt[0], P.bolt[1]) * 1000; }
+  // bolts
+  W.bolts = W.bolts.filter(b => { b.t += dt; if (b.t > b.life) return false; const k = b.t / b.life, a = k < .15 ? 1 : (1 - k) * (Math.random() < .3 ? .5 : 1); if (b.jit && Math.random() < .35) b.lines = bolt(...b.jit, b.rough, 1); strokeBolt(b.layer === 'back' ? cx : fc, b.lines, b.col, a, b.w); return true; });
+  // sparks and motes
+  fc.globalCompositeOperation = 'lighter';
+  W.fx = W.fx.filter(p => { p.t += dt; if (p.t > p.life) return false; p.vy += (p.g || 0) * dt; p.vx *= p.drag || 1; p.vy *= p.drag || 1; p.x += p.vx * dt; p.y += p.vy * dt; const k = 1 - p.t / p.life; fc.globalAlpha = Math.min(1, k * 1.4); const r = p.r * (p.grow ? 1 + p.t * 2 : k * .6 + .4); fc.drawImage(sprite(p.c, 8), p.x - r * 2, p.y - r * 2, r * 4, r * 4); return true; });
+  fc.globalAlpha = 1; fc.globalCompositeOperation = 'source-over';
+  // full-screen flash
+  if (W.flashA > .01){ const f = $('#skyflash'); f.style.background = W.flashC; f.style.opacity = W.flashA.toFixed(2); W.flashA *= Math.pow(.02, dt); } else if (W.flashA){ W.flashA = 0; $('#skyflash').style.opacity = 0; }
+  wake();
+ }
+ function wake(){ if (!W.raf && W.on && !document.hidden && (W.parts.length || W.fx.length || W.bolts.length || W.flashA)) W.raf = requestAnimationFrame(frame); }
+ function pt(el){ if (!el) return null; const c = centerOf(el, el.classList && el.classList.contains('foe')); return c; }
+ return {
+  init(){
+   cv = $('#atmo'); fv = $('#fxc'); if (!cv || !fv) return; cx = cv.getContext('2d'); fc = fv.getContext('2d');
+   W.low = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+   W.on = S.set.fx !== false; size();
+   try { new ResizeObserver(size).observe($('#app')); } catch (e) { addEventListener('resize', size); }
+   document.addEventListener('visibilitychange', () => { W.last = 0; wake(); });
+   $('#ash').style.display = W.on || W.low ? 'none' : '';
+  },
+  set(mode){ W.want = mode; if (!cx) return; setMode(W.on ? mode : ''); },
+  toggle(on){ W.on = on; if (!cx) return; W.mode = ''; $('#ash').style.display = on || W.low ? 'none' : ''; if (on){ W.last = 0; setMode(W.want); } else { W.parts = []; W.fx = []; W.bolts = []; W.flashA = 0; $('#skyflash').style.opacity = 0; cx.clearRect(0, 0, W.w, W.h); fc.clearRect(0, 0, W.w, W.h); } },
+  // combat: lightning from one unit to another
+  zap(fromEl, toEl, col, big){ if (!cx || !W.on || W.low) return; const a = pt(fromEl), b = pt(toEl); if (!a || !b) return; const r = Math.max(14, Math.hypot(b.x - a.x, b.y - a.y) * .12); W.bolts.push({lines:bolt(a.x, a.y, b.x, b.y, r, big ? 2 : 1), jit:[a.x, a.y, b.x, b.y], rough:r, col, t:0, life:big ? .55 : .32, w:big ? 2.6 : 1.6}); if (big && flashOK()){ W.flashA = .22; W.flashC = col; } wake(); },
+  // combat: a strike from the sky onto one unit
+  smite(toEl, col){ if (!cx || !W.on) return; if (W.low){ this.burst(toEl, col, 6); return; } const b = pt(toEl); if (!b) return; W.bolts.push({lines:bolt(b.x + rnd(-40, 40), -10, b.x, b.y, 30, 2), col, t:0, life:.5, w:2.6}); if (flashOK()){ W.flashA = .26; W.flashC = col; } this.burst(toEl, col, 16); wake(); },
+  burst(el, col, n, opt){ if (!cx || !W.on) return; const c = pt(el); if (!c) return; opt = opt || {}; for (let i = 0; i < (W.low ? Math.ceil(n / 3) : n); i++){ const an = rnd(0, 6.283), sp = rnd(60, opt.speed || 260); W.fx.push({x:c.x, y:c.y, vx:Math.cos(an) * sp, vy:Math.sin(an) * sp - 40, g:opt.g == null ? 420 : opt.g, drag:.97, r:rnd(1.2, 2.6), c:col, t:0, life:rnd(.4, .8)}); } wake(); },
+  rise(el, col, n){ if (!cx || !W.on) return; const c = pt(el); if (!c) return; for (let i = 0; i < (W.low ? 3 : n || 10); i++) W.fx.push({x:c.x + rnd(-c.w * .4, c.w * .4), y:c.y + rnd(0, c.h * .4), vx:rnd(-8, 8), vy:-rnd(40, 90), g:0, drag:.99, r:rnd(1.2, 2.2), c:col, t:-rnd(0, .3), life:rnd(.8, 1.3)}); wake(); },
+  charge(el, col){ if (!cx || !W.on || W.low) return; const c = pt(el); if (!c) return; for (let i = 0; i < (W.low ? 4 : 14); i++){ const an = rnd(0, 6.283), d = rnd(40, 70); W.fx.push({x:c.x + Math.cos(an) * d, y:c.y + Math.sin(an) * d, vx:-Math.cos(an) * d * 2.2, vy:-Math.sin(an) * d * 2.2, g:0, drag:.94, r:rnd(1.4, 2.6), c:col, t:0, life:.45}); } for (let i = 0; i < 2; i++){ const an = rnd(0, 6.283); W.bolts.push({lines:bolt(c.x + Math.cos(an) * 50, c.y + Math.sin(an) * 50, c.x, c.y, 10, 0), col, t:-i * .08, life:.25, w:1.2}); } wake(); },
+  flash(col, a){ if (!cx || !W.on || !flashOK()) return; W.flashA = a || .3; W.flashC = col; wake(); },
+  noteFlash(){ W.lastFlash = performance.now(); },
+ };
+})();
+function setBG(r, village, calm){ $('#bg').innerHTML = ART.sceneSVG(RM.REALMS[r], {village}); ATMO.set(calm ? '' : village ? 'village' : RM.REALMS[r].id); }
 function costHTML(c){ return Object.keys(c).filter(k => c[k]).map(k => `<span class="cost ${S[k] < c[k] ? 'short' : ''}">${ART.ICON[k]}${fmt(c[k])}</span>`).join(' '); }
 function afford(c){ return Object.keys(c).every(k => S[k] >= c[k]); }
 function pay(c){ Object.keys(c).forEach(k => S[k] -= c[k]); }
@@ -1302,7 +1531,7 @@ function renderTop(){
 }
 function go(tab){
  TAB = tab; $$('.tab').forEach(t => t.classList.toggle('on', t.dataset.tab === tab));
- setBG(tab === 'village' ? 0 : frontier(), tab === 'village');
+ setBG(tab === 'village' ? 0 : frontier(), tab === 'village', tab !== 'village'); // menus cover the sky, so no weather there
  ({saga:renderSaga, warriors:renderWarriors, village:renderVillage, raid:renderWar})[tab]();
  renderTop(); $('#panel').scrollTop = 0; Coach.emit('tab:' + tab);
 }
@@ -2000,7 +2229,7 @@ function impact(uid, style, col, big, crit){
 }
 function fxAt(uid, kind, crit){ impact(uid, kind === 'heal' ? 'cast' : 'cleave', FXCOL[kind] || FXCOL.basic, kind === 'ult', crit); }
 
-function hurtFlash(big){ const h = $('#hurtflash'); h.classList.remove('on', 'big'); void h.offsetWidth; h.classList.add('on'); if (big) h.classList.add('big'); }
+function hurtFlash(big){ ATMO.noteFlash(); const h = $('#hurtflash'); h.classList.remove('on', 'big'); void h.offsetWidth; h.classList.add('on'); if (big) h.classList.add('big'); }
 function shakeHard(){ flash($('#battle'), 'shakebig', 520); }
 async function playEvents(ev){
  const my = BID; playEvents.n = (playEvents.n || 0) + 1;
@@ -2014,6 +2243,8 @@ async function playEvents(ev){
     // wind-up: the attacker rears back and its rune flares
     if (el){ el.classList.add('windup'); }
     if (u.look && !u.troop){ const sk = RM.SKILLS[e.sid]; if (sk) floatAt(e.u, sk.rune, 'rune ' + e.kind); }
+    if (e.kind === 'ult' && el) ATMO.charge(el, '#f0c060');
+    if (e.kind === 'sig' && el) ATMO.smite(el, '#ff3a4a');
     if (e.kind === 'ult'){ const f = $('#ultflash'); f.querySelector('.ur').textContent = RM.SKILLS[e.sid].rune; f.querySelector('.un').textContent = e.name; f.style.animationDuration = (0.9 / [1, 1.8, 3][Math.max(0, Math.min(2, S.set.speed - 1))]) + 's'; f.classList.remove('on'); void f.offsetWidth; f.classList.add('on'); sfx('ult'); vibe([30, 40, 60]); log(u.name + ' unleashes ' + e.name + '!'); await pace(1000); }
     if (e.kind === 'sig'){ log(u.name + ' unleashes ' + e.name + '!'); sfx('boss'); shakeHard(); hurtFlash(true); vibe([60, 40, 90]); await pace(700); }
     else if (e.kind === 'trick'){ log(u.name + ' uses ' + e.name + '!'); sfx('buff'); floatAt(e.u, e.name, 'txt'); await pace(jit(520)); }
@@ -2029,17 +2260,21 @@ async function playEvents(ev){
     const cs = CUR && CUR.src === e.src ? CUR : {style:'cleave', col:isHero ? '#c040ff' : '#f1e6d2'};
     if (RANGED[cs.style]){ if (cs.flewAt !== e.src + ':' + playEvents.n){ cs.flewAt = e.src + ':' + playEvents.n; await projectile(document.querySelector(`[data-uid="${e.src}"]`), el, cs.style, cs.col); } else { projectile(document.querySelector(`[data-uid="${e.src}"]`), el, cs.style, cs.col); await pace(140); } }
     impact(e.tgt, cs.style, cs.col, e.big, e.crit);
+    if (e.big || LASTKIND === 'ult') ATMO.zap(document.querySelector(`[data-uid="${e.src}"]`), el, cs.col === '#f0c060' ? '#ffd970' : cs.col, true);
+    else if (e.crit) ATMO.burst(el, '#ffb347', 14);
+    if (e.crit || e.big) ATMO.burst(el, cs.col, e.big ? 22 : 10, {speed:320});
     flash(el, 'hit'); floatAt(e.tgt, (e.crit ? e.amt + '!' : e.amt), e.crit ? 'crit' : isHero ? 'hurt' : '');
     sfx(isHero ? 'hurt' : e.crit ? 'crit' : 'hit');
     if (isHero){ hurtFlash(e.big); vibe(e.big ? 50 : 25); } else vibe(e.crit || e.big ? 35 : 12);
     if (e.crit || e.big) shakeHard(); else shakeScreen();
     updateUnits(); await pace(jit(e.big ? 260 : 400)); break; }
-   case 'heal': fxAt(e.tgt, 'heal'); floatAt(e.tgt, '+' + e.amt, 'heal'); sfx('heal'); updateUnits(); await pace(340); break;
+   case 'heal': ATMO.rise(document.querySelector(`[data-uid="${e.tgt}"]`), '#9fe8a0', 8); fxAt(e.tgt, 'heal'); floatAt(e.tgt, '+' + e.amt, 'heal'); sfx('heal'); updateUnits(); await pace(340); break;
    case 'self': floatAt(e.u, '-' + e.amt, 'hurt'); flash(document.querySelector(`[data-uid="${e.u}"]`), 'hit'); updateUnits(); await pace(220); break;
-   case 'die': if (unit.boss && LASTKIND === 'ult') BOSSULT = true; if (unit.side === 'hero' && !unit.troop) HERODOWN = true; sfx('die'); if (unit.boss){ shakeHard(); vibe([80, 50, 120]); } log(unit.name + (unit.side === 'hero' ? ' has fallen.' : ' is destroyed.')); updateUnits(); await pace(unit.boss ? 1100 : 650); break;
-   case 'buff': sfx('buff'); log((e.by === 'foe' ? BUFFLOG_FOE[e.k] : BUFFLOG[e.k]) || ''); updateUnits(); await pace(500); break;
-   case 'enrage': floatAt(e.u, 'ENRAGED', 'crit'); log(unit.name + ' is enraged!'); sfx('boss'); shakeHard(); hurtFlash(true); vibe([60, 30, 60]); await pace(900); break;
-   case 'revive': fxAt(e.u, 'heal', true); floatAt(e.u, 'Rises!', 'heal'); log(unit.name + ' rises again.'); sfx('heal'); updateUnits(); await pace(600); break;
+   case 'die': if (unit.boss && LASTKIND === 'ult') BOSSULT = true; if (unit.side === 'hero' && !unit.troop) HERODOWN = true; sfx('die'); if (unit.boss){ shakeHard(); vibe([80, 50, 120]); ATMO.burst(document.querySelector(`[data-uid="${unit.uid}"]`), '#ff8a3a', 40, {speed:380}); ATMO.flash('#ff6a3a', .35); } log(unit.name + (unit.side === 'hero' ? ' has fallen.' : ' is destroyed.')); updateUnits(); await pace(unit.boss ? 1100 : 650); break;
+   case 'buff': { const side = e.by === 'foe' ? (e.side === 'foe' ? 'hero' : 'foe') : (e.side === 'foe' ? 'foe' : 'hero'), col = {shield:'#9fd0ff', atkUp:'#ff7a4a', atkDown:'#c040ff', stun:'#c9c2ff', taunt:'#f0c060'}[e.k] || '#f0c060'; (e.u ? [document.querySelector(`[data-uid="${e.u}"]`)] : B.all().filter(x => x.alive && x.side === side).map(x => document.querySelector(`[data-uid="${x.uid}"]`))).forEach(c => ATMO.rise(c, col, 7)); }
+    sfx('buff'); log((e.by === 'foe' ? BUFFLOG_FOE[e.k] : BUFFLOG[e.k]) || ''); updateUnits(); await pace(500); break;
+   case 'enrage': ATMO.smite(document.querySelector(`[data-uid="${e.u}"]`), '#ff2a3a'); floatAt(e.u, 'ENRAGED', 'crit'); log(unit.name + ' is enraged!'); sfx('boss'); shakeHard(); hurtFlash(true); vibe([60, 30, 60]); await pace(900); break;
+   case 'revive': ATMO.rise(document.querySelector(`[data-uid="${e.u}"]`), '#f0e0a0', 16); fxAt(e.u, 'heal', true); floatAt(e.u, 'Rises!', 'heal'); log(unit.name + ' rises again.'); sfx('heal'); updateUnits(); await pace(600); break;
    case 'miss': floatAt(e.tgt, 'Miss', 'txt'); if (S.set.sfx) noise(.12, .12, 3000); { const el = document.querySelector(`[data-uid="${e.tgt}"]`); animEl(el && (el.querySelector('.fart') || el), [{transform:'none'}, {transform:'translateX(-18px) rotate(-3deg)'}, {transform:'none'}], 320); } await pace(jit(380)); break;
    case 'dot': floatAt(e.u, '-' + e.amt, 'dot'); flash(document.querySelector(`[data-uid="${e.u}"]`), 'hit'); sfx('hurt'); updateUnits(); await pace(360); break;
    case 'endure': floatAt(e.u, 'Endures!', 'crit'); log(unit.name + ' refuses to fall.'); sfx('boss'); updateUnits(); await pace(600); break;
@@ -2429,6 +2664,7 @@ function settingsSheet(){
  sheet(`<button class="btn small close" id="xs">Close</button><h3>Settings</h3>
   <div class="stat"><span>SOUND EFFECTS</span><button class="btn small" id="tSfx">${S.set.sfx ? 'On' : 'Off'}</button></div>
   <div class="stat"><span>MUSIC</span><button class="btn small" id="tMus">${S.set.music ? 'On' : 'Off'}</button></div>
+  <div class="stat"><span>WEATHER &amp; MAGIC</span><button class="btn small" id="tFx">${S.set.fx !== false ? 'On' : 'Off'}</button></div>
   <div class="row" style="margin:14px 0 6px"><button class="btn" id="howBtn">How to play</button><button class="btn" id="tutBtn">Replay guide</button></div>
   <div class="row" style="margin:6px 0"><button class="btn" id="newBtn">What's new</button><button class="btn" id="updBtn">${UPD.ready ? 'Update now' : 'Check for updates'}</button></div>
   ${inst ? '<div class="row" style="margin:6px 0"><button class="btn blood" id="instBtn">Install on this phone</button></div>' : ''}
@@ -2442,6 +2678,7 @@ function settingsSheet(){
  S.set.seenInstall = true; save(); renderTop();
  $('#xs').onclick = closeSheet;
  $('#tSfx').onclick = () => { S.set.sfx = !S.set.sfx; save(); sfx('tap'); settingsSheet(); };
+ $('#tFx').onclick = () => { S.set.fx = S.set.fx === false; save(); ATMO.toggle(S.set.fx); sfx('tap'); settingsSheet(); };
  $('#tMus').onclick = () => { S.set.music = !S.set.music; save(); S.set.music ? musicOn() : musicOff(); settingsSheet(); };
  $('#howBtn').onclick = () => howSheet(0);
  $('#tutBtn').onclick = () => Coach.replay();
@@ -2592,6 +2829,7 @@ function boot(){
  $('#ash').innerHTML = Array.from({length:26}, () => `<i style="left:${Math.random() * 100}%;animation-duration:${8 + Math.random() * 10}s;animation-delay:${-Math.random() * 18}s;opacity:${.2 + Math.random() * .4}"></i>`).join('');
  $('#ravenMark').innerHTML = ART.raven();
  $('#gearBtn').innerHTML = ART.ICON.gear + '<span class="dot" id="gearDot"></span>';
+ ATMO.init();
  setBG(0);
  $('#startBtn').textContent = S.tut.done || S.stats.wins ? 'Continue the saga' : 'Begin the saga';
  $('#startBtn').onclick = () => { ac(); sfx('boss'); if (S.set.music) musicOn(); showScreen('hub'); go('saga'); setTimeout(() => { if (!S.tut.done) Coach.intro(); else whatsNew(false); }, 350); setTimeout(checkDeeds, 600); };
