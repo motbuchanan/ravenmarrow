@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<!-- Ravenmarrow v1.7 · Nov 16 2026 -->
+<!-- Ravenmarrow v1.8 · Nov 16 2026 -->
 <html lang="en"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-<meta name="build" content="1.7">
+<meta name="build" content="1.8">
 <meta name="build-date" content="Nov 16 2026">
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#050304">
@@ -455,6 +455,20 @@ textarea{-webkit-user-select:text;user-select:text;width:100%;min-height:80px;ba
 .rays{transform-origin:285px 200px;animation:rays 14s ease-in-out infinite alternate}
 @keyframes rays{from{transform:rotate(-3deg);opacity:.1}to{transform:rotate(3deg);opacity:.2}}
 @media (prefers-reduced-motion:reduce){.rays{animation:none}}
+/* ---------- v1.8 the Whispering ---------- */
+#whisper{position:absolute;inset:0;z-index:40;pointer-events:none;display:flex;align-items:center;justify-content:center;padding:0 28px;opacity:0;background:radial-gradient(ellipse at 50% 50%,rgba(10,0,4,.15) 20%,rgba(20,0,6,.82) 100%);transition:opacity .5s}
+#whisper.on{opacity:1}
+#whisper p{margin:0;text-align:center;font-family:'IM Fell English',serif;font-style:italic;font-size:clamp(20px,6.4vw,28px);line-height:1.35;color:#ffd6dc;text-shadow:0 0 12px rgba(224,51,74,.9),0 0 30px rgba(140,0,20,.8)}
+#whisper span{display:inline-block;opacity:0;filter:blur(6px);transform:translateY(6px)}
+#whisper.on span{animation:whin .9s forwards}
+@keyframes whin{60%{opacity:1;filter:blur(0);transform:none}80%{transform:translateX(1px)}100%{opacity:.95;filter:blur(0);transform:none}}
+#app.glitch{animation:gl .52s steps(6) 1}
+@keyframes gl{0%{filter:none;transform:none}20%{filter:hue-rotate(140deg) contrast(1.6);transform:translate(-4px,1px) skewX(4deg);clip-path:inset(12% 0 40% 0)}40%{filter:invert(.15) saturate(3);transform:translate(5px,-2px);clip-path:inset(55% 0 8% 0)}60%{filter:hue-rotate(-90deg);transform:translate(-2px,0) skewX(-6deg);clip-path:none}80%{filter:contrast(2) brightness(.7);transform:translate(2px,1px)}100%{filter:none;transform:none}}
+#flipmsg{position:absolute;left:0;right:0;top:14%;z-index:39;pointer-events:none;text-align:center;transform:rotate(180deg);font-size:28px;letter-spacing:6px;color:#ff5468;text-shadow:0 0 18px #b3182a;opacity:0;transition:opacity 1.2s}
+#flipmsg b{display:block;font-family:cinzel,serif;font-size:16px;letter-spacing:5px;margin-top:6px}
+#flipmsg.on{opacity:1}
+h3.lie{color:#ff5468 !important;text-shadow:0 0 10px #b3182a}
+@media (prefers-reduced-motion:reduce){#whisper span{filter:none;transform:none}#app.glitch{animation:none}}
 
 </style>
 </head><body>
@@ -488,6 +502,8 @@ textarea{-webkit-user-select:text;user-select:text;width:100%;min-height:80px;ba
   <div id="skills"></div>
  </section>
  <canvas id="fxc"></canvas>
+ <div id="whisper"><p></p></div>
+ <div id="flipmsg">ᛊᚺᛖ ᛊᛖᛖᛊ ᛃᛟᚢ<br><b>SHE SEES YOU</b></div>
  <div id="hurtflash"></div>
  <div id="fortAnchor" style="position:absolute;top:22%;left:8%;width:2px;height:2px;pointer-events:none"></div>
  <div id="ultflash"><div class="ur"></div><div class="un"></div></div>
@@ -791,6 +807,7 @@ class Battle {
  }
  dmg(src, tgt, mult, ev, opts){
   if (!tgt.alive) return 0;
+  if (this.readNext && tgt.mindReader && src.side !== tgt.side){ this.readNext = false; ev.push({t:'miss', src:src.uid, tgt:tgt.uid, read:true}); return 0; } // the Hel-Maiden saw this move coming
   if ((hasBuff(src, 'blind') && rnd() < 0.5) || (src.side !== tgt.side && this.sideHas(tgt.side, 'ylva') && rnd() < 0.1)){ ev.push({t:'miss', src:src.uid, tgt:tgt.uid}); return 0; }
   let atk = src.atk * (1 + buffVal(src, 'atkUp') - buffVal(src, 'atkDown'));
   if (src.troop) atk *= Math.max(0.15, Math.pow(survivors(src) / src.n, 0.7));
@@ -951,8 +968,8 @@ function sceneSVG(R, opts){
  <linearGradient id="${id}gd" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#050304" stop-opacity="0"/><stop offset=".3" stop-color="#050304" stop-opacity=".85"/><stop offset="1" stop-color="#050304"/></linearGradient>
 </defs>
 <rect width="390" height="844" fill="url(#${id}sky)"/>
-<circle cx="285" cy="200" r="160" fill="url(#${id}mg)" style="animation:pulse 6s ease-in-out infinite"/>
-<circle cx="285" cy="200" r="58" fill="url(#${id}mn)"/>
+<circle cx="285" cy="200" r="${opts && opts.full ? 210 : 160}" fill="url(#${id}mg)" style="animation:pulse 6s ease-in-out infinite"/>
+<circle cx="285" cy="200" r="${opts && opts.full ? 72 : 58}" fill="url(#${id}mn)"/>
 <defs><linearGradient id="${id}ry" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${moon}" stop-opacity=".5"/><stop offset=".6" stop-color="${moon}" stop-opacity="0"/></linearGradient></defs><g class="rays" fill="url(#${id}ry)" opacity=".16" style="mix-blend-mode:screen"><path d="M285 200 L-40 900 L20 900z"/><path d="M285 200 L60 900 L100 900z"/><path d="M285 200 L150 900 L220 900z"/><path d="M285 200 L250 900 L295 900z"/><path d="M285 200 L330 900 L390 900z"/></g>
 <g fill="#000" opacity=".35"><path d="M250 190 q20 -8 30 4 q-14 4 -30 -4z M300 228 q12 -2 18 6 q-10 2 -18 -6z"/></g>
 <g fill="#050305"><path d="M120 140 q8 -6 14 0 q6 -6 14 0 q-7 -2 -14 3 q-7 -5 -14 -3z"/><path d="M165 112 q5 -4 9 0 q4 -4 9 0 q-4 -1 -9 2 q-5 -3 -9 -2z"/><path d="M335 112 q6 -5 11 0 q5 -5 11 0 q-5 -1 -11 2 q-6 -3 -11 -2z"/></g>
@@ -1192,7 +1209,7 @@ function building(id, l){ // drawn around 0,0, about 90 wide, y from about -52 t
 }
 // slots on the village map (viewBox 0 0 390 430)
 const SLOTS = {hall:[195, 208], mead:[88, 168], forge:[302, 168], lookout:[195, 88], barracks:[84, 262], altar:[306, 270], camp:[195, 322], infirmary:[100, 356], mine:[292, 362], tower:[57, 80], pits:[333, 80]};
-function villageMap(vil, badges){
+function villageMap(vil, badges, claws){
  const wl = vil.wall || 0;
  let stakes = '';
  const N = 46;
@@ -1214,7 +1231,7 @@ function villageMap(vil, badges){
  return `<svg viewBox="0 0 390 430" width="100%" class="vmapsvg"><defs><radialGradient id="vgr" cx=".5" cy=".55" r=".6"><stop offset="0" stop-color="#1e140f"/><stop offset="1" stop-color="#060405"/></radialGradient><filter id="bglow" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="0" stdDeviation="2" flood-color="#d9792a" flood-opacity=".45"/></filter><radialGradient id="vfire"><stop offset="0" stop-color="#d9792a" stop-opacity=".35"/><stop offset="1" stop-color="#d9792a" stop-opacity="0"/></radialGradient></defs>
  <ellipse cx="195" cy="225" rx="190" ry="186" fill="url(#vgr)"/><circle cx="195" cy="225" r="120" fill="url(#vfire)"/>
  <path d="M195 400 L195 300 M195 300 Q120 260 88 190 M195 300 Q270 260 302 190 M195 245 L195 120" stroke="#2a1e18" stroke-width="10" fill="none" stroke-linecap="round" opacity=".7"/>
- ${stakes}<g class="bld" data-b="wall" transform="translate(195 424)"><rect x="-30" y="-14" width="60" height="26" fill="transparent"/><text y="2" text-anchor="middle" font-size="9" fill="${wl ? '#c9b38f' : '#8a6f4a'}" font-family="cinzel" letter-spacing="1">GATE · PALISADE ${wl}</text></g>
+ ${stakes}${claws ? [[60, 300, -20], [328, 290, 15], [300, 120, 30]].map(([x, y, r]) => `<g transform="translate(${x} ${y}) rotate(${r})" opacity=".85">${[0, 7, 14].map(d => `<path d="M${d} -16 Q${d + 3} 0 ${d - 1} 16" stroke="#8a0a1a" stroke-width="2.4" fill="none" stroke-linecap="round"/>`).join('')}</g>`).join('') : ''}<g class="bld" data-b="wall" transform="translate(195 424)"><rect x="-30" y="-14" width="60" height="26" fill="transparent"/><text y="2" text-anchor="middle" font-size="9" fill="${wl ? '#c9b38f' : '#8a6f4a'}" font-family="cinzel" letter-spacing="1">GATE · PALISADE ${wl}</text></g>
  ${b}</svg>`;
 }
 
@@ -1226,6 +1243,10 @@ const VERSION = document.querySelector('meta[name="build"]').content; // e.g. "1
 const BUILD_DATE = document.querySelector('meta[name="build-date"]').content;
 // Newest first. Every update adds an entry; it shows once after the update lands.
 const CHANGELOG = [
+ {v:'1.8', d:'Nov 16 2026', notes:[
+  'Something is watching. She notices more than she should.',
+  'Settings has a new switch: Let her in.',
+ ]},
  {v:'1.7', d:'Nov 16 2026', notes:[
   'Every realm has its own weather now: ash and blood-red heat lightning in the Barrow, fireflies in the Ironwood, snow at Hel\'s Gate, rising embers under the Roots, and storms over the Drowned Sea.',
   'Magic crackles in battle. Ultimates gather lightning and strike with it, crits throw sparks, buffs and heals lift glowing motes, and bosses call bolts from the sky.',
@@ -1399,6 +1420,117 @@ function toast(t, ms){ const el = $('#toast'); el.textContent = t; el.classList.
 function sheet(html, cls){ const v = $('#veil'); v.innerHTML = `<div class="sheet ${cls || ''}" style="position:relative">${html}</div>`; v.classList.add('on'); v.onclick = e => { if (e.target === v && !v._lock) closeSheet(); }; return v.firstChild; }
 function closeSheet(){ const v = $('#veil'); v.classList.remove('on'); v.innerHTML = ''; v._lock = false; }
 function showScreen(id){ $$('.screen').forEach(s => s.classList.toggle('on', s.id === id)); }
+// ---------- THE WHISPERING (v1.8) ----------
+// The Hel-Maiden notices the player: the clock, absences, habits, the warband, the battery, the real moon.
+// Everything she "knows" is read on this phone and never sent anywhere. Never fakes a system alert.
+const Whisper = (() => {
+ const RUNES = 'ᚠᚢᚦᚨᚱᚲᚷᚹᚺᚾᛁᛃᛇᛈᛉᛊᛏᛒᛖᛗᛚᛜᛞᛟ';
+ const NUM = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'];
+ const word = n => n <= 10 ? NUM[n] : String(n);
+ const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+ let ambientUsed = false, F = null, queue = Promise.resolve(), battery = null, gen = 0, waiting = 0, glitching = false;
+ const on = () => S.set.whisper !== false;
+ const low = () => !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+ function W(){ if (!S.whisper || typeof S.whisper !== 'object') S.whisper = {}; const w = S.whisper; w.moves = w.moves || {}; return w; }
+ function show(text, opt){
+  if (!on() || waiting >= 2) return Promise.resolve(); // at most one line waits behind the one showing
+  opt = opt || {}; const g = gen; waiting++;
+  queue = queue.then(() => new Promise(res => {
+   waiting--;
+   const el = $('#whisper'); if (!el || !on() || g !== gen) return res(); // switched off, or its fight is over
+   const p = el.querySelector('p'); p.innerHTML = '';
+   String(text).split(' ').forEach((w, i) => { const s = document.createElement('span'); s.textContent = w; s.style.animationDelay = (i * 0.11) + 's'; if (i) p.appendChild(document.createTextNode(' ')); p.appendChild(s); });
+   el.classList.remove('on'); void el.offsetWidth; el.classList.add('on');
+   if (S.set.sfx) try { navigator.vibrate && navigator.vibrate([70, 130, 70, 900, 70, 130, 70]); } catch (e) {}
+   if (opt.glitch) glitch();
+   setTimeout(() => { el.classList.remove('on'); setTimeout(res, 500); }, Math.max(2600, 900 + text.length * 55));
+  }));
+  return queue;
+ }
+ function glitch(){
+  if (!on() || low() || glitching) return;
+  glitching = true;
+  const app = $('#app'); app.classList.remove('glitch'); void app.offsetWidth; app.classList.add('glitch');
+  const nodes = $$('#app h2, #app .bname, #app .sub, #bn, #bs').filter(n => n.offsetParent && n.children.length === 0).slice(0, 8);
+  const keep = nodes.map(n => n.textContent), rot = nodes.map(n => (n.textContent = n.textContent.replace(/[A-Za-z]/g, () => RUNES[Math.floor(Math.random() * RUNES.length)])));
+  setTimeout(() => { nodes.forEach((n, i) => { if (n.isConnected && n.textContent === rot[i]) n.textContent = keep[i]; }); app.classList.remove('glitch'); glitching = false; }, 520); // only restore text nobody rewrote meanwhile
+ }
+ // real moon phase, 0 new, .5 full
+ function moon(){ const syn = 29.530588853, ref = Date.UTC(2000, 0, 6, 18, 14); const d = ((Date.now() - ref) / 86400000) % syn; return (d < 0 ? d + syn : d) / syn; }
+ function fullMoon(){ const m = moon(); return m > 0.45 && m < 0.55; }
+ function clock(){ const d = new Date(); let h = d.getHours() % 12; if (!h) h = 12; return h + ':' + String(d.getMinutes()).padStart(2, '0'); }
+ function favMove(){ const m = W().moves; let best = null, n = 0; for (const k in m) if (m[k] > n && RM.SKILLS[k] && k !== 'strike'){ best = k; n = m[k]; } return n >= 3 ? best : null; }
+ function topFallen(){ const f = (S.stats && S.stats.fell) || {}; let id = null, n = 0; for (const k in f) if (f[k] > n){ id = k; n = f[k]; } return id && n >= 5 && wdef(id) ? {name:wdef(id).name, n} : null; }
+ function friendLine(){
+  if (!netOn() || !NET.cache.at) return null;
+  const raid = NET.cache.feed.find(e => e.target === NET.uid && e.uid !== NET.uid && Date.now() - (+e.at || 0) < 3 * 86400000);
+  if (raid && raid.name) return cleanName(raid.name) + ' raided your village while you slept. I watched them do it.';
+  const SB = sharedBoss(), top = SB.hits.find(h => h.uid !== NET.uid);
+  if (top && top.total > S.wb.wkPts) return top.name + ' hit me harder than you this week.';
+  return null;
+ }
+ return {
+  fullMoon, glitch,
+  init(){
+   try { navigator.getBattery && navigator.getBattery().then(b => { battery = b; }).catch(() => {}); } catch (e) {}
+   document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden'){ store.set('ravenmarrow.seen', String(Date.now())); if (F && B && !B.result()) F.left = true; } // its own slot, so it never rewrites the save
+    else if (F && F.left && !F.saidLeft && F.said < 3 && B && !B.result()){ F.saidLeft = true; F.said++; F.left = false; setTimeout(() => show('Where did you go? I waited right here.', {glitch:true}), 600); }
+   });
+   addEventListener('deviceorientation', e => {
+    if (!F || !F.hel || F.flipped || e.beta == null) return;
+    if (e.beta < -50){ F.flipped = true; const m = $('#flipmsg'); if (m && on()){ m.classList.add('on'); setTimeout(() => m.classList.remove('on'), 4500); } }
+   });
+  },
+  // called when the player taps Continue: at most one of these per session
+  onOpen(){
+   const w = W(), now = Date.now(), seen = Math.max(+store.get('ravenmarrow.seen') || 0, w.lastSeen || 0), away = seen ? (now - seen) / 86400000 : 0, h = new Date().getHours();
+   w.lastSeen = now; store.set('ravenmarrow.seen', String(now)); save();
+   if (!on() || !S.tut.done || ambientUsed) return;
+   let line = null;
+   if (away >= 2){ line = cap(word(Math.floor(away))) + ' days. I counted every one.'; w.claws = now; }
+   else if (h >= 0 && h < 4) line = 'It\'s ' + clock() + '. Everyone you love is asleep. Except me.';
+   else if (battery && battery.level <= 0.1 && !battery.charging) line = 'Your little light is dying. So are you.';
+   else if (fullMoon() && Math.random() < 0.5) line = 'The moon is full tonight. Look up. I\'m closer.';
+   if (!line) return;
+   ambientUsed = true; save();
+   setTimeout(() => show(line, {glitch:true}), 1600);
+  },
+  claws(){ const c = W().claws; return c && Date.now() - c < 86400000; },
+  // battle hooks
+  fightStart(bossF){
+   F = null; if (!bossF) return;
+   const hel = /Hel-Maiden/.test(bossF.name);
+   F = {hel, picks:{}, said:0, manual:false, saidAuto:false, left:false, saidLeft:false, flipped:false};
+   if (hel) bossF.mindReader = true;
+   if (!on()) return;
+   const lines = [];
+   const fl = topFallen(); if (fl) lines.push(fl.name + ' has died for you ' + fl.n + ' times. They\'re starting to wonder why.');
+   const fled = (S.stats && S.stats.fled) || 0; if (fled >= 5) lines.push('You fled ' + fled + ' times. They remember who ran.');
+   const fr = friendLine(); if (fr) lines.push(fr);
+   if (lines.length && (hel || Math.random() < 0.5)){ F.said++; show(lines[Math.floor(Math.random() * lines.length)], {glitch:hel}); }
+  },
+  fightEnd(){ F = null; gen++; },
+  beforeUse(u, sid, manual){
+   if (!F || !B) return;
+   if (manual){
+    F.manual = true; W().moves[sid] = (W().moves[sid] || 0) + 1;
+    F.picks[sid] = (F.picks[sid] || 0) + 1;
+    if (F.hel){
+     const fav = favMove();
+     if (fav === sid && Math.random() < 0.35) B.readNext = true; // she slips the move she knows you love
+     if (F.picks[sid] === 2 && sid !== 'strike' && RM.SKILLS[sid] && F.said < 3){ F.said++; show(RM.SKILLS[sid].name + ' again? You always reach for ' + RM.SKILLS[sid].name + '.'); }
+    }
+   } else if (F.hel && F.manual && !F.saidAuto && F.said < 3 && on()){ F.saidAuto = true; F.said++; show('...I can\'t hear their thoughts anymore.', {glitch:true}); }
+  },
+  afterUse(){ if (B) B.readNext = false; },
+  readMiss(){ if (F && F.said < 4 && Math.random() < 0.5){ F.said++; show('I saw that coming.'); } },
+  seerLie(){ // How to Play, after reaching Hel: the Seer's opening line is overwritten for a moment
+   if (!on() || !S.cleared || (S.cleared[2] || 0) < 1 || Math.random() > 0.25) return;
+   setTimeout(() => { const t = $('#veil .howsheet h3'); if (!t) return; const k = t.textContent; t.textContent = 'Trust the Seer... she lies.'; t.classList.add('lie'); glitch(); setTimeout(() => { if (t.isConnected){ t.textContent = k; t.classList.remove('lie'); } }, 1400); }, 1500);
+  },
+ };
+})();
 // ---------- ATMOSPHERE + MAGIC (v1.7) ----------
 // Two canvases: #atmo sits behind the UI for weather, #fxc sits above it for combat sparks and lightning.
 const ATMO = (() => {
@@ -1512,7 +1644,7 @@ const ATMO = (() => {
   noteFlash(){ W.lastFlash = performance.now(); },
  };
 })();
-function setBG(r, village, calm){ $('#bg').innerHTML = ART.sceneSVG(RM.REALMS[r], {village}); ATMO.set(calm ? '' : village ? 'village' : RM.REALMS[r].id); }
+function setBG(r, village, calm){ $('#bg').innerHTML = ART.sceneSVG(RM.REALMS[r], {village, full:Whisper.fullMoon()}); ATMO.set(calm ? '' : village ? 'village' : RM.REALMS[r].id); }
 function costHTML(c){ return Object.keys(c).filter(k => c[k]).map(k => `<span class="cost ${S[k] < c[k] ? 'short' : ''}">${ART.ICON[k]}${fmt(c[k])}</span>`).join(' '); }
 function afford(c){ return Object.keys(c).every(k => S[k] >= c[k]); }
 function pay(c){ Object.keys(c).forEach(k => S[k] -= c[k]); }
@@ -1657,7 +1789,7 @@ function renderVillage(){
  const cap = RM.campCap(S.vil.camp), used = S.army.skirmish.n + S.army.garrison.n;
  const nr = nightState();
  let h = `<div class="vhead"><h2>The Village</h2><span class="hallb">Hall ${toRoman(S.vil.hall)}</span></div>
-  <div id="vmap">${ART.villageMap(S.vil, badges)}</div>
+  <div id="vmap">${ART.villageMap(S.vil, badges, Whisper.claws())}</div>
   <div class="box coffers" id="coffers"><div class="cof">${['silver','iron','runes'].map(k => `<span>${ART.ICON[k]}<b>${fmt(g[k])}</b></span>`).join('')}</div><button class="btn blood small" id="collect" ${g.silver || g.iron || g.runes ? '' : 'disabled'}>Collect</button></div>
   <div class="vrow">
    <button class="box vcard ${nr.ready ? 'alarm' : ''}" id="nightCard"><div class="vic">&#5835;</div><b>Night Raid</b><small>${nr.locked ? 'After the first boss' : nr.ready ? 'The dead are here!' : 'Next in ' + nr.left}</small></button>
@@ -2051,6 +2183,7 @@ async function runFight(heroes, foes, bopts){
  renderBattle(); syncToggles(); $('#vchips').innerHTML = (CTX.type === 'night' || CTX.type === 'arena') ? fortChips(B.fort) : villageChips(); $$('#vchips .vchip').forEach(c => c.onclick = () => toast(c.dataset.tip, 3000)); log(CTX.type === 'raid' ? 'The raid presses on.' : bossF ? 'The ground splits.' : 'Shapes move in the fog.');
  if (bossF){ await wait(300); $('#bossintro .a').textContent = bossF.name; $('#bossintro .b').textContent = bossF.title; const bi = $('#bossintro'); bi.classList.remove('on'); void bi.offsetWidth; bi.classList.add('on'); sfx('boss'); await wait(1600); }
  await Coach.battleStart();
+ Whisper.fightStart(bossF);
  while (my === BID && !B.result() && !FLEE){
   const u = B.next();
   const rev = B.takeRoundEvents(); if (rev.length){ CUR = null; await playEvents(rev); updateUnits(); }
@@ -2070,11 +2203,14 @@ async function runFight(heroes, foes, bopts){
   else if (u.side === 'hero'){
    await Coach.heroTurn(u);
    let choice;
-   if (S.set.auto && !Coach.forceManual()){ showSkills(u, true); await pace(450); choice = B.auto(u); }
+   const manual = !(S.set.auto && !Coach.forceManual());
+   if (!manual){ showSkills(u, true); await pace(450); choice = B.auto(u); }
    else choice = await playerPick(u);
    if (FLEE || my !== BID) break;
    if (!B.canUse(u, choice.sid)) choice = B.auto(u);
+   Whisper.beforeUse(u, choice.sid, manual);
    ev = B.use(u, choice.sid, choice.tuid || (TGT && TGT.alive ? TGT.uid : null));
+   Whisper.afterUse();
    Coach.emit('used:' + RM.SKILLS[choice.sid].kind);
   } else { showSkills(null); await pace(420); ev = B.foeAct(u); }
   await playEvents(ev);
@@ -2085,7 +2221,7 @@ async function runFight(heroes, foes, bopts){
  }
  if (my !== BID) return;
  setActive(null); showSkills(null);
- if (FLEE){ const lostB = CTX && CTX.type === 'saga' && CTX.band ? CTX.band.n - RM.survivors(CTX.band) : 0; toast('You fall back into the fog.' + (lostB > 0 ? ' ' + lostB + ' troops were lost.' : '')); afterFight('flee'); return; }
+ if (FLEE){ S.stats.fled = (S.stats.fled || 0) + 1; Whisper.fightEnd(); const lostB = CTX && CTX.type === 'saga' && CTX.band ? CTX.band.n - RM.survivors(CTX.band) : 0; toast('You fall back into the fog.' + (lostB > 0 ? ' ' + lostB + ' troops were lost.' : '')); afterFight('flee'); return; }
  await wait(400);
  if (my !== BID) return;
  afterFight(B.result());
@@ -2270,12 +2406,12 @@ async function playEvents(ev){
     updateUnits(); await pace(jit(e.big ? 260 : 400)); break; }
    case 'heal': ATMO.rise(document.querySelector(`[data-uid="${e.tgt}"]`), '#9fe8a0', 8); fxAt(e.tgt, 'heal'); floatAt(e.tgt, '+' + e.amt, 'heal'); sfx('heal'); updateUnits(); await pace(340); break;
    case 'self': floatAt(e.u, '-' + e.amt, 'hurt'); flash(document.querySelector(`[data-uid="${e.u}"]`), 'hit'); updateUnits(); await pace(220); break;
-   case 'die': if (unit.boss && LASTKIND === 'ult') BOSSULT = true; if (unit.side === 'hero' && !unit.troop) HERODOWN = true; sfx('die'); if (unit.boss){ shakeHard(); vibe([80, 50, 120]); ATMO.burst(document.querySelector(`[data-uid="${unit.uid}"]`), '#ff8a3a', 40, {speed:380}); ATMO.flash('#ff6a3a', .35); } log(unit.name + (unit.side === 'hero' ? ' has fallen.' : ' is destroyed.')); updateUnits(); await pace(unit.boss ? 1100 : 650); break;
+   case 'die': if (unit.boss && LASTKIND === 'ult') BOSSULT = true; if (unit.side === 'hero' && !unit.troop){ HERODOWN = true; if (unit.id){ S.stats.fell = S.stats.fell || {}; S.stats.fell[unit.id] = (S.stats.fell[unit.id] || 0) + 1; } } sfx('die'); if (unit.boss){ shakeHard(); vibe([80, 50, 120]); ATMO.burst(document.querySelector(`[data-uid="${unit.uid}"]`), '#ff8a3a', 40, {speed:380}); ATMO.flash('#ff6a3a', .35); } log(unit.name + (unit.side === 'hero' ? ' has fallen.' : ' is destroyed.')); updateUnits(); await pace(unit.boss ? 1100 : 650); break;
    case 'buff': { const side = e.by === 'foe' ? (e.side === 'foe' ? 'hero' : 'foe') : (e.side === 'foe' ? 'foe' : 'hero'), col = {shield:'#9fd0ff', atkUp:'#ff7a4a', atkDown:'#c040ff', stun:'#c9c2ff', taunt:'#f0c060'}[e.k] || '#f0c060'; (e.u ? [document.querySelector(`[data-uid="${e.u}"]`)] : B.all().filter(x => x.alive && x.side === side).map(x => document.querySelector(`[data-uid="${x.uid}"]`))).forEach(c => ATMO.rise(c, col, 7)); }
     sfx('buff'); log((e.by === 'foe' ? BUFFLOG_FOE[e.k] : BUFFLOG[e.k]) || ''); updateUnits(); await pace(500); break;
    case 'enrage': ATMO.smite(document.querySelector(`[data-uid="${e.u}"]`), '#ff2a3a'); floatAt(e.u, 'ENRAGED', 'crit'); log(unit.name + ' is enraged!'); sfx('boss'); shakeHard(); hurtFlash(true); vibe([60, 30, 60]); await pace(900); break;
    case 'revive': ATMO.rise(document.querySelector(`[data-uid="${e.u}"]`), '#f0e0a0', 16); fxAt(e.u, 'heal', true); floatAt(e.u, 'Rises!', 'heal'); log(unit.name + ' rises again.'); sfx('heal'); updateUnits(); await pace(600); break;
-   case 'miss': floatAt(e.tgt, 'Miss', 'txt'); if (S.set.sfx) noise(.12, .12, 3000); { const el = document.querySelector(`[data-uid="${e.tgt}"]`); animEl(el && (el.querySelector('.fart') || el), [{transform:'none'}, {transform:'translateX(-18px) rotate(-3deg)'}, {transform:'none'}], 320); } await pace(jit(380)); break;
+   case 'miss': if (e.read){ floatAt(e.tgt, 'Read', 'crit'); Whisper.readMiss(); } else floatAt(e.tgt, 'Miss', 'txt'); if (S.set.sfx) noise(.12, .12, 3000); { const el = document.querySelector(`[data-uid="${e.tgt}"]`); animEl(el && (el.querySelector('.fart') || el), [{transform:'none'}, {transform:'translateX(-18px) rotate(-3deg)'}, {transform:'none'}], 320); } await pace(jit(380)); break;
    case 'dot': floatAt(e.u, '-' + e.amt, 'dot'); flash(document.querySelector(`[data-uid="${e.u}"]`), 'hit'); sfx('hurt'); updateUnits(); await pace(360); break;
    case 'endure': floatAt(e.u, 'Endures!', 'crit'); log(unit.name + ' refuses to fall.'); sfx('boss'); updateUnits(); await pace(600); break;
    case 'afflict': floatAt(e.u, e.k === 'dot' ? 'Poisoned' : 'Blinded', 'txt'); log(unit.name + ' is ' + (e.k === 'dot' ? 'bleeding poison' : 'blinded') + '.'); updateUnits(); await pace(420); break;
@@ -2294,6 +2430,7 @@ function setAuto(on){
  if (on && PICK && B){ const act = B.heroes.find(h => document.querySelector(`.card.act[data-uid="${h.uid}"]`)); if (act){ const r = PICK; PICK = null; r(B.auto(act)); } }
 }
 function afterFight(res){
+ Whisper.fightEnd();
  const R = RM.REALMS[CTX.r];
  if (CTX.type === 'night') return afterNight(res);
  if (CTX.type === 'boss') return afterBoss(res);
@@ -2664,6 +2801,7 @@ function settingsSheet(){
  sheet(`<button class="btn small close" id="xs">Close</button><h3>Settings</h3>
   <div class="stat"><span>SOUND EFFECTS</span><button class="btn small" id="tSfx">${S.set.sfx ? 'On' : 'Off'}</button></div>
   <div class="stat"><span>MUSIC</span><button class="btn small" id="tMus">${S.set.music ? 'On' : 'Off'}</button></div>
+  <div class="stat"><span>LET HER IN</span><button class="btn small" id="tWh">${S.set.whisper !== false ? 'On' : 'Off'}</button></div>
   <div class="stat"><span>WEATHER &amp; MAGIC</span><button class="btn small" id="tFx">${S.set.fx !== false ? 'On' : 'Off'}</button></div>
   <div class="row" style="margin:14px 0 6px"><button class="btn" id="howBtn">How to play</button><button class="btn" id="tutBtn">Replay guide</button></div>
   <div class="row" style="margin:6px 0"><button class="btn" id="newBtn">What's new</button><button class="btn" id="updBtn">${UPD.ready ? 'Update now' : 'Check for updates'}</button></div>
@@ -2678,6 +2816,7 @@ function settingsSheet(){
  S.set.seenInstall = true; save(); renderTop();
  $('#xs').onclick = closeSheet;
  $('#tSfx').onclick = () => { S.set.sfx = !S.set.sfx; save(); sfx('tap'); settingsSheet(); };
+ $('#tWh').onclick = () => { S.set.whisper = S.set.whisper === false; save(); sfx('tap'); settingsSheet(); };
  $('#tFx').onclick = () => { S.set.fx = S.set.fx === false; save(); ATMO.toggle(S.set.fx); sfx('tap'); settingsSheet(); };
  $('#tMus').onclick = () => { S.set.music = !S.set.music; save(); S.set.music ? musicOn() : musicOff(); settingsSheet(); };
  $('#howBtn').onclick = () => howSheet(0);
@@ -2735,7 +2874,7 @@ function howSheet(start){
    <div class="hdots">${C.map((_, k) => `<i class="${k === i ? 'on' : ''}"></i>`).join('')}</div>
    <div class="row" style="justify-content:space-between"><button class="btn small" id="hPrev" ${i ? '' : 'disabled'}>Back</button><span class="lockmsg">${i + 1} of ${C.length}</span><button class="btn small blood" id="hNext">${i < C.length - 1 ? 'Next' : 'Done'}</button></div></div>`;
   const open = $('#veil').classList.contains('on') && $('#veil .howsheet');
-  if (open){ open.innerHTML = html; } else sheet(html, 'howsheet');
+  if (open){ open.innerHTML = html; } else { sheet(html, 'howsheet'); if (!i) Whisper.seerLie(); }
   $('#xs').onclick = closeSheet;
   $('#hPrev').onclick = () => { if (i){ i--; sfx('tap'); draw(); } };
   $('#hNext').onclick = () => { sfx('tap'); if (i < C.length - 1){ i++; draw(); } else closeSheet(); };
@@ -2830,9 +2969,10 @@ function boot(){
  $('#ravenMark').innerHTML = ART.raven();
  $('#gearBtn').innerHTML = ART.ICON.gear + '<span class="dot" id="gearDot"></span>';
  ATMO.init();
+ Whisper.init();
  setBG(0);
  $('#startBtn').textContent = S.tut.done || S.stats.wins ? 'Continue the saga' : 'Begin the saga';
- $('#startBtn').onclick = () => { ac(); sfx('boss'); if (S.set.music) musicOn(); showScreen('hub'); go('saga'); setTimeout(() => { if (!S.tut.done) Coach.intro(); else whatsNew(false); }, 350); setTimeout(checkDeeds, 600); };
+ $('#startBtn').onclick = () => { ac(); sfx('boss'); Whisper.onOpen(); if (S.set.music) musicOn(); showScreen('hub'); go('saga'); setTimeout(() => { if (!S.tut.done) Coach.intro(); else whatsNew(false); }, 350); setTimeout(checkDeeds, 600); };
  $('#howTitle').onclick = () => { ac(); howSheet(); };
  $$('.tab').forEach(t => t.onclick = () => { sfx('tap'); go(t.dataset.tab); });
  $('#gearBtn').onclick = () => { sfx('tap'); settingsSheet(); };

@@ -1,6 +1,6 @@
 # Ravenmarrow: Roadmap
 
-**Current version:** 1.7 · Nov 16 2026
+**Current version:** 1.8 · Nov 16 2026
 **Live URL:** https://motbuchanan.github.io/ravenmarrow/ (repo: ravenmarrow, files at the root)
 **What it is:** A gothic Norse boss-battle game drawn entirely in code. A gift build inspired by a mobile Viking strategy RPG, built around boss fights, a warrior roster, and a light village. No money, no accounts, no data leaves the phone.
 
@@ -50,6 +50,14 @@ Her weekend feedback: had a blast, got far, played between Vikingard raids. Comb
 - Attack styles per warrior look (HSTYLE) and per enemy shape (FSTYLE) in ui.js: body moves (release), projectiles (orb, arrow, ravens, sound ring, embers), impact variants (stab, cleave, claw marks, bite, slam rings), random variant + timing jitter on every strike.
 - Engine: PASSIVES (one per warrior), TRICKS per enemy shape (poison, bleed, blind, all-hit), AFFIXES elites (Armored, Frenzied, Vampiric, Hulking) from realm 2 on, DoT/miss/endure events. Tutorial fight has no tricks. Foe stats raised ~12% to offset passives (sim curve unchanged).
 - Village clarity: Now/Next numbers on every building, before/after squad stats on upgrade, bonus chips at the top of every fight, stat annotations on warrior pages.
+
+## Shipped in 1.8 (Nov 16 2026)
+The Whispering: the Hel-Maiden notices the player (Psycho Mantis homage). Whisper module in ui.js. Changelog text is vague on purpose; do not spoil it in player-facing copy.
+- Ambient, one per session on Continue: away 2+ days (claw marks on the palisade for a day), local time 0:00 to 3:59, battery 10% or less (Android), real full moon (the moon swells).
+- Boss fights: history lines (S.stats.fell per warrior, S.stats.fled), warband friend lines (feed raids on you, top boss hitter), leaving the app mid-fight, phone upside down shows a hidden message (Android).
+- Hel-Maiden only: reads manual moves. Repeating a move gets called out; switching to Auto gets "I can't hear their thoughts anymore"; she dodges the player's favorite manual move 35% of the time (engine readNext + mindReader, one miss per action).
+- How to Play: after reaching Hel, the first card sometimes flips to "Trust the Seer... she lies."
+- Rules: no fake system alerts, nothing leaves the phone, reduced motion skips the glitch, Settings "Let her in" silences it all. Last-seen lives in its own localStorage key (ravenmarrow.seen) so page hide never rewrites the save.
 
 ## Shipped in 1.7 (Nov 16 2026)
 Art and juice pass, no gameplay changes (players are testing the balance).
