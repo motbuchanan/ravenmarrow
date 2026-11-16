@@ -1,6 +1,6 @@
 # Ravenmarrow: Roadmap
 
-**Current version:** 1.3 · Nov 13 2026
+**Current version:** 1.4 · Nov 16 2026
 **Live URL:** https://motbuchanan.github.io/ravenmarrow/ (repo: ravenmarrow, files at the root)
 **What it is:** A gothic Norse boss-battle game drawn entirely in code. A gift build inspired by a mobile Viking strategy RPG, built around boss fights, a warrior roster, and a light village. No money, no accounts, no data leaves the phone.
 
@@ -45,6 +45,15 @@
 ## Shipped in 1.3 (Nov 13 2026)
 - Onboarding rework (Mot watched her read it: too much small text): cinematic one-line-at-a-time story intro, the Seer as a portrait character with one short line per step, gold keywords, word-by-word reveal, a notch pointing at the target, progress bar. How to Play is 11 swipeable picture cards (mini() in ui.js).
 
+## Shipped in 1.4 (Nov 16 2026)
+Her weekend feedback: had a blast, got far, played between Vikingard raids. Combat got repetitive (Vikingard varies animation and timing even on the same strike); village upgrades didn't feel like they did anything; she loved raiding with and against other people. 3 to 4 people now want to play.
+- Attack styles per warrior look (HSTYLE) and per enemy shape (FSTYLE) in ui.js: body moves (release), projectiles (orb, arrow, ravens, sound ring, embers), impact variants (stab, cleave, claw marks, bite, slam rings), random variant + timing jitter on every strike.
+- Engine: PASSIVES (one per warrior), TRICKS per enemy shape (poison, bleed, blind, all-hit), AFFIXES elites (Armored, Frenzied, Vampiric, Hulking) from realm 2 on, DoT/miss/endure events. Tutorial fight has no tricks. Foe stats raised ~12% to offset passives (sim curve unchanged).
+- Village clarity: Now/Next numbers on every building, before/after squad stats on upgrade, bonus chips at the top of every fight, stat annotations on warrior pages.
+
+## Multiplayer (next, mechanics first)
+Options under discussion with Mot: async co-op World Boss (shared HP over a weekend, damage leaderboard), async Arena PvP (fight a friend's saved squad run by the AI), live co-op raid, live PvP. Needs Firebase (accounts or friend codes) and a change to the "nothing leaves your phone" stance.
+
 ## Locked decisions
 - Art is drawn in code (approved Sample A look). No image files except the app icons.
 - No real money, loot boxes or timers that push paying.
@@ -53,7 +62,7 @@
 
 ## Open queue (expansion ideas, in rough priority)
 1. Her feedback after first play
-2. v1.4 Realm VI and beyond (each realm = 1 entry in REALMS + 1 foe shape if new)
+2. Realm VI and beyond (each realm = 1 entry in REALMS + 1 foe shape if new)
 3. Warrior stars / ascension past the level cap
 4. Weekly hunt: one rotating boss with a modifier
 5. More warriors (each = 1 WARRIORS entry + 3 SKILLS + a portrait case)

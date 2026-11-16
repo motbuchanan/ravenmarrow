@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<!-- Ravenmarrow v1.3 · Nov 13 2026 -->
+<!-- Ravenmarrow v1.4 · Nov 16 2026 -->
 <html lang="en"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-<meta name="build" content="1.3">
-<meta name="build-date" content="Nov 13 2026">
+<meta name="build" content="1.4">
+<meta name="build-date" content="Nov 16 2026">
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#050304">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -115,14 +115,14 @@ h2{font-family:cinzeldec;font-weight:700;font-size:20px;letter-spacing:1.5px;mar
 .foe{flex:1;max-width:46%;display:flex;flex-direction:column;align-items:center;position:relative;transition:opacity .6s,filter .6s;height:100%;justify-content:flex-end}
 .foe.boss{max-width:78%;flex:2.2}
 .foe svg.fart{width:100%;max-height:calc(100% - 34px);flex:1 1 auto;min-height:60px;overflow:visible}
-.foe .fname{font-size:10px;letter-spacing:1px;text-align:center;text-shadow:0 1px 2px #000;margin-top:2px;white-space:nowrap}
+.foe .fname{font-size:9.5px;letter-spacing:.5px;line-height:1.15;text-align:center;text-shadow:0 1px 2px #000;margin-top:2px;max-width:100%;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;min-height:2.3em}
 .hp{width:86%;height:7px;border:1px solid #6b5a44;background:#120608;position:relative;margin:3px 0 2px;box-shadow:0 0 0 1px #000}
 .hp i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(#e0334a,#7a0c1a);transition:width .3s}
 .foe.boss .hp{height:10px}
 .foe.dead{opacity:0;filter:blur(4px)}
 .foe .fart{filter:drop-shadow(0 0 4px var(--rim)) drop-shadow(0 0 14px var(--rim))}
 .foe.tgt .fart{filter:drop-shadow(0 0 4px var(--rim)) drop-shadow(0 0 10px rgba(240,192,96,.8))}
-.foe.tgt .fname{color:#f0c060}
+.foe.tgt .fname{color:#f0c060;text-decoration:underline;text-underline-offset:3px}
 .foe.tgt .fname:before{content:"\25B8 "}
 .foe.hit .fart{animation:hitf .35s}
 @keyframes hitf{0%{filter:brightness(3) saturate(0)}100%{filter:none}}
@@ -308,6 +308,30 @@ textarea{-webkit-user-select:text;user-select:text;width:100%;min-height:80px;ba
 .mpip{width:22px;height:22px;transform:rotate(45deg);border:1px solid #6b5a44}.mpip.on{background:#7a0c1a;border-color:#e0334a}.mpip.boss{width:30px;height:30px;border-color:#f0c060;box-shadow:0 0 12px rgba(240,192,96,.6)}
 @media (prefers-reduced-motion:reduce){#coach .bub .tx .w,#story p,#story .btn{animation:none;opacity:1;transform:none;filter:none}#coach .spot,#coach .dowhat,.mbar i,.msk.ult,.mnode.next,.sheet,.hpic{animation:none}}
 @media (max-height:520px){#story{justify-content:flex-start;overflow-y:auto;padding-top:20px}#story p{font-size:16px;margin:5px 0}#story .btn{margin-top:12px}}
+/* v1.4 attack styles */
+.proj{position:absolute;left:0;top:0;pointer-events:none;z-index:32}
+.proj.orb{width:18px;height:18px;margin:-9px;border-radius:50%;background:radial-gradient(circle,#fff,var(--c) 45%,transparent 70%);box-shadow:0 0 16px var(--c),0 0 30px var(--c)}
+.proj.arrow{width:46px;height:3px;margin:-1.5px -23px;background:linear-gradient(90deg,transparent,var(--c),#fff);box-shadow:0 0 8px var(--c)}
+.proj.bird{width:14px;height:8px;margin:-4px -7px;background:#050305;clip-path:polygon(0 0,50% 60%,100% 0,50% 100%);filter:drop-shadow(0 0 3px var(--c))}
+.proj.ember{width:10px;height:10px;margin:-5px;border-radius:50%;background:radial-gradient(circle,#fff6c0,#ff8a2a 50%,transparent 70%);box-shadow:0 0 12px #ff6a1a}
+.proj.wring,.iring{position:absolute;width:90px;height:90px;border-radius:50%;border:3px solid var(--c);box-shadow:0 0 18px var(--c),inset 0 0 12px var(--c);pointer-events:none;z-index:32}
+.iring{transform:translate(-50%,-50%) scale(.2);animation:iring .55s ease-out forwards}
+@keyframes iring{to{transform:translate(-50%,-50%) scale(var(--s,1));opacity:0}}
+.foe.elite .fname{color:#ff9a5a;text-shadow:0 0 8px rgba(240,192,96,.6),0 1px 2px #000}
+.floatn.dot{color:#9acd32;text-shadow:0 0 8px #3a5a10,0 2px 3px #000}
+
+/* v1.4 village clarity */
+.nownext{display:flex;align-items:center;gap:10px;margin:4px 0 2px}
+.nownext small{display:block;font-size:8px;letter-spacing:1.5px;color:#8a7a68}
+.nownext b{font-family:cinzel;font-size:17px;color:#f1e6d2;font-weight:700}
+.nownext .nx b{color:#9fd8a0}
+.nownext .arrow{color:#8a7a68;font-size:18px}
+.vsum{margin:-4px 0 12px}
+.vchip{display:inline-flex;align-items:center;gap:3px;font-family:serif;font-size:12px;padding:3px 8px;border:1px solid #6b5a44;background:rgba(0,0,0,.6);color:#f0c060;cursor:pointer}
+#vchips{display:flex;justify-content:center;gap:5px;margin-top:4px;min-height:0}
+#vchips .vchip{font-size:11px;padding:2px 6px}
+.vtag{font-family:fell;font-style:italic;font-size:11px;color:#9fd8a0;margin-left:4px}
+@media (max-height:520px){#vchips{display:none}}
 
 </style>
 </head><body>
@@ -333,7 +357,7 @@ textarea{-webkit-user-select:text;user-select:text;width:100%;min-height:80px;ba
  </section>
  <section class="screen" id="battle">
   <div class="btop"><button class="iconbtn" id="fleeB">&#8249; FLEE</button><div class="toggle" id="autoT"><button data-m="auto">AUTO</button><button data-m="manual">MANUAL</button></div><button class="iconbtn" id="speedB">1x</button></div>
-  <div class="btitle"><div class="bn" id="bn"></div><div class="bs" id="bs"></div></div>
+  <div class="btitle"><div class="bn" id="bn"></div><div class="bs" id="bs"></div><div id="vchips"></div></div>
   <div id="foes"></div>
   <div class="blog" id="blog"></div>
   <div id="party"></div>
@@ -379,6 +403,33 @@ const WARRIORS = [
  {id:'eirik', name:'Eirik', title:'the Drowned', role:'Draugr Thrall', hp:300, atk:32, def:15, spd:10, cost:100, look:'drowned',
   lore:'He went down with his longship and walked back out of the sea a year later. He is still wet.',
   skills:['claw','gravehunger','undertow']},
+];
+
+// ---------- PASSIVES (v1.4) ----------
+const PASSIVES = {
+ sigrun:{n:'Shieldbearer', d:'While she stands, the whole squad takes 10% less damage.'},
+ bjorn:{n:'Bloodlust', d:'Below half life he hits 40% harder.'},
+ aslaug:{n:'Hearth-Witch', d:'At the start of her turn she mends the most wounded ally for 5%.'},
+ ulfhild:{n:'Hunter\'s Mark', d:'Deals 25% more damage to enemies below half life.'},
+ grimwald:{n:'Old Bones', d:'The first blow that would kill him leaves him at 1 life instead. Once per fight.'},
+ ylva:{n:'Second Sight', d:'Enemies miss her squad 10% of the time.'},
+ ragna:{n:'Battle Hymn', d:'At the start of her turn the whole squad gains 8 Rage.'},
+ eirik:{n:'Drowned Hunger', d:'Heals for 10% of all damage he deals.'},
+};
+// ---------- ENEMY TRICKS + ELITES (v1.4) ----------
+const TRICKS = {
+ draugr:{n:'Grave Rot', d:'poisons', k:'dot', v:.06, t:4},
+ beast:{n:'Rend', d:'makes bleed', k:'dot', v:.07, t:3, mult:1.2},
+ bird:{n:'Eye Peck', d:'blinds', k:'blind', mult:.8},
+ wraith:{n:'Wail', d:'screams at everyone', aoe:.55},
+ serpent:{n:'Venom Bite', d:'poisons', k:'dot', v:.07, t:3},
+ dragon:{n:'Scorch', d:'burns everyone', aoe:.6},
+};
+const AFFIXES = [
+ {id:'armored', n:'Armored', d:'double defense'},
+ {id:'frenzied', n:'Frenzied', d:'faster and hits 20% harder'},
+ {id:'vampiric', n:'Vampiric', d:'heals from its hits'},
+ {id:'hulking', n:'Hulking', d:'60% more life'},
 ];
 
 // ---------- SKILLS ----------
@@ -432,24 +483,35 @@ function realmFactor(r, s){ return Math.pow(1 + 0.9 * r, 1.45) * (1 + 0.13 * s);
 
 function makeFoe(r, s, def, boss, mult){
  const f = realmFactor(r, s) * (mult||1);
- const u = boss ? {hp:780*f, atk:28*f, def:10+7*r, spd:8} : {hp:210*f, atk:23*f, def:6+6*r, spd:6+Math.floor(rnd()*8)};
+ const u = boss ? {hp:860*f, atk:31*f, def:10+7*r, spd:8} : {hp:235*f, atk:26*f, def:6+6*r, spd:6+Math.floor(rnd()*8)};
  return {uid:'e'+Math.random().toString(36).slice(2,8), side:'foe', name:def.n, title:def.t||'', shape:def.shape, boss:!!boss,
   sig:def.sig, sigDesc:def.sigDesc, realm:r,
   max:Math.round(u.hp), hp:Math.round(u.hp), atk:Math.round(u.atk), def:Math.round(u.def), spd:u.spd,
-  rage:0, cds:{}, buffs:[], alive:true, turns:0};
+  rage:0, cds:{}, buffs:[], alive:true, turns:0, trick:boss ? null : (TRICKS[def.shape] || null), affix:null};
 }
+function makeElite(f, id){
+ if (f.affix || f.boss) return f;
+ const a = AFFIXES.find(x => x.id === id) || pick(AFFIXES);
+ f.affix = a.id; f.name = a.n + ' ' + f.name;
+ if (a.id === 'armored') f.def *= 2;
+ if (a.id === 'frenzied'){ f.spd += 4; f.atk = Math.round(f.atk * 1.2); }
+ if (a.id === 'vampiric') f.leech = .3;
+ if (a.id === 'hulking'){ f.max = Math.round(f.max * 1.6); f.hp = f.max; }
+ return f;
+}
+function sprinkleElites(list, r, chance){ list.forEach(f => { if (!f.boss && r >= 1 && rnd() < chance) makeElite(f); }); return list; }
 
 function encounter(r, s){
  const R = REALMS[r];
  if (s === STAGES - 1){
   const list = [makeFoe(r, s, R.boss, true)];
   if (r >= 2) list.push(makeFoe(r, s, pick(R.foes), false, 0.8));
-  return list;
+  return sprinkleElites(list, r, 0.3);
  }
  const n = s === 0 ? 2 : 3;
  const list = [];
  for (let i = 0; i < n; i++) list.push(makeFoe(r, s, R.foes[(s + i) % R.foes.length], false));
- return list;
+ return sprinkleElites(list, r, 0.25);
 }
 
 // ---------- RELICS (v1.2) ----------
@@ -482,10 +544,12 @@ function makeHero(id, level, village, relic){
  const v = village || {};
  const fx = relicFx(relic);
  const hp = Math.round(d.hp * lm * (1 + 0.05 * (v.mead||0)) * (1 + (fx.hp||0)));
- return {uid:'h_'+id, id, side:'hero', name:d.name, title:d.title, role:d.role, look:d.look, skills:d.skills.slice(),
+ const h = {uid:'h_'+id, id, side:'hero', name:d.name, title:d.title, role:d.role, look:d.look, skills:d.skills.slice(),
   max:hp, hp, atk:Math.round(d.atk * lm * (1 + 0.08 * (v.forge||0)) * (1 + (fx.atk||0))), def:Math.round(d.def * (1 + 0.06 * (level - 1)) * (1 + (fx.def||0))), spd:Math.max(1, d.spd + (fx.spd||0)),
   rage:Math.min(100, fx.start||0), cds:{}, buffs:[], alive:true, level, rageMult:Math.max(.3, 1 + 0.1 * (v.altar||0) + (fx.rage||0)), turns:0,
-  ultPow:(1 + 0.1 * (v.altar||0)) * (1 + (fx.ult||0)), regen:fx.regen||0, guard:fx.guard||0, leech:fx.leech||0, crit:fx.crit||0, relic:relic||null};
+  ultPow:(1 + 0.1 * (v.altar||0)) * (1 + (fx.ult||0)), regen:fx.regen||0, guard:fx.guard||0, leech:fx.leech||0, crit:fx.crit||0, relic:relic||null, passive:id, oldBones:id === 'grimwald'};
+ if (id === 'eirik') h.leech = (h.leech || 0) + 0.1;
+ return h;
 }
 function power(id, level, village, relic){ const h = makeHero(id, level, village, relic); return Math.round(h.max/4 + h.atk*3 + h.def*2); }
 function levelCost(l){ return Math.round(25 * Math.pow(l, 1.5)); }
@@ -507,9 +571,11 @@ function buffVal(u, k){ return u.buffs.filter(b => b.k === k).reduce((a, b) => a
 function addBuff(u, k, v, t){ u.buffs = u.buffs.filter(b => b.k !== k); u.buffs.push({k, v, t}); }
 
 class Battle {
- constructor(heroes, foes){
+ constructor(heroes, foes, opts){
   this.heroes = heroes; this.foes = foes; this.queue = []; this.round = 0; this.log = [];
+  this.noTricks = !!(opts && opts.noTricks);
  }
+ hasHero(id){ return this.heroes.some(h => h.id === id && h.alive); }
  all(){ return this.heroes.concat(this.foes); }
  alive(side){ return (side === 'hero' ? this.heroes : this.foes).filter(u => u.alive); }
  result(){ if (!this.alive('foe').length) return 'win'; if (!this.alive('hero').length) return 'lose'; return null; }
@@ -531,6 +597,10 @@ class Battle {
   u.turns++;
   for (const k in u.cds) if (u.cds[k] > 0) u.cds[k]--;
   const stunned = hasBuff(u, 'stun');
+  const dot = u.buffs.find(b => b.k === 'dot');
+  if (dot && u.alive){ const d = Math.max(1, Math.round(u.max * dot.v)); u.hp -= d; ev.push({t:'dot', u:u.uid, amt:d}); if (u.hp <= 0){ if (u.oldBones){ u.hp = 1; u.oldBones = false; ev.push({t:'endure', u:u.uid}); } else { u.hp = 0; u.alive = false; u.buffs = []; ev.push({t:'die', u:u.uid}); return {ev, stunned:true}; } } }
+  if (u.alive && u.passive === 'aslaug'){ const al = this.alive('hero'); const lo = al.slice().sort((a, b) => a.hp / a.max - b.hp / b.max)[0]; if (lo && lo.hp < lo.max) this.heal(u, lo, lo.max * 0.05, ev); }
+  if (u.alive && u.passive === 'ragna'){ this.alive('hero').forEach(a => { a.rage = Math.min(100, a.rage + 8); }); ev.push({t:'hymn', u:u.uid}); }
   if (u.regen && u.alive && u.hp < u.max){ const h = Math.round(Math.min(u.max * u.regen, u.max - u.hp)); u.hp += h; ev.push({t:'heal', src:u.uid, tgt:u.uid, amt:h}); }
   u.buffs.forEach(b => b.t--);
   u.buffs = u.buffs.filter(b => b.t > 0);
@@ -539,25 +609,32 @@ class Battle {
  }
  dmg(src, tgt, mult, ev, opts){
   if (!tgt.alive) return 0;
+  if ((hasBuff(src, 'blind') && rnd() < 0.5) || (src.side === 'foe' && tgt.side === 'hero' && this.hasHero('ylva') && rnd() < 0.1)){ ev.push({t:'miss', src:src.uid, tgt:tgt.uid}); return 0; }
   let atk = src.atk * (1 + buffVal(src, 'atkUp') - buffVal(src, 'atkDown'));
   if (hasBuff(src, 'enrage')) atk *= 1.3;
+  if (src.passive === 'bjorn' && src.hp < src.max * 0.5) atk *= 1.4;
+  if (src.passive === 'ulfhild' && tgt.hp < tgt.max * 0.5) atk *= 1.25;
   let def = tgt.def * (1 + buffVal(tgt, 'defUp'));
   let d = atk * mult * (0.9 + rnd() * 0.2) * 100 / (100 + def);
   const crit = rnd() < 0.1 + (src.crit || 0); if (crit) d *= 1.5;
   if (tgt.guard) d *= 1 - tgt.guard;
   if (hasBuff(tgt, 'shield')) d *= 1 - buffVal(tgt, 'shield');
+  if (tgt.side === 'hero' && this.hasHero('sigrun')) d *= 0.9;
   d = Math.max(1, Math.round(d));
   const landed = Math.min(d, tgt.hp);
   tgt.hp -= d;
   tgt.rage = Math.min(100, tgt.rage + 8 * (tgt.rageMult || 1));
   ev.push({t:'dmg', src:src.uid, tgt:tgt.uid, amt:d, crit, big:!!(opts&&opts.big)});
   if (src.leech && src.alive && src.hp < src.max){ const h = Math.round(Math.min(landed * src.leech, src.max - src.hp)); if (h > 0){ src.hp += h; ev.push({t:'heal', src:src.uid, tgt:src.uid, amt:h}); } }
-  if (tgt.hp <= 0){ tgt.hp = 0; tgt.alive = false; tgt.buffs = []; ev.push({t:'die', u:tgt.uid}); }
+  if (tgt.hp <= 0){
+   if (tgt.oldBones){ tgt.hp = 1; tgt.oldBones = false; ev.push({t:'endure', u:tgt.uid}); }
+   else { tgt.hp = 0; tgt.alive = false; tgt.buffs = []; ev.push({t:'die', u:tgt.uid}); }
+  }
   return d;
  }
  heal(src, tgt, amt, ev){
   if (!tgt.alive) return;
-  amt = Math.round(Math.min(amt, tgt.max - tgt.hp)); tgt.hp += amt;
+  amt = Math.round(Math.min(amt, tgt.max - tgt.hp)); if (amt <= 0) return; tgt.hp += amt;
   ev.push({t:'heal', src:src.uid, tgt:tgt.uid, amt});
  }
  foeTarget(foe){
@@ -591,7 +668,7 @@ class Battle {
    case 'gravehunger': { const d = this.dmg(u, tgt, 1.5, ev); this.heal(u, u, d * 0.5, ev); break; }
    case 'valkyrie': this.dmg(u, tgt, 2.8 * u.ultPow, ev, {big:true}); allies.forEach(a => addBuff(a, 'shield', 0.4, 3)); ev.push({t:'buff', side:'hero', k:'shield'}); break;
    case 'redrage': for (let i = 0; i < 4; i++){ const al = this.alive('foe'); if (!al.length) break; this.dmg(u, pick(al), 1.1 * u.ultPow, ev, {big:true}); } break;
-   case 'norns': allies.forEach(a => { a.buffs = a.buffs.filter(b => b.k !== 'atkDown' && b.k !== 'stun'); this.heal(u, a, a.max * 0.4 * u.ultPow, ev); }); break;
+   case 'norns': allies.forEach(a => { a.buffs = a.buffs.filter(b => b.k !== 'atkDown' && b.k !== 'stun' && b.k !== 'dot' && b.k !== 'blind'); this.heal(u, a, a.max * 0.4 * u.ultPow, ev); }); break;
    case 'fenris': foes.forEach(f => this.dmg(u, f, 1.7 * u.ultPow, ev, {big:true})); break;
    case 'barrowtoll': this.dmg(u, tgt, 2.6 * u.ultPow, ev, {big:true}); this.heal(u, u, u.max * 0.3, ev); break;
    case 'hugin': foes.forEach(f => { this.dmg(u, f, 1.2 * u.ultPow, ev, {big:true}); if (f.alive) addBuff(f, 'stun', 1, 1); }); ev.push({t:'buff', side:'foe', k:'stun'}); break;
@@ -614,7 +691,7 @@ class Battle {
   const anyDead = this.heroes.some(h => !h.alive);
   const bossUp = foes.some(f => f.boss);
   let sid = b;
-  const ultOk = this.canUse(u, ul) && !((ul === 'norns' && minPct > 0.75) || (ul === 'ballad' && !anyDead && minPct > 0.7));
+  const ultOk = this.canUse(u, ul) && !hasBuff(u, 'blind') && !((ul === 'norns' && minPct > 0.75) || (ul === 'ballad' && !anyDead && minPct > 0.7));
   const spOk = this.canUse(u, sp) && !(sp === 'mend' && minPct > 0.7) && !(sp === 'shieldwall' && minPct > 0.8 && !bossUp) && !(sp === 'boneward' && minPct > 0.75 && !bossUp);
   if (ultOk) sid = ul; else if (spOk) sid = sp;
   // focus the lowest-health foe
@@ -629,6 +706,14 @@ class Battle {
    ev.push({t:'act', u:f.uid, sid:'sig', name:f.sig, kind:'sig'});
    al.forEach(h => this.dmg(f, h, 0.75, ev, {big:true}));
    if (f.sig === 'Half-Death') this.heal(f, f, f.max * 0.04, ev);
+  } else if (f.trick && !this.noTricks && f.turns % 3 === 2 && rnd() < 0.75){
+   const T = f.trick;
+   ev.push({t:'act', u:f.uid, sid:'trick', name:T.n, kind:'trick'});
+   if (T.aoe) al.forEach(h => this.dmg(f, h, T.aoe, ev));
+   else {
+    const h = this.foeTarget(f); const d = this.dmg(f, h, T.mult || 1, ev);
+    if (d > 0 && h.alive){ if (T.k === 'dot'){ addBuff(h, 'dot', T.v, T.t); ev.push({t:'afflict', u:h.uid, k:'dot', name:T.d}); } if (T.k === 'blind'){ addBuff(h, 'blind', 1, 2); ev.push({t:'afflict', u:h.uid, k:'blind', name:'blinded'}); } }
+   }
   } else {
    ev.push({t:'act', u:f.uid, sid:'atk', name:'Attack', kind:'basic'});
    this.dmg(f, this.foeTarget(f), f.boss ? 1.15 : 1, ev);
@@ -646,7 +731,7 @@ function loot(r, s, raid){
  return o;
 }
 
-return {RELICS, relicFx, WARRIORS, SKILLS, REALMS, STAGES, BUILDINGS, VMAX, IDLE_CAP_H, Battle, makeHero, makeFoe, encounter, loot, levelCost, levelCap, buildCost, idleRate, power, levelMult, realmFactor, hasBuff, pick};
+return {PASSIVES, TRICKS, AFFIXES, makeElite, sprinkleElites, RELICS, relicFx, WARRIORS, SKILLS, REALMS, STAGES, BUILDINGS, VMAX, IDLE_CAP_H, Battle, makeHero, makeFoe, encounter, loot, levelCost, levelCap, buildCost, idleRate, power, levelMult, realmFactor, hasBuff, pick};
 })();
 
 
@@ -823,6 +908,14 @@ const VERSION = document.querySelector('meta[name="build"]').content; // e.g. "1
 const BUILD_DATE = document.querySelector('meta[name="build-date"]').content;
 // Newest first. Every update adds an entry; it shows once after the update lands.
 const CHANGELOG = [
+ {v:'1.4', d:'Nov 16 2026', notes:[
+  'Every warrior fights in their own style: Sigrun thrusts, Bjorn cleaves and spins, Aslaug and Ylva cast, Ulfhild shoots, Grimwald slams, Ragna sends sound, Eirik claws. Each strike varies in timing and movement, so no two hits look the same.',
+  'Enemies have their own attacks too: claws, bites, dives, screams, strikes and fire.',
+  'Enemy tricks: some poison, some make you bleed, crows can blind you, wraiths and dragons hit everyone. Norn\'s Weave cleanses them.',
+  'Elite enemies from the Ironwood on: Armored, Frenzied, Vampiric or Hulking, marked in gold.',
+  'Every warrior now has a passive trait. Check their pages.',
+  'The village shows its work: each building lists what it does now and next, upgrades show your squad\'s stats before and after, and your active bonuses appear at the top of every fight.',
+ ]},
  {v:'1.3', d:'Nov 13 2026', notes:[
   'A new opening: the story arrives one line at a time.',
   'The Seer now guides you in person, with short lines, gold key words, and a pointer to exactly what to tap.',
@@ -1015,7 +1108,7 @@ function prepare(r, s){
   <div class="row" style="justify-content:space-between;margin-bottom:12px"><span class="lockmsg">Reward: ${costHTML({silver:L.silver, iron:L.iron, runes:L.runes})}</span><button class="btn small" id="chg">Change squad</button></div>
   <button class="btn blood wide" id="fightBtn">Fight</button>`);
  $('#chg').onclick = () => { closeSheet(); go('warriors'); };
- $('#fightBtn').onclick = () => { closeSheet(); Coach.emit('fight'); startSaga(r, s); };
+ $('#fightBtn').onclick = () => { closeSheet(); Coach.emit('fight'); startSaga(r, s, foes); };
  Coach.emit('prepare');
 }
 function renderWarriors(){
@@ -1040,7 +1133,8 @@ function warriorSheet(id){
  const inSq = S.squad.includes(id);
  const lc = own ? RM.levelCost(own) : 0;
  let html = `<button class="btn small close" id="xs">Close</button><div class="row" style="flex-wrap:nowrap;gap:12px"><div style="width:96px;height:112px;flex:none;position:relative;border:1px solid #4a3a2c">${ART.heroArt(w.look)}</div><div><h3>${w.name}</h3><div class="lockmsg">${w.title} · ${w.role}</div><p style="margin:6px 0 0;font-size:14px">${w.lore}</p></div></div>
-  <div style="margin:10px 0"><div class="stat"><span>LEVEL</span><span>${own ? own + ' / ' + cap : 'Not recruited'}</span></div><div class="stat"><span>LIFE</span><span>${h.max}</span></div><div class="stat"><span>ATTACK</span><span>${h.atk}</span></div><div class="stat"><span>DEFENSE</span><span>${h.def}</span></div><div class="stat"><span>SPEED</span><span>${h.spd}</span></div></div>`;
+  <div style="margin:10px 0"><div class="stat"><span>LEVEL</span><span>${own ? own + ' / ' + cap : 'Not recruited'}</span></div><div class="stat"><span>LIFE</span><span>${h.max}${S.vil.mead ? ` <small class="vtag">Mead +${5 * S.vil.mead}%</small>` : ''}</span></div><div class="stat"><span>ATTACK</span><span>${h.atk}${S.vil.forge ? ` <small class="vtag">Forge +${8 * S.vil.forge}%</small>` : ''}</span></div><div class="stat"><span>DEFENSE</span><span>${h.def}</span></div><div class="stat"><span>SPEED</span><span>${h.spd}</span></div></div>`;
+ const pv = RM.PASSIVES[id]; if (pv) html += `<div class="skillrow"><em style="color:#9fd8a0;text-shadow:0 0 8px #2d5e3a">&#5833;</em><span style="flex:1"><b>${pv.n.toUpperCase()}</b> <span class="lockmsg">Passive, always on</span><div>${pv.d}</div></span></div>`;
  if (own) html += `<div class="skillrow" id="relicRow" style="cursor:pointer"><em class="u">${rel ? rel.g : '&#9675;'}</em><span style="flex:1"><b>RELIC</b> <span class="lockmsg">${rel ? rel.n : (Object.keys(S.relics).length ? 'Empty. Tap to choose.' : 'Empty. Bosses drop relics.')}</span><div>${rel ? rel.d : 'One cursed relic per warrior.'}</div></span><button class="btn small" id="relBtn">${rel ? 'Change' : 'Choose'}</button></div>`;
  w.skills.forEach((sid, i) => { const s = RM.SKILLS[sid]; html += `<div class="skillrow"><em class="${i === 2 ? 'u' : ''}">${s.rune}</em><span><b>${s.name}</b> <span class="lockmsg">${i === 0 ? 'Basic' : i === 1 ? 'Special, rests ' + s.cd + ' turns' : 'Ultimate, needs full Rage'}</span><div>${s.desc}</div></span></div>`; });
  html += '<div class="row" style="margin-top:14px">';
@@ -1061,22 +1155,58 @@ function warriorSheet(id){
  const rc = $('#recBtn'); if (rc) rc.onclick = () => { if (S.runes < w.cost) return; S.runes -= w.cost; S.owned[id] = Math.max(1, Math.min(cap, Math.floor(avgLevel() * 0.7))); save(); sfx('up'); toast(w.name + ' has joined you.'); warriorSheet(id); renderWarriors(); renderTop(); checkDeeds(); };
 }
 function avgLevel(){ const v = Object.values(S.owned); return v.reduce((a, b) => a + b, 0) / v.length; }
+// what each building level actually does, in numbers (v1.4)
+function bEffect(id, l){
+ switch (id){
+  case 'forge': return {big:'+' + (8 * l) + '%', what:'damage for every warrior'};
+  case 'altar': return {big:'+' + (10 * l) + '%', what:'faster Rage and stronger Ultimates'};
+  case 'barracks': return {big:'Level ' + RM.levelCap(l), what:'level cap'};
+  case 'mead': return {big:RM.idleRate(l) + '/hr', what:'silver while away, +' + (5 * l) + '% life, ' + (10 + 6 * l) + '% raid rest'};
+ }
+}
+function villageChips(){
+ const v = S.vil, out = [];
+ if (v.forge) out.push(`<span class="vchip" data-tip="The Forge: every warrior deals ${8 * v.forge}% more damage.">ᛏ +${8 * v.forge}%</span>`);
+ if (v.altar) out.push(`<span class="vchip" data-tip="The Rune Altar: Rage builds ${10 * v.altar}% faster and Ultimates hit ${10 * v.altar}% harder.">ᛉ +${10 * v.altar}%</span>`);
+ if (v.mead) out.push(`<span class="vchip" data-tip="The Mead Hall: every warrior has ${5 * v.mead}% more life.">ᛗ +${5 * v.mead}%</span>`);
+ return out.join('');
+}
+// before/after for the squad when a building goes up
+function upgradeReveal(id, before){
+ const b = RM.BUILDINGS.find(x => x.id === id), l = S.vil[id];
+ const was = bEffect(id, l - 1), now = bEffect(id, l);
+ const after = S.squad.map(w => RM.makeHero(w, S.owned[w], S.vil, S.equip[w]));
+ const key = id === 'forge' ? 'atk' : id === 'mead' ? 'max' : null;
+ let rows = '';
+ if (key) rows = S.squad.map((w, i) => `<div class="stat"><span>${wdef(w).name.toUpperCase()} ${key === 'atk' ? 'ATTACK' : 'LIFE'}</span><span>${before[i][key]} <span style="color:#8a7a68">&#8594;</span> <b style="color:#9fd8a0">${after[i][key]}</b></span></div>`).join('');
+ if (id === 'barracks') rows = `<div class="stat"><span>LEVEL CAP</span><span>${RM.levelCap(l - 1)} <span style="color:#8a7a68">&#8594;</span> <b style="color:#9fd8a0">${RM.levelCap(l)}</b></span></div>`;
+ if (id === 'altar') rows = `<div class="stat"><span>RAGE SPEED</span><span>+${10 * (l - 1)}% <span style="color:#8a7a68">&#8594;</span> <b style="color:#9fd8a0">+${10 * l}%</b></span></div><div class="stat"><span>ULTIMATE POWER</span><span>+${10 * (l - 1)}% <span style="color:#8a7a68">&#8594;</span> <b style="color:#9fd8a0">+${10 * l}%</b></span></div>`;
+ if (id === 'mead') rows += `<div class="stat"><span>SILVER PER HOUR</span><span>${RM.idleRate(l - 1)} <span style="color:#8a7a68">&#8594;</span> <b style="color:#9fd8a0">${RM.idleRate(l)}</b></span></div>`;
+ sheet(`<div class="result"><div class="brune" style="margin:0 auto;width:64px;height:64px;font-size:36px;animation:pulse 1.2s infinite">${b.rune}</div><div class="lockmsg" style="margin-top:8px">${b.name} raised to</div><div class="big">Level ${toRoman(l)}</div>
+  <p style="margin:0 0 8px">${now.big} ${now.what}</p><div style="text-align:left;margin:0 0 14px">${rows}</div><button class="btn blood" id="upOk">Good</button></div>`);
+ $('#upOk').onclick = closeSheet;
+}
 function renderVillage(){
  const idle = idleNow(), rate = RM.idleRate(S.vil.mead);
  let h = `<div class="vscene"></div><h2>The Village</h2><p class="sub">Spend what the dead leave behind.</p>
+  ${villageChips() ? `<div class="vsum"><span class="lockmsg">Your village gives every fight:</span><div class="row" style="gap:6px;margin-top:4px">${villageChips()}${S.vil.barracks ? `<span class="vchip">ᛟ Cap ${RM.levelCap(S.vil.barracks)}</span>` : ''}</div></div>` : '<p class="lockmsg" style="margin:-6px 0 10px">Nothing built yet. Each building makes every fight easier.</p>'}
   <div class="box" id="meadBox"><div class="row" style="justify-content:space-between;flex-wrap:nowrap"><div><div class="bname">Mead Hall Coffers</div><div class="bdesc">${rate} silver an hour while you are away, up to ${RM.IDLE_CAP_H} hours.</div><div class="cost" style="font-size:16px">${ART.ICON.silver}${fmt(idle)} waiting</div></div><button class="btn blood small" id="collect" ${idle < 1 ? 'disabled' : ''}>Collect</button></div></div>`;
  RM.BUILDINGS.forEach(b => {
   const l = S.vil[b.id], c = RM.buildCost(l), max = l >= RM.VMAX;
-  h += `<div class="box"><div class="brow"><div class="brune">${b.rune}</div><div style="flex:1"><div class="bname">${b.name}</div><div class="pips">${Array.from({length:RM.VMAX}, (_, i) => `<i class="pip ${i < l ? 'on' : ''}"></i>`).join('')}</div><div class="bdesc">${b.desc}</div>
+  const now = bEffect(b.id, l), nxt = max ? null : bEffect(b.id, l + 1);
+  h += `<div class="box"><div class="brow"><div class="brune">${b.rune}</div><div style="flex:1"><div class="bname">${b.name}</div><div class="pips">${Array.from({length:RM.VMAX}, (_, i) => `<i class="pip ${i < l ? 'on' : ''}"></i>`).join('')}</div>
+   <div class="nownext"><div><small>NOW</small><b>${l ? now.big : 'Nothing yet'}</b></div>${nxt ? `<span class="arrow">&#8594;</span><div class="nx"><small>NEXT</small><b>${nxt.big}</b></div>` : ''}</div><div class="bdesc">${now.what.charAt(0).toUpperCase() + now.what.slice(1)}.</div>
    <div class="row" style="justify-content:space-between;margin-top:6px">${max ? '<span class="lockmsg">Fully built</span>' : `<span>${costHTML(c)}</span><button class="btn small" data-b="${b.id}" ${afford(c) ? '' : 'disabled'}>Upgrade</button>`}</div></div></div></div>`;
  });
  $('#panel').innerHTML = h;
  $('#panel .vscene').innerHTML = '';
+ $$('.vsum .vchip').forEach(c => c.onclick = () => { if (c.dataset.tip) toast(c.dataset.tip, 3000); });
  $('#collect').onclick = () => { const n = idleNow(); if (n < 1) return; S.silver += n; S.idleAt = Date.now(); S.stats.collects++; if (n >= RM.idleRate(S.vil.mead) * RM.IDLE_CAP_H) FLAGS.fullCoffers = true; save(); sfx('coin'); toast('Collected ' + fmt(n) + ' silver.'); Coach.emit('collect'); renderVillage(); renderTop(); checkDeeds(); };
  $$('#panel [data-b]').forEach(btn => btn.onclick = () => {
   const id = btn.dataset.b, l = S.vil[id], c = RM.buildCost(l); if (!afford(c)) return;
   if (id === 'mead'){ S.silver += idleNow(); S.idleAt = Date.now(); }
-  pay(c); S.vil[id]++; save(); sfx('up'); toast(RM.BUILDINGS.find(b => b.id === id).name + ' raised to level ' + S.vil[id] + '.'); renderVillage(); renderTop(); checkDeeds();
+  const before = S.squad.map(w => RM.makeHero(w, S.owned[w], S.vil, S.equip[w]));
+  pay(c); S.vil[id]++; save(); sfx('up'); renderVillage(); renderTop(); upgradeReveal(id, before); checkDeeds();
  });
 }
 function raidRealm(){ let r = -1; S.cleared.forEach((c, i) => { if (c >= RM.STAGES) r = i; }); return r; }
@@ -1099,7 +1229,7 @@ function renderRaid(){
 // ---------- BATTLE ----------
 let B = null, CTX = null, TGT = null, PICK = null, FLEE = false, BID = 0, LASTKIND = '', BOSSULT = false, HERODOWN = false;
 function heroesFor(){ return S.squad.map(id => RM.makeHero(id, S.owned[id], S.vil, S.equip[id])); }
-function startSaga(r, s){ CTX = {type:'saga', r, s}; runFight(heroesFor(), RM.encounter(r, s)); }
+function startSaga(r, s, foes){ CTX = {type:'saga', r, s}; runFight(heroesFor(), foes || RM.encounter(r, s)); }
 function startRaid(rr){
  CTX = {type:'raid', r:rr, wave:0, loot:{silver:0, iron:0, runes:0}};
  CTX.heroes = heroesFor();
@@ -1107,25 +1237,27 @@ function startRaid(rr){
 }
 function raidWave(r, w){
  if (w === 4){ const b = RM.makeFoe(r, 3, RM.REALMS[r].boss, true, 1.15); const l = [b]; if (r >= 1) l.push(RM.makeFoe(r, 2, RM.pick(RM.REALMS[r].foes), false, 0.9)); return l; }
- const n = w < 2 ? 2 : 3, list = []; for (let i = 0; i < n; i++) list.push(RM.makeFoe(r, Math.min(2, w), RM.REALMS[r].foes[(w + i) % 3], false, 0.95 + w * 0.05)); return list;
+ const n = w < 2 ? 2 : 3, list = []; for (let i = 0; i < n; i++) list.push(RM.makeFoe(r, Math.min(2, w), RM.REALMS[r].foes[(w + i) % 3], false, 0.95 + w * 0.05)); return RM.sprinkleElites(list, r, 0.35);
 }
 async function runFight(heroes, foes){
  const my = ++BID; // a newer fight cancels any older loop still waiting on a timer
  if (PICK){ const r = PICK; PICK = null; r({sid:'strike'}); }
- B = new RM.Battle(heroes, foes); FLEE = false; TGT = null; PICK = null; BOSSULT = false; LASTKIND = '';
+ heroes.forEach(h => { h.oldBones = h.passive === 'grimwald'; });
+ B = new RM.Battle(heroes, foes, {noTricks:!S.tut.done}); FLEE = false; TGT = null; PICK = null; BOSSULT = false; LASTKIND = '';
  if (!(CTX && CTX.type === 'raid' && CTX.wave > 0)) HERODOWN = false; // raids remember a fall across waves
  setBG(CTX.r); showScreen('battle');
  const R = RM.REALMS[CTX.r], bossF = foes.find(f => f.boss);
  $('#bn').textContent = CTX.type === 'raid' ? 'Raid: Wave ' + (CTX.wave + 1) + ' of 5' : bossF ? bossF.name : R.name;
  $('#bs').textContent = CTX.type === 'raid' ? R.name : bossF ? bossF.title : 'Fight ' + toRoman(CTX.s + 1) + ' of ' + RM.STAGES;
- renderBattle(); syncToggles(); log(CTX.type === 'raid' ? 'The raid presses on.' : bossF ? 'The ground splits.' : 'Shapes move in the fog.');
+ renderBattle(); syncToggles(); $('#vchips').innerHTML = villageChips(); $$('#vchips .vchip').forEach(c => c.onclick = () => toast(c.dataset.tip, 3000)); log(CTX.type === 'raid' ? 'The raid presses on.' : bossF ? 'The ground splits.' : 'Shapes move in the fog.');
  if (bossF){ await wait(300); $('#bossintro .a').textContent = bossF.name; $('#bossintro .b').textContent = bossF.title; const bi = $('#bossintro'); bi.classList.remove('on'); void bi.offsetWidth; bi.classList.add('on'); sfx('boss'); await wait(1600); }
  await Coach.battleStart();
  while (my === BID && !B.result() && !FLEE){
   const u = B.next(); if (!u) break;
   const st = B.startTurn(u);
-  const regen = st.ev.filter(e => e.t === 'heal');
-  if (regen.length && u.alive){ u.hp -= regen.reduce((a, e) => a + e.amt, 0); updateUnits(); u.hp += regen.reduce((a, e) => a + e.amt, 0); await playEvents(regen); }
+  const pre = st.ev.filter(e => e.t !== 'stunned'); // poison ticks, passive heals, deaths at turn start
+  if (pre.length){ CUR = null; await playEvents(pre); }
+  if (my !== BID || FLEE) break;
   updateUnits();
   if (!u.alive) continue;
   if (st.stunned){ setActive(u); floatAt(u.uid, 'Stunned', 'txt'); await pace(750); continue; }
@@ -1156,13 +1288,13 @@ async function runFight(heroes, foes){
 }
 function log(t){ $('#blog').textContent = t; }
 function renderBattle(){
- $('#foes').innerHTML = B.foes.map(f => { const R = RM.REALMS[f.realm]; return `<div class="foe ${f.boss ? 'boss' : ''}" data-uid="${f.uid}" style="--rim:${R.moon}66">${ART.foeArt(f.shape, R.eye, f.boss, R.moon)}<div class="hp"><i style="width:100%"></i></div><div class="fname">${f.name}</div></div>`; }).join('');
+ $('#foes').innerHTML = B.foes.map(f => { const R = RM.REALMS[f.realm]; return `<div class="foe ${f.boss ? 'boss' : ''} ${f.affix ? 'elite' : ''}" data-uid="${f.uid}" style="--rim:${f.affix ? '#f0c060aa' : R.moon + '66'}">${ART.foeArt(f.shape, R.eye, f.boss, R.moon)}<div class="hp"><i style="width:100%"></i></div><div class="fname">${f.name}</div></div>`; }).join('');
  $('#party').innerHTML = B.heroes.map(h => `<button class="card" data-uid="${h.uid}">${ART.heroArt(h.look)}<div class="buffs"></div><div class="nm">${h.name}</div><div class="bars"><div class="bar life"><i></i></div><div class="bar rage"><i></i></div></div></button>`).join('');
  $$('#foes .foe').forEach(el => el.onclick = () => { const f = B.foes.find(x => x.uid === el.dataset.uid); if (!f || !f.alive) return; TGT = f; sfx('tap'); updateUnits(); Coach.emit('target'); });
  $$('#party .card').forEach(el => el.onclick = () => { const h = B.heroes.find(x => x.uid === el.dataset.uid); if (h) toast(h.name + ': ' + Math.ceil(h.hp) + ' / ' + h.max + ' life, ' + Math.floor(h.rage) + '% rage'); });
  updateUnits();
 }
-const BUFFTXT = {shield:['ᛟ', 0], atkUp:['ᚹ', 0], defUp:['ᛇ', 0], taunt:['ᛇ!', 0], atkDown:['ᚺ', 1], stun:['✕', 1], enrage:['ᛞ', 1]};
+const BUFFTXT = {shield:['ᛟ', 0], atkUp:['ᚹ', 0], defUp:['ᛇ', 0], taunt:['ᛇ!', 0], atkDown:['ᚺ', 1], stun:['✕', 1], enrage:['ᛞ', 1], dot:['☠', 1], blind:['◉', 1]};
 function updateUnits(){
  if (!B) return;
  if (TGT && !TGT.alive) TGT = null;
@@ -1203,26 +1335,95 @@ const BUFFLOG = {shield:'The squad raises a shield wall.', atkUp:'The squad\'s b
 function pace(ms){ return wait(ms / [1, 1.8, 3][Math.max(0, Math.min(2, S.set.speed - 1))]); }
 function vibe(p){ try { if (S.set.sfx && navigator.vibrate) navigator.vibrate(p); } catch (e) {} }
 const FXCOL = {basic:'#f1e6d2', special:'#ff4a5a', ult:'#f0c060', sig:'#c040ff', heal:'#9fd8a0'};
-function fxAt(uid, kind, crit){
- const el = document.querySelector(`[data-uid="${uid}"]`); if (!el) return;
- const r = (el.querySelector('.fart') || el).getBoundingClientRect(), a = $('#app').getBoundingClientRect();
- const cx = r.left - a.left + r.width / 2, cy = r.top - a.top + r.height * (el.classList.contains('foe') ? .45 : .5);
- const col = FXCOL[kind] || FXCOL.basic;
- const sl = document.createElement('div'); sl.className = 'slash ' + (kind === 'ult' || crit ? 'big' : '');
- sl.style.cssText = `left:${cx}px;top:${cy}px;--c:${col};--rot:${-35 + Math.random() * 70}deg`;
- $('#app').appendChild(sl); setTimeout(() => sl.remove(), 600);
- const n = kind === 'ult' || crit ? 12 : 7;
- for (let i = 0; i < n; i++){
-  const sp = document.createElement('i'); sp.className = 'spark';
-  const ang = Math.random() * Math.PI * 2, dist = 30 + Math.random() * (kind === 'ult' || crit ? 70 : 40);
-  sp.style.cssText = `left:${cx}px;top:${cy}px;--c:${col};--dx:${Math.cos(ang) * dist}px;--dy:${Math.sin(ang) * dist}px`;
-  $('#app').appendChild(sp); setTimeout(() => sp.remove(), 650);
+// ---------- ATTACK STYLES (v1.4): every warrior and enemy moves differently, and no strike plays out the same twice ----------
+const HSTYLE = {spear:'thrust', axe:'cleave', witch:'cast', bow:'shoot', hammer:'slam', raven:'flock', horn:'wave', drowned:'claw'};
+const FSTYLE = {draugr:'claw', beast:'bite', bird:'dive', wraith:'scream', serpent:'strike', dragon:'breath'};
+const RANGED = {cast:1, shoot:1, flock:1, wave:1, scream:1, breath:1};
+const HCOL = {spear:'#e8dcc8', axe:'#ff4a3a', witch:'#5ff0c0', bow:'#cfe8a0', hammer:'#c8c0d8', raven:'#8fa6c8', horn:'#f0c060', drowned:'#3fd8c8'};
+let CUR = null; // {src, style, v, col, side}
+const R01 = () => Math.random();
+const jit = (ms) => ms * (0.82 + R01() * 0.4);
+const spd = () => [1, 1.8, 3][Math.max(0, Math.min(2, S.set.speed - 1))];
+function centerOf(el, foeBias){
+ const t = el.querySelector('.fart') || el;
+ const r = t.getBoundingClientRect(), a = $('#app').getBoundingClientRect();
+ return {x:r.left - a.left + r.width / 2, y:r.top - a.top + r.height * (foeBias ? .45 : .45), w:r.width, h:r.height};
+}
+function animEl(el, frames, ms, easing){ if (!el || !el.animate) return Promise.resolve(); try { const an = el.animate(frames, {duration:ms / spd(), easing:easing || 'cubic-bezier(.3,.7,.2,1)'}); return an.finished.catch(() => {}); } catch (e) { return Promise.resolve(); } }
+// the attacker's body movement when it lets go of the move
+function release(el, style, v, isHero){
+ if (!el) return Promise.resolve();
+ const m = R01() < .5 ? -1 : 1, d = jit(1);
+ if (isHero){
+  const lift = 'translateY(-16px) scale(1.06)';
+  const F = {
+   thrust:[[{transform:lift}, {transform:'translateY(-50px) scaleY(1.1)'}, {transform:'none'}], [{transform:lift}, {transform:'translateY(-40px)'}, {transform:'translateY(-20px)'}, {transform:'translateY(-46px)'}, {transform:'none'}]],
+   cleave:[[{transform:lift}, {transform:`translate(${-8 * m}px,-24px) rotate(${-9 * m}deg)`}, {transform:`translate(${10 * m}px,-42px) rotate(${12 * m}deg)`}, {transform:'none'}], [{transform:lift}, {transform:'translateY(-34px) rotate(180deg) scale(1.08)'}, {transform:'translateY(-20px) rotate(360deg)'}, {transform:'none'}]],
+   cast:[[{transform:lift, filter:'brightness(1)'}, {transform:'translateY(-30px) scale(1.1)', filter:'brightness(1.8)'}, {transform:'none', filter:'brightness(1)'}], [{transform:lift}, {transform:`translate(${6 * m}px,-26px) rotate(${4 * m}deg)`, filter:'brightness(1.7)'}, {transform:'none', filter:'brightness(1)'}]],
+   shoot:[[{transform:lift}, {transform:'translateY(6px) scaleY(.92)'}, {transform:'translateY(-30px)'}, {transform:'none'}], [{transform:lift}, {transform:`translate(${-6 * m}px,2px) rotate(${-5 * m}deg)`}, {transform:'translateY(-26px)'}, {transform:'none'}]],
+   slam:[[{transform:lift}, {transform:'translateY(-58px) scale(1.08)'}, {transform:'translateY(8px) scale(1.06,.9)'}, {transform:'none'}], [{transform:lift}, {transform:'translateY(-44px) rotate(-6deg)'}, {transform:'translateY(6px) rotate(3deg) scale(1.05,.92)'}, {transform:'none'}]],
+   flock:[[{transform:lift}, {transform:`translate(${-8 * m}px,-28px)`}, {transform:`translate(${8 * m}px,-30px)`}, {transform:'none'}]],
+   wave:[[{transform:lift, filter:'brightness(1)'}, {transform:'translateY(-22px) scale(1.14)', filter:'brightness(1.7)'}, {transform:'translateY(-18px) scale(1.04)'}, {transform:'none', filter:'brightness(1)'}]],
+   claw:[[{transform:lift}, {transform:`translate(${12 * m}px,-40px) rotate(${7 * m}deg)`}, {transform:'none'}], [{transform:lift}, {transform:`translate(${-10 * m}px,-34px) rotate(${-6 * m}deg)`}, {transform:`translate(${10 * m}px,-38px) rotate(${6 * m}deg)`}, {transform:'none'}]],
+  };
+  const set = F[style] || F.thrust; return animEl(el, set[v % set.length], 340 * d);
+ }
+ const t = el.querySelector('.fart') || el;
+ const G = {
+  claw:[[{transform:'scale(1.08) translateY(6px)'}, {transform:`translate(${14 * m}px,26px) rotate(${8 * m}deg) scale(1.14)`}, {transform:'none'}], [{transform:'scale(1.08)'}, {transform:`translate(${-12 * m}px,20px) rotate(${-7 * m}deg) scale(1.1)`}, {transform:`translate(${12 * m}px,26px) rotate(${7 * m}deg) scale(1.12)`}, {transform:'none'}]],
+  bite:[[{transform:'scale(1.08)'}, {transform:'scale(1.02,.86) translateY(8px)'}, {transform:'translateY(40px) scale(1.18)'}, {transform:'none'}]],
+  dive:[[{transform:'none'}, {transform:'translateY(-36px) scale(.94)'}, {transform:'translateY(54px) scale(1.24)'}, {transform:'none'}], [{transform:'none'}, {transform:`translate(${-30 * m}px,-20px) rotate(${-14 * m}deg)`}, {transform:`translate(${20 * m}px,50px) rotate(${12 * m}deg) scale(1.2)`}, {transform:'none'}]],
+  scream:[[{transform:'scale(1.06)'}, {transform:'translateX(-6px) scale(1.14)'}, {transform:'translateX(6px) scale(1.14)'}, {transform:'translateX(-4px) scale(1.12)'}, {transform:'none'}]],
+  strike:[[{transform:'scale(1.06)'}, {transform:'scaleX(.88) translateY(-12px)'}, {transform:'translateY(44px) scale(1.16)'}, {transform:'none'}]],
+  breath:[[{transform:'scale(1.06)'}, {transform:'translateY(-16px) scale(1.08)'}, {transform:'translateY(14px) scale(1.14)'}, {transform:'none'}]],
+ };
+ const set = G[style] || G.claw; return animEl(t, set[v % set.length], 420 * d);
+}
+// something that flies from attacker to target
+async function projectile(srcEl, tgtEl, style, col){
+ if (!srcEl || !tgtEl) return;
+ const a = centerOf(srcEl), b = centerOf(tgtEl, true);
+ const ang = Math.atan2(b.y - a.y, b.x - a.x) * 180 / Math.PI;
+ const make = (cls, extra) => { const p = document.createElement('div'); p.className = 'proj ' + cls; p.style.cssText = `--c:${col};${extra || ''}`; $('#app').appendChild(p); return p; };
+ const fly = (p, ms, delay, wob) => { const mid = {x:(a.x + b.x) / 2 + (wob || 0), y:(a.y + b.y) / 2 - 30 - R01() * 40}; return new Promise(res => setTimeout(() => { if (!p.animate){ p.remove(); return res(); } const an = p.animate([{transform:`translate(${a.x}px,${a.y}px) rotate(${ang}deg)`, opacity:.2}, {transform:`translate(${mid.x}px,${mid.y}px) rotate(${ang}deg)`, opacity:1, offset:.5}, {transform:`translate(${b.x}px,${b.y}px) rotate(${ang}deg)`, opacity:1}], {duration:ms / spd(), easing:'cubic-bezier(.4,.1,.6,1)'}); an.finished.then(() => { p.remove(); res(); }, () => { p.remove(); res(); }); }, delay / spd())); };
+ const T = jit(300);
+ switch (style){
+  case 'shoot': await fly(make('arrow'), T * .7, 0, 0); break;
+  case 'flock': await Promise.all([0, 1, 2].map(i => fly(make('bird'), T * (1 + i * .15), i * 70, (i - 1) * 50))); break;
+  case 'wave': case 'scream': { const p = make('wring'); p.style.left = a.x + 'px'; p.style.top = a.y + 'px'; await new Promise(res => { if (!p.animate){ p.remove(); return res(); } const an = p.animate([{transform:'translate(-50%,-50%) scale(.3)', opacity:1, left:a.x + 'px', top:a.y + 'px'}, {transform:'translate(-50%,-50%) scale(1.6)', opacity:.2, left:b.x + 'px', top:b.y + 'px'}], {duration:T / spd(), easing:'ease-out'}); an.finished.then(() => { p.remove(); res(); }, () => { p.remove(); res(); }); }); break; }
+  case 'breath': await Promise.all([0, 1, 2, 3, 4].map(i => fly(make('ember'), T * (.9 + R01() * .3), i * 40, (R01() - .5) * 60))); break;
+  default: await fly(make('orb'), T, 0, (R01() - .5) * 40);
  }
 }
+// what the hit looks like when it lands
+function impact(uid, style, col, big, crit){
+ const el = document.querySelector(`[data-uid="${uid}"]`); if (!el) return;
+ const c = centerOf(el, el.classList.contains('foe'));
+ const put = (cls, css, life) => { const d = document.createElement('div'); d.className = cls; d.style.cssText = css; $('#app').appendChild(d); setTimeout(() => d.remove(), life || 650); return d; };
+ const slash = (rot, dx, dy, bigger, delay) => setTimeout(() => put('slash ' + (bigger ? 'big' : ''), `left:${c.x + (dx || 0)}px;top:${c.y + (dy || 0)}px;--c:${col};--rot:${rot}deg`), delay || 0);
+ const ring = (size) => put('iring', `left:${c.x}px;top:${c.y}px;--c:${col};--s:${size}`, 600);
+ const huge = big || crit;
+ const base = -35 + R01() * 70;
+ switch (style){
+  case 'thrust': case 'strike': slash(-80 + R01() * 20, 0, 0, huge); if (R01() < .5) slash(-95 + R01() * 20, 10, 6, false, 90); ring(.6); break;
+  case 'cleave': slash(base, 0, 0, true); if (R01() < .55 || huge) slash(-base, 0, 8, huge, 110); break;
+  case 'claw': case 'bite': { const n = style === 'bite' ? 2 : 3; for (let i = 0; i < n; i++) slash(style === 'bite' ? (i ? 20 : -20) : 55 + R01() * 10, (i - (n - 1) / 2) * 16, (i - 1) * 4, huge, i * 45); break; }
+  case 'slam': ring(1.4); ring(.8); if (huge) shakeHard(); break;
+  case 'dive': slash(base, 0, 0, huge); slash(base + 90, 0, 0, false, 70); break;
+  case 'shoot': slash(-10 + R01() * 20, 0, 0, false); ring(.5); break;
+  case 'cast': case 'wave': case 'scream': case 'breath': case 'flock': ring(huge ? 1.5 : 1); break;
+  default: slash(base, 0, 0, huge);
+ }
+ const n = huge ? 14 : 7;
+ for (let i = 0; i < n; i++){ const ang = R01() * Math.PI * 2, dist = 30 + R01() * (huge ? 80 : 45); put('spark', `left:${c.x}px;top:${c.y}px;--c:${col};--dx:${Math.cos(ang) * dist}px;--dy:${Math.sin(ang) * dist}px`, 650); }
+ if (huge){ animEl($('#foes'), [{transform:'scale(1)'}, {transform:'scale(1.045)'}, {transform:'scale(1)'}], 300); }
+}
+function fxAt(uid, kind, crit){ impact(uid, kind === 'heal' ? 'cast' : 'cleave', FXCOL[kind] || FXCOL.basic, kind === 'ult', crit); }
+
 function hurtFlash(big){ const h = $('#hurtflash'); h.classList.remove('on', 'big'); void h.offsetWidth; h.classList.add('on'); if (big) h.classList.add('big'); }
 function shakeHard(){ flash($('#battle'), 'shakebig', 520); }
 async function playEvents(ev){
- const my = BID;
+ const my = BID; playEvents.n = (playEvents.n || 0) + 1;
  for (const e of ev){
   if (FLEE || my !== BID) return;
   const unit = B.all().find(x => x.uid === (e.u || e.tgt));
@@ -1235,23 +1436,34 @@ async function playEvents(ev){
     if (u.side === 'hero'){ const sk = RM.SKILLS[e.sid]; if (sk) floatAt(e.u, sk.rune, 'rune ' + e.kind); }
     if (e.kind === 'ult'){ const f = $('#ultflash'); f.querySelector('.ur').textContent = RM.SKILLS[e.sid].rune; f.querySelector('.un').textContent = e.name; f.style.animationDuration = (0.9 / [1, 1.8, 3][Math.max(0, Math.min(2, S.set.speed - 1))]) + 's'; f.classList.remove('on'); void f.offsetWidth; f.classList.add('on'); sfx('ult'); vibe([30, 40, 60]); log(u.name + ' unleashes ' + e.name + '!'); await pace(1000); }
     if (e.kind === 'sig'){ log(u.name + ' unleashes ' + e.name + '!'); sfx('boss'); shakeHard(); hurtFlash(true); vibe([60, 40, 90]); await pace(700); }
-    else if (e.kind !== 'ult'){ log(u.name + (u.side === 'hero' ? ' uses ' + e.name + '.' : ' attacks.')); await pace(u.side === 'hero' ? 380 : 480); }
-    if (el){ el.classList.remove('windup'); flash(el, 'lunge'); }
-    await pace(170); break; }
+    else if (e.kind === 'trick'){ log(u.name + ' uses ' + e.name + '!'); sfx('buff'); floatAt(e.u, e.name, 'txt'); await pace(jit(520)); }
+    else if (e.kind !== 'ult'){ log(u.name + (u.side === 'hero' ? ' uses ' + e.name + '.' : ' attacks.')); await pace(jit(u.side === 'hero' ? 360 : 460)); }
+    const isH = u.side === 'hero';
+    const style = isH ? (HSTYLE[u.look] || 'thrust') : (FSTYLE[u.shape] || 'claw');
+    CUR = {src:e.u, style, v:Math.floor(R01() * 3), col:isH ? (e.kind === 'ult' ? '#f0c060' : HCOL[u.look] || '#f1e6d2') : (e.kind === 'sig' || e.kind === 'trick' ? '#c040ff' : RM.REALMS[u.realm].eye), side:u.side};
+    if (el){ el.classList.remove('windup'); await release(el, style, CUR.v, isH); }
+    await pace(jit(90)); break; }
    case 'dmg': {
     const el = document.querySelector(`[data-uid="${e.tgt}"]`); const isHero = unit && unit.side === 'hero';
-    fxAt(e.tgt, isHero ? 'sig' : LASTKIND, e.crit);
+    const cs = CUR && CUR.src === e.src ? CUR : {style:'cleave', col:isHero ? '#c040ff' : '#f1e6d2'};
+    if (RANGED[cs.style]){ if (cs.flewAt !== e.src + ':' + playEvents.n){ cs.flewAt = e.src + ':' + playEvents.n; await projectile(document.querySelector(`[data-uid="${e.src}"]`), el, cs.style, cs.col); } else { projectile(document.querySelector(`[data-uid="${e.src}"]`), el, cs.style, cs.col); await pace(140); } }
+    impact(e.tgt, cs.style, cs.col, e.big, e.crit);
     flash(el, 'hit'); floatAt(e.tgt, (e.crit ? e.amt + '!' : e.amt), e.crit ? 'crit' : isHero ? 'hurt' : '');
     sfx(isHero ? 'hurt' : e.crit ? 'crit' : 'hit');
     if (isHero){ hurtFlash(e.big); vibe(e.big ? 50 : 25); } else vibe(e.crit || e.big ? 35 : 12);
     if (e.crit || e.big) shakeHard(); else shakeScreen();
-    updateUnits(); await pace(e.big ? 330 : 420); break; }
+    updateUnits(); await pace(jit(e.big ? 260 : 400)); break; }
    case 'heal': fxAt(e.tgt, 'heal'); floatAt(e.tgt, '+' + e.amt, 'heal'); sfx('heal'); updateUnits(); await pace(340); break;
    case 'self': floatAt(e.u, '-' + e.amt, 'hurt'); flash(document.querySelector(`[data-uid="${e.u}"]`), 'hit'); updateUnits(); await pace(220); break;
    case 'die': if (unit.boss && LASTKIND === 'ult') BOSSULT = true; if (unit.side === 'hero') HERODOWN = true; sfx('die'); if (unit.boss){ shakeHard(); vibe([80, 50, 120]); } log(unit.name + (unit.side === 'hero' ? ' has fallen.' : ' is destroyed.')); updateUnits(); await pace(unit.boss ? 1100 : 650); break;
    case 'buff': sfx('buff'); log(BUFFLOG[e.k] || ''); updateUnits(); await pace(500); break;
    case 'enrage': floatAt(e.u, 'ENRAGED', 'crit'); log(unit.name + ' is enraged!'); sfx('boss'); shakeHard(); hurtFlash(true); vibe([60, 30, 60]); await pace(900); break;
    case 'revive': fxAt(e.u, 'heal', true); floatAt(e.u, 'Rises!', 'heal'); log(unit.name + ' rises again.'); sfx('heal'); updateUnits(); await pace(600); break;
+   case 'miss': floatAt(e.tgt, 'Miss', 'txt'); if (S.set.sfx) noise(.12, .12, 3000); { const el = document.querySelector(`[data-uid="${e.tgt}"]`); animEl(el && (el.querySelector('.fart') || el), [{transform:'none'}, {transform:'translateX(-18px) rotate(-3deg)'}, {transform:'none'}], 320); } await pace(jit(380)); break;
+   case 'dot': floatAt(e.u, '-' + e.amt, 'dot'); flash(document.querySelector(`[data-uid="${e.u}"]`), 'hit'); sfx('hurt'); updateUnits(); await pace(360); break;
+   case 'endure': floatAt(e.u, 'Endures!', 'crit'); log(unit.name + ' refuses to fall.'); sfx('boss'); updateUnits(); await pace(600); break;
+   case 'afflict': floatAt(e.u, e.k === 'dot' ? 'Poisoned' : 'Blinded', 'txt'); log(unit.name + ' is ' + (e.k === 'dot' ? 'bleeding poison' : 'blinded') + '.'); updateUnits(); await pace(420); break;
+   case 'hymn': floatAt(e.u, '+8 Rage', 'txt'); sfx('buff'); updateUnits(); await pace(300); break;
    case 'stunned': break;
   }
  }
@@ -1626,7 +1838,8 @@ function mini(){
   {t:'Rage', p:`<div class="mbar"><i></i></div><div class="mbar full"><i></i></div>`, l:['Acting and getting hit fill the <b>red bar</b>.', 'A full bar turns <b>gold</b>.', 'Gold means the Ultimate is ready.']},
   {t:'Auto or Manual', p:`<div class="mrow"><span class="mtog"><b class="on">AUTO</b><b>MANUAL</b></span><span class="mtog"><b>2x</b></span></div>`, l:['<b>Auto</b> fights for you, and fights smart.', 'Switch to <b>Manual</b> when a boss gets hard.', 'Speed up to <b>3x</b>.']},
   {t:'Bosses', p:`<div class="mboss">${ART.foeArt('draugr', '#5ff0c0', true, '#b3182a')}</div>`, l:['Every <b>3rd turn</b>: a hit on everyone.', 'Below half life: <b>enraged</b>.', 'Save shields and Ultimates for that.']},
-  {t:'Warriors & Relics', p:`<div class="mrow"><span class="mcard act">${ART.heroArt('raven')}</span><span class="mrelic">&#5847;</span></div>`, l:['<b>Silver</b> levels warriors up.', '<b>Runes</b> recruit new ones.', 'Bosses drop <b>relics</b>. One per warrior.']},
+  {t:'Enemy Tricks', p:`<div class="mrow"><span class="mb" style="color:#9acd32">&#9760;<small>POISON</small></span><span class="mb">&#9673;<small>BLIND</small></span><span class="mb gold">&#5835;<small>ELITE</small></span></div>`, l:['Some enemies <b>poison</b> or <b>blind</b> you.', '<b>Gold names</b> are elites: tougher, nastier.', 'Norn\'s Weave <b>cleanses</b> curses.']},
+  {t:'Warriors & Relics', p:`<div class="mrow"><span class="mcard act">${ART.heroArt('raven')}</span><span class="mrelic">&#5847;</span></div>`, l:['<b>Silver</b> levels up. <b>Runes</b> recruit.', 'Each warrior has a <b>passive</b> trait.', 'Bosses drop <b>relics</b>. One per warrior.']},
   {t:'The Village', p:`<div class="mrow"><span class="mb">&#5839;<small>FORGE</small></span><span class="mb">&#5833;<small>ALTAR</small></span><span class="mb">&#5855;<small>BARRACKS</small></span><span class="mb">&#5847;<small>MEAD</small></span></div>`, l:['<b>Forge</b>: harder hits. <b>Altar</b>: faster rage.', '<b>Barracks</b>: higher level cap.', '<b>Mead Hall</b>: silver while you are away.']},
   {t:'Raids', p:`<div class="mrow">${[1, 2, 3, 4].map(() => '<span class="mpip on"></span>').join('')}<span class="mpip boss"></span></div>`, l:['<b>Five waves</b> in a row.', 'Wounds carry over. <b>Double silver and iron</b>.', 'Keep everything you earned.']},
   {t:'Every Day', p:`<div class="mrow"><span class="mb gold">&#5835;<small>BLESSING</small></span><span class="mb">${ART.ICON.book}<small>JOURNAL</small></span></div>`, l:['Your <b>first win</b> each day pays extra.', 'The <b>Journal</b> holds lore, relics, deeds.', 'Missing a day costs nothing.']},
