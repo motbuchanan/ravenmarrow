@@ -1,5 +1,5 @@
 // Ravenmarrow service worker. Cache name changes every version so installed phones update.
-const CACHE = 'ravenmarrow-v2.1';
+const CACHE = 'ravenmarrow-v2.2';
 const CORE = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png', './apple-touch-icon.png', './rm-title.webp', './rm-eye.webp', './rm-barrow.webp', './rm-hel.webp', './rm-realms.webp', './rm-squad.webp'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)));
