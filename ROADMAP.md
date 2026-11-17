@@ -1,6 +1,6 @@
 # Ravenmarrow: Roadmap
 
-**Current version:** 2.1 · Nov 17 2026
+**Current version:** 2.2 · Nov 17 2026
 **Live URL:** https://motbuchanan.github.io/ravenmarrow/ (repo: ravenmarrow, files at the root)
 **What it is:** A gothic Norse boss-battle game drawn entirely in code. A gift build inspired by a mobile Viking strategy RPG, built around boss fights, a warrior roster, and a light village. No money, no accounts, no data leaves the phone.
 
@@ -50,6 +50,13 @@ Her weekend feedback: had a blast, got far, played between Vikingard raids. Comb
 - Attack styles per warrior look (HSTYLE) and per enemy shape (FSTYLE) in ui.js: body moves (release), projectiles (orb, arrow, ravens, sound ring, embers), impact variants (stab, cleave, claw marks, bite, slam rings), random variant + timing jitter on every strike.
 - Engine: PASSIVES (one per warrior), TRICKS per enemy shape (poison, bleed, blind, all-hit), AFFIXES elites (Armored, Frenzied, Vampiric, Hulking) from realm 2 on, DoT/miss/endure events. Tutorial fight has no tricks. Foe stats raised ~12% to offset passives (sim curve unchanged).
 - Village clarity: Now/Next numbers on every building, before/after squad stats on upgrade, bonus chips at the top of every fight, stat annotations on warrior pages.
+
+## Shipped in 2.2 (Nov 17 2026)
+Visions: event cinematics + a gallery (Saga Journal > Visions). Vision module in ui.js; VISIONS list holds id, title, unlock hint, image file, caption, camera move and effect.
+- Scenes (file names fixed, upload any time): rm-ev-hold (Night Raid won), rm-ev-fall (Night Raid lost), rm-ev-wipe (fell to a saga or raid boss), rm-ev-boss0..boss4 (first kill of each realm boss), rm-ev-warband (warband boss spoils), rm-ev-legend (first Legendary), rm-ev-hall (Jarl's Hall level 5). Intro tile reuses rm-title.
+- Each plays once, over whatever is on screen (z 96), tap or Close to dismiss, queue drains in order. If the art is missing the event is unlocked as 'u' and plays once on a later Continue when the file exists. Gallery: locked tiles show hints, missing art shows "Not painted yet".
+- Watch the intro: title screen button, Journal > Visions, Settings.
+- Scene art: all 11 rm-ev-*.webp painted and added Nov 17 2026 (900x1600, about 1.8 MB total). Not in the SW precache; cached on first view.
 
 ## Shipped in 2.1 (Nov 17 2026)
 Title screen + cinematic intro from Mot's generated art (6 webp files beside index.html, about 790 KB total, all in the service worker's offline list; the SW now also caches any same-origin file it fetches).
