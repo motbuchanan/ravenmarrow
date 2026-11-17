@@ -1,6 +1,6 @@
 # Ravenmarrow: Roadmap
 
-**Current version:** 1.8 · Nov 16 2026
+**Current version:** 2.0.1 · Nov 17 2026
 **Live URL:** https://motbuchanan.github.io/ravenmarrow/ (repo: ravenmarrow, files at the root)
 **What it is:** A gothic Norse boss-battle game drawn entirely in code. A gift build inspired by a mobile Viking strategy RPG, built around boss fights, a warrior roster, and a light village. No money, no accounts, no data leaves the phone.
 
@@ -50,6 +50,26 @@ Her weekend feedback: had a blast, got far, played between Vikingard raids. Comb
 - Attack styles per warrior look (HSTYLE) and per enemy shape (FSTYLE) in ui.js: body moves (release), projectiles (orb, arrow, ravens, sound ring, embers), impact variants (stab, cleave, claw marks, bite, slam rings), random variant + timing jitter on every strike.
 - Engine: PASSIVES (one per warrior), TRICKS per enemy shape (poison, bleed, blind, all-hit), AFFIXES elites (Armored, Frenzied, Vampiric, Hulking) from realm 2 on, DoT/miss/endure events. Tutorial fight has no tricks. Foe stats raised ~12% to offset passives (sim curve unchanged).
 - Village clarity: Now/Next numbers on every building, before/after squad stats on upgrade, bonus chips at the top of every fight, stat annotations on warrior pages.
+
+## Shipped in 2.0.1 (Nov 17 2026)
+- Equip best rewritten: each round hands out the single biggest gain across the whole roster (squad gains count triple), and it never saves a layout weaker than the current one. Tested on 40 random armories: never weaker, no item on two warriors, about 70 ms.
+- gearScore special weights re-tuned from fight sims (Ward and Mending top, Battle-Fire and crit low); score order now matches win rates.
+- Raid clears and warband spoils drop one tier higher, so the last realm gives tier 6. Sell value +20% per upgrade (was 30%, closed a tiny upgrade-and-sell profit). Spare sell is commons only. Army card shows kit bonus. Shorter craft labels.
+
+## Shipped in 2.0 (Nov 17 2026)
+Gear. Engine: RARITY (5), GEAR_KINDS (weapon 6, armor 5, charm 5), GEAR_FX (8 charm powers sharing relic fx keys), makeItem, itemFx (rarity x upgrade), gearFx (summed, capped by FX_CAP), craftCost, upgradeCost (+10 max), sellValue, kitCost. makeHero/power take a 5th gfx arg; bandStats/makeBand take a kit level.
+- Save: S.gear {items (cap 80), eq {warriorId: {weapon, armor, charm}}}, S.kit {spear, bow, berserk}; migrate fills and sanitizes.
+- Forge crafts weapons and armor at tier = Forge level (max 6); Altar binds charms at tier = Altar level; upgrading needs the matching building. War Camp kits: +10% life and attack per level for a troop type, up to the camp level (max 5).
+- Drops: first boss kill always, replays 50%, regular wins 8%, Night Raid wins 35%, full Raid clears always, warband spoils always (rare or better). Rarity: legendary 1.5% base, +0.3% per bias point.
+- Armory (Warriors tab): filter, item sheet (upgrade, take off, sell, give to with power deltas), sell spare commons. Equip best: squad first then by level, greedy per slot by gearScore (power plus weighted specials). Warrior sheet gear row + slot picker.
+- Arena: defense lineup sends gx (gear fx) and garrison kit; cleanLineup clamps both.
+
+## Shipped in 1.9 (Nov 16 2026)
+Tap to know + help mode (Help module in ui.js).
+- Tapping informational things (currency counters, coffers totals, warband bar, rival chips, defense chips, board, feed) opens a #tipcard: name, what it is for, how to get more. Party cards in battle open the same card.
+- ? button in the hub top bar (#helpBtn) and battle bar (#helpB): help mode, where taps explain instead of act. Turns itself off when a sheet opens, the screen changes, or a coach step shows.
+- Press and hold (480 ms) anything outside help mode for its card; the click after a hold is swallowed so nothing fires.
+- Explainer rules live in Help's RULES list ([selector, fn]); add a rule for any new UI. costHTML tags chips with data-cur.
 
 ## Shipped in 1.8 (Nov 16 2026)
 The Whispering: the Hel-Maiden notices the player (Psycho Mantis homage). Whisper module in ui.js. Changelog text is vague on purpose; do not spoil it in player-facing copy.

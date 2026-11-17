@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<!-- Ravenmarrow v1.8 · Nov 16 2026 -->
+<!-- Ravenmarrow v2.0.1 · Nov 17 2026 -->
 <html lang="en"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-<meta name="build" content="1.8">
-<meta name="build-date" content="Nov 16 2026">
+<meta name="build" content="2.0.1">
+<meta name="build-date" content="Nov 17 2026">
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#050304">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -469,6 +469,86 @@ textarea{-webkit-user-select:text;user-select:text;width:100%;min-height:80px;ba
 #flipmsg.on{opacity:1}
 h3.lie{color:#ff5468 !important;text-shadow:0 0 10px #b3182a}
 @media (prefers-reduced-motion:reduce){#whisper span{filter:none;transform:none}#app.glitch{animation:none}}
+/* ---------- v1.9 tap to know + help mode ---------- */
+.helpbtn{font-family:cinzel,serif;font-size:20px;font-weight:700;color:#f0c060;margin-left:auto}
+.btop .helpbtn{margin-left:6px;font-size:15px;min-width:38px}
+.helpbtn.on{background:#f0c060;color:#1a0d0a;box-shadow:0 0 14px rgba(240,192,96,.7)}
+#tipcard{position:absolute;z-index:85;width:min(300px,calc(100% - 20px));box-sizing:border-box;padding:12px 14px 10px;background:linear-gradient(180deg,#24161a,#140b0d);border:1px solid #8a6f4a;box-shadow:0 10px 30px rgba(0,0,0,.7),0 0 0 1px rgba(240,192,96,.15) inset;opacity:0;transform:translateY(4px) scale(.98);transition:opacity .15s,transform .15s;pointer-events:auto}
+#tipcard.on{opacity:1;transform:none}
+#tipcard::before{content:'';position:absolute;left:calc(var(--ax,50%) - 7px);top:-8px;border:7px solid transparent;border-top:0;border-bottom:8px solid #8a6f4a}
+#tipcard.up::before{top:auto;bottom:-8px;border-bottom:0;border-top:8px solid #8a6f4a}
+#tipcard .th{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+#tipcard .th b{font-family:cinzel,serif;font-size:16px;letter-spacing:1px;color:#f0c060;flex:1;min-width:0}
+#tipcard .ti svg{width:24px;height:24px;display:block}
+#tipcard .ti .hrune{font-style:normal;font-size:20px;color:#f0c060}
+#tipcard .tn{font-family:cinzel,serif;font-size:15px;color:#f1e6d2;border:1px solid #6b5a44;padding:1px 7px}
+#tipcard p{margin:0 0 6px;font-size:14.5px;line-height:1.4;color:#e8dcc6}
+#tipcard p b{color:#f0c060;font-weight:600}
+#tipcard .tx{font-size:11px;color:#8a7a68;font-style:italic;text-align:right;margin-top:2px}
+body.help-on #app::after{content:'HELP · tap anything';position:absolute;left:50%;top:6px;transform:translateX(-50%);z-index:44;pointer-events:none;font-family:cinzel,serif;font-size:11px;letter-spacing:3px;color:#1a0d0a;background:#f0c060;padding:3px 10px}
+body.help-on .cur,body.help-on .tab,body.help-on .node,body.help-on .wcard,body.help-on #vmap .bld,body.help-on #coffers,body.help-on .vcard,body.help-on .box,body.help-on #skills .sk,body.help-on #party .card,body.help-on .foe,body.help-on #autoT,body.help-on #speedB,body.help-on #fleeB,body.help-on #bookBtn,body.help-on #gearBtn{outline:1px dashed rgba(240,192,96,.75);outline-offset:2px;animation:helpp 1.6s ease-in-out infinite}
+@keyframes helpp{50%{outline-color:rgba(240,192,96,.25)}}
+.cur{cursor:pointer}
+@media (prefers-reduced-motion:reduce){body.help-on *{animation:none !important}}
+#tipcard p{font-family:fell,Georgia,serif;font-size:16px;line-height:1.38}
+#tipcard p b{font-family:fell,Georgia,serif;font-style:italic}
+body.help-on #app::after{white-space:nowrap;font-size:10px;letter-spacing:2px;top:auto;bottom:calc(env(safe-area-inset-bottom,0px) + 66px);padding:4px 12px;box-shadow:0 2px 10px rgba(0,0,0,.6)}
+body.help-on.help-battle #app::after{bottom:auto;top:56px}
+/* ---------- v2.0 gear + armory ---------- */
+.iico{width:40px;height:40px;display:block;flex:none}
+.armrow .btn{display:flex;align-items:center;gap:6px}
+.armrow .iico{width:22px;height:22px}
+.armrow small{opacity:.7}
+.armrow .dot{position:static;width:8px;height:8px}
+.igrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,140px),1fr));gap:8px}
+.itile{position:relative;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 6px 7px;min-height:118px;background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(0,0,0,.25));border:1px solid color-mix(in srgb,var(--rc) 55%,#2a1c14);box-shadow:inset 0 0 18px color-mix(in srgb,var(--rc) 14%,transparent);color:#e8dcc6;text-align:center;font-family:fell,Georgia,serif}
+.itile .iico{width:44px;height:44px}
+.itile b{font-family:cinzel,serif;font-size:11.5px;letter-spacing:.5px;color:var(--rc);line-height:1.2;overflow-wrap:anywhere}
+.itile small{font-size:12px;color:#c9b8a0;line-height:1.25}
+.itile .iw{position:absolute;top:4px;left:4px;font-family:cinzel,serif;font-size:9px;letter-spacing:1px;background:#1a0d0a;border:1px solid #6b5a44;color:#c9b38f;padding:1px 4px}
+.itile .idelta{position:absolute;top:4px;right:4px;font-family:cinzel,serif;font-size:11px;padding:1px 5px;border:1px solid #6b5a44;color:#c9b38f;background:#0a0608}
+.itile .idelta.up{color:#9fe8a0;border-color:#4a8a4a}
+.itile .idelta.dn{color:#ff8a98;border-color:#8a3a44}
+.itile.r3,.itile.r4{animation:raregl 3s ease-in-out infinite alternate}
+@keyframes raregl{to{box-shadow:inset 0 0 26px color-mix(in srgb,var(--rc) 30%,transparent),0 0 10px color-mix(in srgb,var(--rc) 30%,transparent)}}
+.afilter{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px}
+.afilter button{flex:1;min-width:64px;padding:8px 4px;background:transparent;border:1px solid #4a3a2c;color:#a99;font-family:cinzel,serif;font-size:12px;letter-spacing:1px}
+.afilter button.on{border-color:#f0c060;color:#f0c060;background:rgba(240,192,96,.08)}
+.isheet{text-align:center}
+.iart{display:flex;justify-content:center;margin:4px 0}
+.iart .iico{width:84px;height:84px;filter:drop-shadow(0 0 10px color-mix(in srgb,var(--rc) 50%,transparent))}
+.iart.big .iico{width:110px;height:110px}
+.ifx{display:inline-flex;flex-direction:column;gap:3px;margin:6px auto;font-family:fell,Georgia,serif;font-size:16px;color:#e8dcc6}
+.ifx div::before{content:'ᛜ ';color:var(--rc,#f0c060);font-size:12px}
+.iwho{display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:6px}
+.iwho button{display:flex;flex-direction:column;align-items:center;padding:4px 2px 5px;background:#0e0809;border:1px solid #3a2c22;color:#e8dcc6}
+.iwho button svg{width:46px;height:54px}
+.iwho button b{font-family:cinzel,serif;font-size:10px;letter-spacing:.5px}
+.iwho button i{font-style:normal;font-family:cinzel,serif;font-size:11px;color:#a99}
+.iwho button i.up{color:#9fe8a0}.iwho button i.dn{color:#ff8a98}
+.iwho button.on{border-color:#f0c060}
+.gearrow{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.gslot{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 4px;min-height:74px;background:#0e0809;border:1px solid var(--rc);color:#c9b8a0;box-shadow:inset 0 0 14px color-mix(in srgb,var(--rc) 18%,transparent)}
+.gslot small{font-family:cinzel,serif;font-size:9.5px;letter-spacing:.5px;line-height:1.2;text-align:center;overflow-wrap:anywhere}
+.gslot.empty{border-style:dashed}
+.gslot .gq{font-size:24px;color:#6b5a44;line-height:40px}
+.workshop{margin-top:12px;display:flex;flex-direction:column;gap:6px;text-align:left}
+.workshop .craft{display:flex;align-items:center;gap:8px;justify-content:flex-start;flex-wrap:wrap}
+.workshop .craft .iico{width:26px;height:26px}
+.workshop .craft span{flex:1;text-align:left}
+.kitrow{display:flex;align-items:center;gap:8px;padding:6px 0;border-top:1px solid rgba(107,90,68,.35)}
+.kitrow svg{width:34px;height:34px;flex:none}
+.kitrow span{flex:1;display:flex;flex-direction:column}
+.kitrow small{color:#a99;font-size:12px}
+.lootitem{display:flex;align-items:center;gap:10px;margin:8px auto 0;padding:8px 10px;max-width:300px;border:1px solid var(--rc);background:rgba(0,0,0,.35);box-shadow:0 0 16px color-mix(in srgb,var(--rc) 25%,transparent);text-align:left;width:100%;box-sizing:border-box}
+.lootitem .iico{width:48px;height:48px}
+.lootitem div{display:flex;flex-direction:column;min-width:0}
+.lootitem small{font-family:cinzel,serif;font-size:10px;letter-spacing:1px;color:var(--rc)}
+.lootitem b{font-family:cinzel,serif;font-size:14px;color:#f1e6d2;overflow-wrap:anywhere}
+.lootitem em{font-family:fell,Georgia,serif;font-size:13px;color:#c9b8a0}
+.reveal .iart .iico{animation:revealp 1.2s ease-out}
+@keyframes revealp{0%{transform:scale(.4) rotate(-20deg);opacity:0}60%{transform:scale(1.12)}100%{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.itile.r3,.itile.r4,.reveal .iart .iico{animation:none}}
 
 </style>
 </head><body>
@@ -484,7 +564,7 @@ h3.lie{color:#ff5468 !important;text-shadow:0 0 10px #b3182a}
   <button class="ghost" id="howTitle">How to play</button>
  </section>
  <section class="screen" id="hub">
-  <div class="topbar"><div id="curs" style="display:flex;gap:6px;flex-wrap:wrap"></div><button class="gear" id="bookBtn" aria-label="Saga Journal"></button><button class="gear" id="gearBtn" aria-label="Settings" style="margin-left:6px"></button></div>
+  <div class="topbar"><div id="curs" style="display:flex;gap:6px;flex-wrap:wrap"></div><button class="gear helpbtn" id="helpBtn" aria-label="Help: tap, then tap anything">?</button><button class="gear" id="bookBtn" aria-label="Saga Journal" style="margin-left:6px"></button><button class="gear" id="gearBtn" aria-label="Settings" style="margin-left:6px"></button></div>
   <div class="panel" id="panel"></div>
   <nav class="tabs">
    <button class="tab on" data-tab="saga"><span class="r">&#5835;</span>SAGA</button>
@@ -494,7 +574,7 @@ h3.lie{color:#ff5468 !important;text-shadow:0 0 10px #b3182a}
   </nav>
  </section>
  <section class="screen" id="battle">
-  <div class="btop"><button class="iconbtn" id="fleeB">&#8249; FLEE</button><div class="toggle" id="autoT"><button data-m="auto">AUTO</button><button data-m="manual">MANUAL</button></div><button class="iconbtn" id="speedB">1x</button></div>
+  <div class="btop"><button class="iconbtn" id="fleeB">&#8249; FLEE</button><div class="toggle" id="autoT"><button data-m="auto">AUTO</button><button data-m="manual">MANUAL</button></div><button class="iconbtn" id="speedB">1x</button><button class="iconbtn helpbtn" id="helpB" aria-label="Help">?</button></div>
   <div class="btitle"><div class="bn" id="bn"></div><div class="bs" id="bs"></div><div id="vchips"></div></div>
   <div id="foes"></div>
   <div class="blog" id="blog"></div>
@@ -678,13 +758,69 @@ const RELICS = [
 ];
 function relicFx(rid){ const r = RELICS.find(x => x.id === rid); return r ? r.fx : {}; }
 
+// ---------- GEAR (v2.0) ----------
+// Three slots per warrior. Weapons add attack, armor adds life and defense, charms carry a special power.
+// Every effect uses the same keys as relics, so gear and relics stack through one fx object.
+const RARITY = [
+ {id:'common', n:'Common', col:'#c9b38f', m:1, aff:0},
+ {id:'fine', n:'Fine', col:'#9fd8a0', m:1.2, aff:0},
+ {id:'rare', n:'Rare', col:'#7ab8ff', m:1.45, aff:1},
+ {id:'epic', n:'Epic', col:'#c890ff', m:1.75, aff:1},
+ {id:'legend', n:'Legendary', col:'#f0a040', m:2.1, aff:2},
+];
+const GEAR_KINDS = {
+ weapon:[{k:'axe', n:'Axe'}, {k:'sword', n:'Sword'}, {k:'spear', n:'Spear'}, {k:'hammer', n:'Hammer'}, {k:'seax', n:'Seax'}, {k:'staff', n:'Rune Staff'}],
+ armor:[{k:'mail', n:'Mail'}, {k:'furs', n:'Wolf Furs'}, {k:'lamellar', n:'Lamellar'}, {k:'bone', n:'Bone Plate'}, {k:'shield', n:'Round Shield'}],
+ charm:[{k:'amulet', n:'Amulet'}, {k:'ring', n:'Ring'}, {k:'totem', n:'Totem'}, {k:'stone', n:'Rune-Stone'}, {k:'scroll', n:'Spell-Bone'}],
+};
+const GEAR_TIER = ['', 'Iron', 'Steel', 'Grave-Iron', 'Hel-Forged', 'Rootsteel', 'Drowned Gold'];
+// charm powers and secondary affixes, value at tier t before rarity
+const GEAR_FX = {
+ crit:{n:'Bloodmark', d:v => '+' + Math.round(v * 100) + '% crit chance', v:t => 0.03 + 0.012 * t},
+ rage:{n:'Fury', d:v => '+' + Math.round(v * 100) + '% rage gain', v:t => 0.06 + 0.025 * t},
+ spd:{n:'Swiftness', d:v => '+' + v + ' speed', v:t => 1 + Math.floor(t / 2), int:true},
+ leech:{n:'Thirst', d:v => 'heals ' + Math.round(v * 100) + '% of damage dealt', v:t => 0.03 + 0.012 * t},
+ start:{n:'Battle-Fire', d:v => 'starts fights with ' + Math.round(v) + '% rage', v:t => 10 + 5 * t, int:true},
+ regen:{n:'Mending', d:v => 'heals ' + (v * 100).toFixed(1) + '% life each turn', v:t => 0.008 + 0.005 * t},
+ ult:{n:'Thunder', d:v => '+' + Math.round(v * 100) + '% Ultimate damage', v:t => 0.06 + 0.03 * t},
+ guard:{n:'Ward', d:v => '+' + Math.round(v * 100) + '% damage blocked', v:t => 0.03 + 0.012 * t},
+};
+const FX_CAP = {atk:0.9, hp:0.9, def:0.9, crit:0.4, rage:0.8, spd:6, leech:0.35, start:80, regen:0.06, ult:1, guard:0.35};
+function rollRarity(rng, bias){ const r = rng() * 100, b = bias || 0; return r < 1.5 + 0.3 * b ? 4 : r < 6 + b ? 3 : r < 20 + 3 * b ? 2 : r < 50 + 3 * b ? 1 : 0; } // legendary 1.5%, a little more per bias point
+function makeItem(slot, tier, rng, bias, forceR){
+ rng = rng || Math.random; tier = Math.max(1, Math.min(6, tier | 0));
+ const kinds = GEAR_KINDS[slot], kind = kinds[Math.floor(rng() * kinds.length)], r = forceR != null ? forceR : rollRarity(rng, bias);
+ const it = {id:'g' + Date.now().toString(36) + Math.floor(rng() * 1e6).toString(36), slot, kind:kind.k, tier, r, plus:0, fx:{}};
+ if (slot === 'weapon') it.fx.atk = +(0.05 + 0.04 * tier).toFixed(3);
+ if (slot === 'armor'){ it.fx.hp = +(0.05 + 0.04 * tier).toFixed(3); it.fx.def = +(0.03 + 0.02 * tier).toFixed(3); }
+ const keys = Object.keys(GEAR_FX), pick = () => keys[Math.floor(rng() * keys.length)];
+ if (slot === 'charm'){ const k = pick(); it.main = k; it.fx[k] = GEAR_FX[k].v(tier); }
+ for (let a = 0; a < RARITY[r].aff; a++){ let k = pick(), g = 0; while ((it.fx[k] != null) && g++ < 10) k = pick(); it.fx[k] = (it.fx[k] || 0) + GEAR_FX[k].v(tier) * 0.5; it.aff = (it.aff || []).concat(k); }
+ it.name = itemName(it, kind);
+ return it;
+}
+function itemName(it, kind){
+ kind = kind || GEAR_KINDS[it.slot].find(k => k.k === it.kind) || {n:'Relic'};
+ const suf = it.main ? ' of ' + GEAR_FX[it.main].n : it.aff && it.aff.length ? ' of ' + GEAR_FX[it.aff[0]].n : '';
+ return (it.slot === 'charm' ? '' : GEAR_TIER[it.tier] + ' ') + kind.n + suf;
+}
+// final effect of one item, after rarity and upgrades
+function itemFx(it){ if (!it || !it.fx) return {}; const m = RARITY[it.r || 0].m * (1 + 0.08 * (it.plus || 0)), o = {}; for (const k in it.fx){ const v = it.fx[k] * m; o[k] = GEAR_FX[k] && GEAR_FX[k].int ? Math.round(v) : +v.toFixed(4); } return o; }
+function gearFx(items){ const o = {}; (items || []).forEach(it => { const f = itemFx(it); for (const k in f) o[k] = (o[k] || 0) + f[k]; }); for (const k in o) if (FX_CAP[k] != null) o[k] = Math.min(FX_CAP[k], o[k]); return o; }
+function sumFx(a, b){ const o = Object.assign({}, a || {}); for (const k in (b || {})) o[k] = (o[k] || 0) + b[k]; return o; }
+function craftCost(slot, tier){ return slot === 'charm' ? {silver:Math.round(150 * Math.pow(tier, 1.7)), runes:3 + 3 * tier} : {silver:Math.round(220 * Math.pow(tier, 1.8)), iron:Math.round(30 * Math.pow(tier, 1.7))}; }
+function upgradeCost(it){ const p = (it.plus || 0) + 1, t = it.tier; return it.slot === 'charm' ? {silver:Math.round(80 * t * Math.pow(p, 1.5)), runes:Math.ceil(t * p / 2)} : {silver:Math.round(90 * t * Math.pow(p, 1.6)), iron:Math.round(10 * t * Math.pow(p, 1.4))}; }
+function sellValue(it){ return Math.round(60 * Math.pow(it.tier, 1.6) * RARITY[it.r || 0].m * (1 + 0.2 * (it.plus || 0))); }
+const MAX_PLUS = 10, KIT_MAX = 5;
+function kitCost(l){ return {silver:Math.round(400 * Math.pow(l + 1, 2)), iron:Math.round(60 * Math.pow(l + 1, 1.8))}; }
+
 // ---------- PLAYER STATS ----------
 function levelMult(l){ return 1 + 0.12 * (l - 1); }
-function makeHero(id, level, village, relic){
+function makeHero(id, level, village, relic, gfx){
  const d = WARRIORS.find(w => w.id === id);
  const lm = levelMult(level);
  const v = village || {};
- const fx = relicFx(relic);
+ const fx = sumFx(relicFx(relic), gfx);
  const hp = Math.round(d.hp * lm * (1 + 0.05 * (v.mead||0)) * (1 + (fx.hp||0)));
  const h = {uid:'h_'+id, id, side:'hero', name:d.name, title:d.title, role:d.role, look:d.look, skills:d.skills.slice(),
   max:hp, hp, atk:Math.round(d.atk * lm * (1 + 0.08 * (v.forge||0)) * (1 + (fx.atk||0))), def:Math.round(d.def * (1 + 0.06 * (level - 1)) * (1 + (fx.def||0))), spd:Math.max(1, d.spd + (fx.spd||0)),
@@ -693,7 +829,7 @@ function makeHero(id, level, village, relic){
  if (id === 'eirik') h.leech = (h.leech || 0) + 0.1;
  return h;
 }
-function power(id, level, village, relic){ const h = makeHero(id, level, village, relic); return Math.round(h.max/4 + h.atk*3 + h.def*2); }
+function power(id, level, village, relic, gfx){ const h = makeHero(id, level, village, relic, gfx); return Math.round(h.max/4 + h.atk*3 + h.def*2); }
 function levelCost(l){ return Math.round(25 * Math.pow(l, 1.5)); }
 function levelCap(barracks){ return 5 + 5 * (barracks||0); }
 // v1.5 village: the Jarl's Hall caps every other building's level
@@ -724,14 +860,14 @@ const TROOPS = [
  {id:'bow', n:'Bowmen', needs:1, hp:30, atk:5.8, spd:9, skill:'arrow', cost:{silver:45, iron:5}, d:'Fragile, but they hit from range.'},
  {id:'berserk', n:'Berserk Band', needs:3, hp:36, atk:7.6, spd:12, skill:'strike', cost:{silver:75, iron:10}, d:'Fast and brutal. They do not last long.'},
 ];
-function bandStats(type, n, vil){
- const t = TROOPS.find(x => x.id === type), v = vil || {}, br = 1 + 0.15 * (v.barracks||0);
+function bandStats(type, n, vil, kit){
+ const t = TROOPS.find(x => x.id === type), v = vil || {}, br = (1 + 0.15 * (v.barracks||0)) * (1 + 0.1 * Math.min(KIT_MAX, kit || 0));
  const unitHp = Math.round(t.hp * br * (1 + 0.05 * (v.mead||0)));
  return {unitHp, hp:unitHp * n, atk:Math.round(t.atk * br * (1 + 0.08 * (v.forge||0)) * Math.pow(n, 0.7)), def:8 + 3 * (v.barracks||0), spd:t.spd};
 }
-function makeBand(type, n, vil, side){
+function makeBand(type, n, vil, side, kit){
  const t = TROOPS.find(x => x.id === type); if (!t || n < 1) return null;
- const st = bandStats(type, n, vil);
+ const st = bandStats(type, n, vil, kit);
  return {uid:'b_' + (side || 'hero') + '_' + type, id:'band_' + type, side:side || 'hero', troop:true, band:type, n, unitHp:st.unitHp, name:t.n + ' x' + n, title:'Troops', look:'band', skills:[t.skill],
   max:st.hp, hp:st.hp, atk:st.atk, def:st.def, spd:st.spd, rage:0, cds:{}, buffs:[], alive:true, level:0, rageMult:1, ultPow:1, turns:0};
 }
@@ -936,7 +1072,7 @@ function loot(r, s, raid){
  return o;
 }
 
-return {bmax, mineRate, runeRate, campCap, TROOPS, bandStats, makeBand, survivors, PASSIVES, TRICKS, AFFIXES, makeElite, sprinkleElites, RELICS, relicFx, WARRIORS, SKILLS, REALMS, STAGES, BUILDINGS, VMAX, IDLE_CAP_H, Battle, makeHero, makeFoe, encounter, loot, levelCost, levelCap, buildCost, idleRate, power, levelMult, realmFactor, hasBuff, pick};
+return {RARITY, GEAR_KINDS, GEAR_TIER, GEAR_FX, FX_CAP, makeItem, itemName, itemFx, gearFx, craftCost, upgradeCost, sellValue, MAX_PLUS, KIT_MAX, kitCost, bmax, mineRate, runeRate, campCap, TROOPS, bandStats, makeBand, survivors, PASSIVES, TRICKS, AFFIXES, makeElite, sprinkleElites, RELICS, relicFx, WARRIORS, SKILLS, REALMS, STAGES, BUILDINGS, VMAX, IDLE_CAP_H, Battle, makeHero, makeFoe, encounter, loot, levelCost, levelCap, buildCost, idleRate, power, levelMult, realmFactor, hasBuff, pick};
 })();
 
 
@@ -1132,6 +1268,30 @@ function bRoof(hw, apexY, baseY, gold){ // a shingled gable roof centered on 0
 function bBanner(x, y, col){ return `<g transform="translate(${x} ${y})"><rect x="-.8" y="-4" width="1.6" height="24" fill="#2a1c14"/><path class="flag" d="M.8 -3 L10 -3 L10 9 L5.4 6 L.8 9z" fill="${col}"/><path d="M3 1 l4 0 M5 -1 l0 5" stroke="#f1e6d2" stroke-width=".7" opacity=".7"/></g>`; }
 function bWin(x, y, w, h, col, lit){ return `<rect x="${x - .8}" y="${y - .8}" width="${w + 1.6}" height="${h + 1.6}" fill="${BK.line}"/><rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${col}" opacity="${lit ? .85 : .15}" class="${lit ? 'wglow' : ''}"/>`; }
 function bShield(x, y, col){ return `<circle cx="${x}" cy="${y}" r="4.2" fill="${col}" stroke="#1a100d" stroke-width=".8"/><circle cx="${x}" cy="${y}" r="1.2" fill="#c9b38f"/><path d="M${x - 4} ${y} L${x + 4} ${y}" stroke="#1a100d" stroke-width=".6"/>`; }
+// v2.0 gear icons, 40x40, metal in greys, accents in the rarity color
+function item(slot, kind, col){
+ col = col || '#c9b38f';
+ const M = '#b8b0b8', Md = '#6a6470', W = '#6a4a30', Wd = '#3a2618', L = '#2a1c14';
+ const P = {
+  axe:`<path d="M11 34 L27 9" stroke="${W}" stroke-width="3" stroke-linecap="round"/><path d="M22 8 Q32 6 34 16 Q30 13 26 15z" fill="${M}" stroke="${Md}"/><path d="M26 15 L23 11" stroke="${col}" stroke-width="1.4"/><path d="M12 31 l3 2" stroke="${col}" stroke-width="2"/>`,
+  sword:`<path d="M20 4 L23 8 L22 26 L18 26 L17 8z" fill="${M}" stroke="${Md}"/><path d="M20 7 L20 25" stroke="#e8e4ec" stroke-width=".8"/><rect x="13" y="25" width="14" height="3" rx="1" fill="${col}"/><rect x="18.5" y="28" width="3" height="7" fill="${W}"/><circle cx="20" cy="36" r="2" fill="${col}"/>`,
+  spear:`<path d="M10 35 L28 10" stroke="${W}" stroke-width="2.6" stroke-linecap="round"/><path d="M26 12 L33 4 L31 14z" fill="${M}" stroke="${Md}"/><path d="M24 15 l4 2 M23 16 l2 4" stroke="${col}" stroke-width="1.6"/>`,
+  hammer:`<path d="M12 34 L24 14" stroke="${W}" stroke-width="3" stroke-linecap="round"/><rect x="17" y="6" width="16" height="10" rx="1" transform="rotate(30 25 11)" fill="${M}" stroke="${Md}"/><path d="M22 9 l6 4" stroke="${col}" stroke-width="1.6" transform="rotate(0)"/>`,
+  seax:`<path d="M8 30 L30 9 Q33 10 32 13 L14 32z" fill="${M}" stroke="${Md}"/><path d="M11 30 L30 11" stroke="#e8e4ec" stroke-width=".7"/><path d="M8 30 L14 32 L10 36 L5 34z" fill="${W}"/><circle cx="9" cy="33" r="1.4" fill="${col}"/>`,
+  staff:`<path d="M13 36 L25 8" stroke="${W}" stroke-width="2.6" stroke-linecap="round"/><circle cx="26" cy="7" r="5" fill="none" stroke="${col}" stroke-width="1.6"/><circle cx="26" cy="7" r="2" fill="${col}"/><path d="M17 26 l4 2 M19 21 l4 2" stroke="${col}" stroke-width="1.2"/>`,
+  mail:`<path d="M10 9 L16 6 Q20 9 24 6 L30 9 L33 20 L28 21 L28 35 L12 35 L12 21 L7 20z" fill="${Md}" stroke="${L}"/>${[12, 17, 22, 27, 32].map(y => `<path d="M13 ${y} L27 ${y}" stroke="${M}" stroke-width=".8" stroke-dasharray="1.5 1"/>`).join('')}<path d="M16 6 Q20 11 24 6" stroke="${col}" stroke-width="1.6" fill="none"/>`,
+  furs:`<path d="M9 10 L16 6 Q20 9 24 6 L31 10 L33 22 L28 22 L29 35 L11 35 L12 22 L7 22z" fill="${W}" stroke="${Wd}"/><path d="M9 10 Q6 16 9 20 M31 10 Q34 16 31 20 M12 35 l2 -4 l2 4 l2 -4 l2 4 l2 -4 l2 4 l2 -4 l2 4" stroke="#8a6a48" stroke-width="1" fill="none"/><circle cx="20" cy="13" r="2" fill="${col}"/>`,
+  lamellar:`<path d="M10 9 L16 6 Q20 9 24 6 L30 9 L32 21 L28 21 L28 35 L12 35 L12 21 L8 21z" fill="${Md}" stroke="${L}"/>${[10, 15, 20, 25, 30].map((y, i) => [13, 17, 21, 25].map(x => `<rect x="${x + (i % 2) * 2}" y="${y}" width="3" height="4" fill="${M}" stroke="${L}" stroke-width=".4"/>`).join('')).join('')}<path d="M12 21 L28 21" stroke="${col}" stroke-width="1.4"/>`,
+  bone:`<path d="M10 9 L16 6 Q20 9 24 6 L30 9 L32 21 L28 21 L28 35 L12 35 L12 21 L8 21z" fill="#3a3034" stroke="${L}"/>${[12, 17, 22, 27].map(y => `<path d="M14 ${y} Q20 ${y + 3} 26 ${y}" stroke="#e8dcc8" stroke-width="1.6" fill="none"/>`).join('')}<path d="M20 9 L20 34" stroke="#e8dcc8" stroke-width="1.4"/><circle cx="20" cy="9" r="1.8" fill="${col}"/>`,
+  shield:`<circle cx="20" cy="20" r="14" fill="${W}" stroke="${Wd}" stroke-width="1.4"/><circle cx="20" cy="20" r="14" fill="none" stroke="${M}" stroke-width="1.6"/><path d="M20 6 L20 34 M6 20 L34 20" stroke="${col}" stroke-width="2.2"/><circle cx="20" cy="20" r="4" fill="${M}" stroke="${Md}"/>`,
+  amulet:`<path d="M12 6 Q20 18 28 6" stroke="${M}" stroke-width="1.2" fill="none"/><path d="M20 14 L28 24 L20 34 L12 24z" fill="${Md}" stroke="${M}"/><path d="M20 18 L25 24 L20 30 L15 24z" fill="${col}"/>`,
+  ring:`<circle cx="20" cy="24" r="10" fill="none" stroke="${M}" stroke-width="3.2"/><circle cx="20" cy="24" r="10" fill="none" stroke="#e8e4ec" stroke-width=".8"/><path d="M15 12 L20 7 L25 12 L20 16z" fill="${col}" stroke="${Md}"/>`,
+  totem:`<rect x="14" y="6" width="12" height="29" rx="2" fill="${W}" stroke="${Wd}"/><circle cx="17.5" cy="12" r="1.6" fill="${col}"/><circle cx="22.5" cy="12" r="1.6" fill="${col}"/><path d="M16 17 L24 17 M17 24 Q20 27 23 24 M16 30 L24 30" stroke="${Wd}" stroke-width="1.4" fill="none"/><path d="M14 9 L9 6 M26 9 L31 6" stroke="${W}" stroke-width="2"/>`,
+  stone:`<path d="M12 35 L10 14 Q20 2 30 14 L28 35z" fill="#4a444a" stroke="#2a2428"/><path d="M20 10 L20 30 M16 15 L24 21 M24 15 L16 21" stroke="${col}" stroke-width="1.8"/>`,
+  scroll:`<path d="M10 12 Q8 8 12 8 L28 8 Q32 8 30 12 L30 30 Q32 34 28 34 L12 34 Q8 34 10 30z" fill="#d8c8a8" stroke="#8a7458"/><path d="M14 14 L26 14 M14 19 L24 19 M14 24 L26 24 M14 29 L22 29" stroke="#6a5438" stroke-width="1"/><circle cx="25" cy="28" r="3.4" fill="${col}"/>`,
+ };
+ return `<svg class="iico" viewBox="0 0 40 40" aria-hidden="true"><defs><radialGradient id="ig${col.slice(1)}"><stop offset="0" stop-color="${col}" stop-opacity=".45"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></radialGradient></defs><circle cx="20" cy="20" r="19" fill="url(#ig${col.slice(1)})"/>${P[kind] || P.amulet}</svg>`;
+}
 function building(id, l){ // drawn around 0,0, about 90 wide, y from about -52 to 30
  const glow = BCOL[id] || '#d9792a', lit = l > 0, t2 = l >= 2, t3 = l >= 3, t4 = l >= 4, gold = l >= 5;
  let g = '';
@@ -1235,7 +1395,7 @@ function villageMap(vil, badges, claws){
  ${b}</svg>`;
 }
 
-return {ICON, sceneSVG, heroArt, foeArt, raven, seer, band, building, villageMap, SLOTS};
+return {ICON, sceneSVG, heroArt, foeArt, raven, seer, band, building, villageMap, SLOTS, item};
 })();
 
 // ===== RAVENMARROW UI =====
@@ -1243,6 +1403,20 @@ const VERSION = document.querySelector('meta[name="build"]').content; // e.g. "1
 const BUILD_DATE = document.querySelector('meta[name="build-date"]').content;
 // Newest first. Every update adds an entry; it shows once after the update lands.
 const CHANGELOG = [
+ {v:'2.0.1', d:'Nov 17 2026', notes:['Equip best is smarter: it gives each piece to whoever gains the most and never leaves your squad weaker.', 'Raid clears in the last realm can drop tier 6 Drowned Gold gear.']},
+ {v:'2.0', d:'Nov 17 2026', notes:[
+  'Gear has arrived: weapons, armor and charms. Every warrior has three gear slots.',
+  'The Forge makes and upgrades weapons and armor. The Rune Altar binds charms with special powers like crits, life drain and battle-fire.',
+  'A boss always drops gear the first time you beat it, and often after. Raid clears and warband spoils always drop it; Night Raids sometimes do.',
+  'New Armory in the Warriors tab: see every piece, give it to any warrior, upgrade it, or sell it for silver.',
+  'Equip best: one tap gives every warrior the gear that helps them most.',
+  'The War Camp now arms your troops. Kits make a whole troop type tougher.',
+ ]},
+ {v:'1.9', d:'Nov 16 2026', notes:[
+  'Tap the silver, iron or rune counters to see what each one is for and how to get more.',
+  'New ? button at the top: tap it, then tap anything to learn what it does. Tap ? again to stop.',
+  'In battle, press and hold any warrior, enemy or skill to read about it.',
+ ]},
  {v:'1.8', d:'Nov 16 2026', notes:[
   'Something is watching. She notices more than she should.',
   'Settings has a new switch: Let her in.',
@@ -1324,7 +1498,7 @@ const SAVE_KEY = 'ravenmarrow.save';
 const SAVE_V = 1;
 function freshSave(){
  return {v:SAVE_V, owned:{sigrun:1, bjorn:1, aslaug:1}, squad:['sigrun','bjorn','aslaug'],
-  vil:{hall:1, mead:0, mine:0, lookout:0, forge:0, altar:0, barracks:0, camp:0, infirmary:0, wall:0, tower:0, pits:0}, silver:0, iron:0, runes:0,
+  vil:{hall:1, mead:0, mine:0, lookout:0, forge:0, altar:0, barracks:0, camp:0, infirmary:0, wall:0, tower:0, pits:0}, silver:0, iron:0, runes:0, gear:{items:[], eq:{}}, kit:{spear:0, bow:0, berserk:0},
   prod:{ironAt:Date.now(), runeAt:Date.now()}, army:{skirmish:{type:'spear', n:0}, garrison:{type:'spear', n:0}}, night:{next:0, wins:0, losses:0},
   wb:{day:'', used:0, best:0, total:0, wk:'', wkPts:0, wkBest:0, wkTries:0, claimed:''}, arena:{day:'', used:0, rating:1000, wins:0, losses:0}, profile:{name:'', group:''},
   cleared:RM.REALMS.map(() => 0), raid:{best:0, runs:0, clears:0}, idleAt:Date.now(),
@@ -1340,7 +1514,20 @@ function migrate(s){
  const hadHall = s.vil.hall !== undefined;
  for (const k in f.vil) if (s.vil[k] === undefined) s.vil[k] = 0;
  if (!hadHall) s.vil.hall = Math.max(1, ...['forge','altar','barracks','mead'].map(k => s.vil[k] || 0)); // older saves: Hall matches what they built
- for (const k of ['prod','army','night','wb','arena','profile']) for (const kk in f[k]) if (s[k][kk] === undefined) s[k][kk] = f[k][kk];
+ for (const k of ['prod','army','night','wb','arena','profile','gear','kit']) for (const kk in f[k]) if (!s[k] || typeof s[k] !== 'object') s[k] = f[k]; else if (s[k][kk] === undefined) s[k][kk] = f[k][kk];
+ if (!Array.isArray(s.gear.items)) s.gear.items = [];
+ { // gear arrives clean: known slots and kinds, numbers in range, effects only from known keys, nothing worn twice or by nobody
+  const seen = new Set(), clampI = (v, lo, hi) => Math.max(lo, Math.min(hi, Math.round(+v || 0)));
+  s.gear.items = s.gear.items.filter(it => it && typeof it.id === 'string' && !seen.has(it.id) && seen.add(it.id) && RM.GEAR_KINDS[it.slot] && it.fx && typeof it.fx === 'object').slice(0, 80).map(it => {
+   const fx = {}; for (const k in it.fx){ const v = +it.fx[k]; if ((k === 'atk' || k === 'hp' || k === 'def' || RM.GEAR_FX[k]) && isFinite(v) && v > 0) fx[k] = Math.min(RM.FX_CAP[k] || 1, v); }
+   const kind = RM.GEAR_KINDS[it.slot].some(k => k.k === it.kind) ? it.kind : RM.GEAR_KINDS[it.slot][0].k;
+   return {id:it.id, slot:it.slot, kind, tier:clampI(it.tier, 1, 6), r:clampI(it.r, 0, 4), plus:clampI(it.plus, 0, RM.MAX_PLUS), fx, main:RM.GEAR_FX[it.main] ? it.main : undefined, aff:Array.isArray(it.aff) ? it.aff.filter(k => RM.GEAR_FX[k]) : undefined};
+  }).filter(it => Object.keys(it.fx).length);
+  const ids = new Set(s.gear.items.map(i => i.id)), used = new Set(), eq = {};
+  for (const w in (s.gear.eq || {})){ if (!RM.WARRIORS.some(x => x.id === w) || !s.owned[w]) continue; eq[w] = {}; for (const sl of ['weapon', 'armor', 'charm']){ const iid = s.gear.eq[w] && s.gear.eq[w][sl], it = s.gear.items.find(i => i.id === iid); if (it && it.slot === sl && !used.has(iid)){ eq[w][sl] = iid; used.add(iid); } } }
+  s.gear.eq = eq;
+  for (const t of ['spear', 'bow', 'berserk']) s.kit[t] = Math.max(0, Math.min(RM.KIT_MAX, Math.round(+s.kit[t] || 0)));
+ }
  if (!s.army.skirmish || !s.army.garrison) s.army = f.army;
  for (const k in f.set) if (s.set[k] === undefined) s.set[k] = f.set[k];
  for (const k in f.raid) if (s.raid[k] === undefined) s.raid[k] = f.raid[k];
@@ -1417,9 +1604,260 @@ function musicOff(){
 
 // ---------- ui helpers ----------
 function toast(t, ms){ const el = $('#toast'); el.textContent = t; el.classList.add('on'); clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove('on'), ms || 2200); }
-function sheet(html, cls){ const v = $('#veil'); v.innerHTML = `<div class="sheet ${cls || ''}" style="position:relative">${html}</div>`; v.classList.add('on'); v.onclick = e => { if (e.target === v && !v._lock) closeSheet(); }; return v.firstChild; }
+function sheet(html, cls){ Help.off(); const v = $('#veil'); v.innerHTML = `<div class="sheet ${cls || ''}" style="position:relative">${html}</div>`; v.classList.add('on'); v.onclick = e => { if (e.target === v && !v._lock) closeSheet(); }; return v.firstChild; }
 function closeSheet(){ const v = $('#veil'); v.classList.remove('on'); v.innerHTML = ''; v._lock = false; }
-function showScreen(id){ $$('.screen').forEach(s => s.classList.toggle('on', s.id === id)); }
+function showScreen(id){ Help.off(); $$('.screen').forEach(s => s.classList.toggle('on', s.id === id)); }
+// ---------- GEAR, ARMORY, EQUIP BEST (v2.0) ----------
+const SLOTS = ['weapon', 'armor', 'charm'], SLOT_N = {weapon:'Weapon', armor:'Armor', charm:'Charm'}, ARMORY_CAP = 80;
+function gearOk(){ if (!S.gear || typeof S.gear !== 'object') S.gear = {items:[], eq:{}}; if (!Array.isArray(S.gear.items)) S.gear.items = []; if (!S.gear.eq || typeof S.gear.eq !== 'object') S.gear.eq = {}; if (!S.kit) S.kit = {spear:0, bow:0, berserk:0}; return S.gear; }
+function itemById(iid){ return iid ? gearOk().items.find(i => i.id === iid) || null : null; }
+function eqItems(id){ const e = gearOk().eq[id] || {}; return SLOTS.map(s => itemById(e[s])).filter(Boolean); }
+function gfx(id){ return RM.gearFx(eqItems(id)); }
+function wearer(iid){ const eq = gearOk().eq; for (const w in eq) if (wdef(w) && S.owned[w]) for (const s in eq[w]) if (eq[w][s] === iid) return w; return null; }
+function rarCol(it){ return RM.RARITY[it.r || 0].col; }
+function itemTitle(it){ return RM.itemName(it) + (it.plus ? ' +' + it.plus : ''); }
+function fxLines(fx){
+ const L = [];
+ if (fx.atk) L.push('+' + Math.round(fx.atk * 100) + '% attack');
+ if (fx.hp) L.push('+' + Math.round(fx.hp * 100) + '% life');
+ if (fx.def) L.push('+' + Math.round(fx.def * 100) + '% defense');
+ for (const k in fx) if (RM.GEAR_FX[k]) L.push(RM.GEAR_FX[k].d(fx[k]));
+ return L;
+}
+// how good a set of gear is on one warrior: power plus a fair value for the special powers
+function gearScore(id, items){ // special-power weights come from fight sims (Nov 17 2026)
+ const fx = RM.gearFx(items), h = RM.makeHero(id, S.owned[id] || 1, S.vil, S.equip[id], fx), base = h.atk * 3;
+ return h.max / 4 + h.atk * 3 + h.def * 2 + base * ((fx.crit || 0) * 0.6 + (fx.rage || 0) * 1 + (fx.spd || 0) * 0.015 + (fx.leech || 0) * 1.6 + (fx.start || 0) * 0.001 + (fx.regen || 0) * 8 + (fx.ult || 0) * 1 + (fx.guard || 0) * 3.2);
+}
+function powerOf(id){ return Math.round(gearScore(id, eqItems(id))); }
+function addItem(it){
+ gearOk();
+ if (S.gear.items.length >= ARMORY_CAP){ const v = RM.sellValue(it); S.silver += v; toast('The Armory is full. ' + itemTitle(it) + ' was sold for ' + fmt(v) + ' silver.'); return null; }
+ S.gear.items.push(it); S.gear.fresh = (S.gear.fresh || 0) + 1; return it;
+}
+// a chance at gear after a win; bosses always drop
+function dropItem(realm, chance, bias, forceR, tierUp){
+ if (Math.random() > chance) return null;
+ const slot = SLOTS[Math.floor(Math.random() * 3)];
+ return addItem(RM.makeItem(slot, Math.min(6, realm + 1 + (tierUp || 0)), Math.random, bias || 0, forceR));
+}
+function itemTile(it, opt){
+ opt = opt || {}; const w = wearer(it.id);
+ return `<button class="itile r${it.r || 0}" data-iid="${it.id}" style="--rc:${rarCol(it)}">${ART.item(it.slot, it.kind, rarCol(it))}<b>${itemTitle(it)}</b><small>${fxLines(RM.itemFx(it)).slice(0, 2).join(', ')}</small>${w ? `<span class="iw">${wdef(w).name}</span>` : ''}${opt.delta != null ? `<span class="idelta ${opt.delta > 0 ? 'up' : opt.delta < 0 ? 'dn' : ''}">${opt.delta > 0 ? '+' : ''}${opt.delta}</span>` : ''}</button>`;
+}
+function lootItemHTML(it){ return it ? `<div class="lootitem" style="--rc:${rarCol(it)}">${ART.item(it.slot, it.kind, rarCol(it))}<div><small>${RM.RARITY[it.r || 0].n} ${SLOT_N[it.slot].toLowerCase()}</small><b>${itemTitle(it)}</b><em>${fxLines(RM.itemFx(it)).join(', ')}</em></div></div>` : ''; }
+// Equip best: squad first, then everyone else by level; each slot takes the item that helps that warrior most
+function equipBest(){
+ gearOk();
+ const roster = Object.keys(S.owned).filter(id => wdef(id)), w8 = id => S.squad.includes(id) ? 3 : 1;
+ const sqPow = eqMap => S.squad.reduce((a, id) => a + gearScore(id, SLOTS.map(sl => itemById((eqMap[id] || {})[sl])).filter(Boolean)), 0);
+ const before = sqPow(S.gear.eq), eq = {}, free = new Set(S.gear.items.map(i => i.id));
+ roster.forEach(id => { eq[id] = {}; });
+ const setOf = id => SLOTS.map(sl => itemById(eq[id][sl])).filter(Boolean);
+ for (let guard = 0; guard < roster.length * 3; guard++){ // hand out the single biggest improvement each round
+  let best = null;
+  roster.forEach(id => { const cur = setOf(id), base = gearScore(id, cur);
+   SLOTS.forEach(sl => { if (eq[id][sl]) return; S.gear.items.forEach(it => { if (it.slot !== sl || !free.has(it.id)) return; const g = (gearScore(id, cur.concat([it])) - base) * w8(id); if (g > 0.01 && (!best || g > best.g)) best = {id, sl, it, g}; }); });
+  });
+  if (!best) break;
+  eq[best.id][best.sl] = best.it.id; free.delete(best.it.id);
+ }
+ const after = sqPow(eq);
+ if (after + 0.5 < before){ sfx('tap'); toast('Your squad is already wearing its best gear.'); return 0; }
+ S.gear.eq = eq; save(); sfx('up');
+ toast(Math.round(after) > Math.round(before) ? 'Squad power ' + fmt(Math.round(before)) + ' \u2192 ' + fmt(Math.round(after)) + '.' : 'Everyone already has their best gear.');
+ return after - before;
+}
+function equipItem(iid, id){ gearOk(); const it = itemById(iid); if (!it) return; const w = wearer(iid); if (w) delete S.gear.eq[w][it.slot]; S.gear.eq[id] = S.gear.eq[id] || {}; S.gear.eq[id][it.slot] = iid; save(); }
+function unequip(iid){ const w = wearer(iid), it = itemById(iid); if (w && it) delete S.gear.eq[w][it.slot]; save(); }
+function sellItem(iid){ const it = itemById(iid); if (!it) return 0; unequip(iid); S.gear.items = S.gear.items.filter(i => i.id !== iid); const v = RM.sellValue(it); S.silver += v; save(); return v; }
+let ARM_F = 'all';
+function armorySheet(){
+ gearOk(); S.gear.fresh = 0;
+ const items = S.gear.items.filter(it => ARM_F === 'all' || it.slot === ARM_F).sort((a, b) => (b.r - a.r) || (b.tier - a.tier) || ((b.plus || 0) - (a.plus || 0)));
+ const spare = S.gear.items.filter(it => !wearer(it.id) && !it.r), spareV = spare.reduce((a, it) => a + RM.sellValue(it), 0);
+ sheet(`<button class="btn small close" id="xs">Close</button><h3>The Armory</h3><p class="sub">${S.gear.items.length} of ${ARMORY_CAP} pieces. Tap a piece to equip, upgrade or sell it.</p>
+  <div class="row" style="gap:6px;margin-bottom:10px"><button class="btn blood" id="eqBest">Equip best</button><button class="btn" id="sellSpare" ${spare.length ? '' : 'disabled'}>Sell spare commons${spare.length ? ' (' + fmt(spareV) + ')' : ''}</button></div>
+  <div class="afilter">${['all'].concat(SLOTS).map(f => `<button class="${ARM_F === f ? 'on' : ''}" data-f="${f}">${f === 'all' ? 'All' : SLOT_N[f] + 's'}</button>`).join('')}</div>
+  <div class="igrid">${items.length ? items.map(it => itemTile(it)).join('') : '<p class="lockmsg" style="grid-column:1/-1;text-align:center;margin:24px 0">Nothing here yet. Bosses drop gear, and the Forge and Altar make it.</p>'}</div>`, 'armsheet');
+ $('#xs').onclick = closeSheet;
+ $('#eqBest').onclick = () => { equipBest(); armorySheet(); if (TAB === 'warriors') renderWarriors(); };
+ const sp = $('#sellSpare'); if (sp) sp.onclick = () => { if (!sp.dataset.sure){ sp.dataset.sure = 1; sp.textContent = 'Tap again to sell ' + spare.length; return; } let v = 0; spare.forEach(it => { v += sellItem(it.id); }); sfx('coin'); toast('Sold ' + spare.length + ' pieces for ' + fmt(v) + ' silver.'); renderTop(); armorySheet(); };
+ $$('.afilter button').forEach(b => b.onclick = () => { ARM_F = b.dataset.f; armorySheet(); });
+ $$('.igrid .itile').forEach(b => b.onclick = () => { sfx('tap'); itemSheet(b.dataset.iid, armorySheet); });
+}
+function itemSheet(iid, back){
+ const it = itemById(iid); if (!it) return back ? back() : closeSheet();
+ const w = wearer(iid), fx = RM.itemFx(it), up = RM.upgradeCost(it), maxed = (it.plus || 0) >= RM.MAX_PLUS, val = RM.sellValue(it);
+ const shopL = it.slot === 'charm' ? S.vil.altar : S.vil.forge, shopN = it.slot === 'charm' ? 'Rune Altar' : 'Forge';
+ const who = Object.keys(S.owned).map(id => { const cur = eqItems(id), without = cur.filter(x => x.slot !== it.slot); return {id, d:Math.round(gearScore(id, without.concat([it])) - gearScore(id, cur))}; }).sort((a, b) => (S.squad.includes(b.id) - S.squad.includes(a.id)) || b.d - a.d);
+ sheet(`<button class="btn small close" id="xs">Back</button><div class="isheet" style="--rc:${rarCol(it)}"><div class="iart">${ART.item(it.slot, it.kind, rarCol(it))}</div>
+  <h3 style="color:${rarCol(it)}">${itemTitle(it)}</h3><p class="lockmsg" style="text-align:center">${RM.RARITY[it.r || 0].n} ${SLOT_N[it.slot].toLowerCase()} · tier ${it.tier}${w ? ' · worn by ' + wdef(w).name : ''}</p>
+  <div class="ifx">${fxLines(fx).map(l => `<div>${l}</div>`).join('')}</div>
+  <div class="row" style="gap:6px;justify-content:center;margin:10px 0">
+   ${maxed ? '<button class="btn" disabled>Fully upgraded</button>' : !shopL ? `<button class="btn" disabled>Build the ${shopN} to upgrade</button>` : `<button class="btn blood" id="iUp" ${afford(up) ? '' : 'disabled'}>Upgrade to +${(it.plus || 0) + 1} ${costHTML(up)}</button>`}
+   ${w ? '<button class="btn" id="iOff">Take off</button>' : ''}<button class="btn" id="iSell">Sell ${costHTML({silver:val}).replace('short', '')}</button>
+  </div>
+  <div class="lockmsg" style="margin:6px 0 4px">Give to</div><div class="iwho">${who.map(x => `<button class="${x.id === w ? 'on' : ''}" data-w="${x.id}">${ART.heroArt(wdef(x.id).look)}<b>${wdef(x.id).name}</b><i class="${x.d > 0 ? 'up' : x.d < 0 ? 'dn' : ''}">${x.id === w ? 'wearing' : (x.d > 0 ? '+' : '') + x.d}</i></button>`).join('')}</div></div>`);
+ $('#xs').onclick = () => back ? back() : closeSheet();
+ const u = $('#iUp'); if (u) u.onclick = () => { if (!afford(up) || maxed) return; pay(up); it.plus = (it.plus || 0) + 1; save(); sfx('up'); vibe([20, 30, 40]); renderTop(); itemSheet(iid, back); };
+ const o = $('#iOff'); if (o) o.onclick = () => { unequip(iid); sfx('tap'); itemSheet(iid, back); if (TAB === 'warriors') renderWarriors(); };
+ const s = $('#iSell'); s.onclick = () => { if (!s.dataset.sure){ s.dataset.sure = 1; s.innerHTML = 'Tap again to sell'; return; } const v = sellItem(iid); sfx('coin'); toast('Sold for ' + fmt(v) + ' silver.'); renderTop(); back ? back() : closeSheet(); if (TAB === 'warriors') renderWarriors(); };
+ $$('.iwho button').forEach(b => b.onclick = () => { if (b.dataset.w === w) return; equipItem(iid, b.dataset.w); sfx('up'); toast(itemTitle(it) + ' given to ' + wdef(b.dataset.w).name + '.'); itemSheet(iid, back); if (TAB === 'warriors') renderWarriors(); });
+}
+function slotPicker(id, slot){
+ const cur = eqItems(id), curIt = cur.find(x => x.slot === slot), without = cur.filter(x => x.slot !== slot), base = gearScore(id, cur);
+ const list = gearOk().items.filter(it => it.slot === slot).map(it => ({it, d:Math.round(gearScore(id, without.concat([it])) - base)})).sort((a, b) => b.d - a.d);
+ sheet(`<button class="btn small close" id="xs">Back</button><h3>${wdef(id).name}: ${SLOT_N[slot]}</h3><p class="sub">Numbers show how much stronger ${wdef(id).name} gets. Gear worn by someone else moves over.</p>
+  ${curIt ? '<button class="btn wide" id="pOff" style="margin-bottom:8px">Take off ' + itemTitle(curIt) + '</button>' : ''}
+  <div class="igrid">${list.length ? list.map(x => itemTile(x.it, {delta:x.it === curIt ? 0 : x.d})).join('') : `<p class="lockmsg" style="grid-column:1/-1;text-align:center;margin:20px 0">No ${SLOT_N[slot].toLowerCase()}s yet. ${slot === 'charm' ? 'The Rune Altar binds charms.' : 'The Forge makes them.'} Bosses drop them too.</p>`}</div>`);
+ $('#xs').onclick = () => warriorSheet(id);
+ const po = $('#pOff'); if (po) po.onclick = () => { unequip(curIt.id); warriorSheet(id); renderWarriors(); };
+ $$('.igrid .itile').forEach(b => b.onclick = () => { equipItem(b.dataset.iid, id); sfx('up'); warriorSheet(id); renderWarriors(); });
+}
+function gearRowHTML(id){
+ return `<div class="gearrow">${SLOTS.map(s => { const it = eqItems(id).find(x => x.slot === s); return `<button class="gslot ${it ? 'r' + it.r : 'empty'}" data-slot="${s}" style="--rc:${it ? rarCol(it) : '#4a3a2c'}">${it ? ART.item(s, it.kind, rarCol(it)) : `<span class="gq">+</span>`}<small>${it ? itemTitle(it) : SLOT_N[s]}</small></button>`; }).join('')}</div>`;
+}
+// Forge, Altar and War Camp workshops inside their building sheets
+function workshopHTML(id, l){
+ if (id === 'forge' || id === 'altar'){
+  if (!l) return `<p class="lockmsg" style="margin-top:10px">Build it to ${id === 'forge' ? 'forge weapons and armor' : 'bind charms'}.</p>`;
+  const t = Math.min(6, l), slots = id === 'forge' ? ['weapon', 'armor'] : ['charm'];
+  return `<div class="workshop"><div class="lockmsg">${id === 'forge' ? 'Forge' : 'Bind'} tier ${t} gear. Higher ${id === 'forge' ? 'Forge' : 'Altar'} levels make better tiers and rarer pieces.</div>${slots.map(s => { const c = RM.craftCost(s, t); return `<button class="btn blood wide craft" data-s="${s}" ${afford(c) ? '' : 'disabled'}>${ART.item(s, s === 'weapon' ? 'axe' : s === 'armor' ? 'mail' : 'amulet', '#f0c060')}<span>${SLOT_N[s]}</span>${costHTML(c)}</button>`; }).join('')}<button class="btn wide" id="toArm">Open the Armory</button></div>`;
+ }
+ if (id === 'camp'){
+  if (!l) return '';
+  return `<div class="workshop"><div class="lockmsg">Arm your troops. Each kit level gives that whole troop type +10% life and attack. Kits go up to the War Camp's level.</div>${RM.TROOPS.map(t => { const k = gearOk() && S.kit[t.id] || 0, c = RM.kitCost(k), cap = Math.min(RM.KIT_MAX, l); return `<div class="kitrow">${ART.band(t.id, 'mini')}<span><b>${t.n}</b><small>Kit ${k} of ${RM.KIT_MAX}</small></span>${k >= cap ? `<button class="btn small" disabled>${k >= RM.KIT_MAX ? 'Full' : 'Raise camp'}</button>` : `<button class="btn small blood kitup" data-t="${t.id}" ${afford(c) ? '' : 'disabled'}>${costHTML(c)}</button>`}</div>`; }).join('')}</div>`;
+ }
+ return '';
+}
+function wireWorkshop(id){
+ $$('.craft').forEach(b => b.onclick = () => {
+  const t = Math.min(6, S.vil[id === 'forge' ? 'forge' : 'altar']), c = RM.craftCost(b.dataset.s, t); if (!afford(c)) return;
+  if (gearOk().items.length >= ARMORY_CAP){ toast('The Armory is full. Sell something first.'); return; }
+  pay(c); const it = addItem(RM.makeItem(b.dataset.s, t, Math.random, S.vil[id] || 0)); save(); renderTop(); sfx(it.r >= 3 ? 'ult' : 'up'); vibe(it.r >= 3 ? [30, 40, 80] : [20]);
+  craftReveal(it, id);
+ });
+ $$('.kitup').forEach(b => b.onclick = () => { const k = S.kit[b.dataset.t] || 0, c = RM.kitCost(k); if (!afford(c) || k >= Math.min(RM.KIT_MAX, S.vil.camp)) return; pay(c); S.kit[b.dataset.t] = k + 1; save(); sfx('up'); renderTop(); buildingSheet('camp'); });
+ const ta = $('#toArm'); if (ta) ta.onclick = () => armorySheet();
+}
+function craftReveal(it, from){
+ const best = Object.keys(S.owned).map(id => { const cur = eqItems(id); return {id, d:Math.round(gearScore(id, cur.filter(x => x.slot !== it.slot).concat([it])) - gearScore(id, cur))}; }).sort((a, b) => (S.squad.includes(b.id) - S.squad.includes(a.id)) || b.d - a.d)[0];
+ sheet(`<div class="result reveal" style="--rc:${rarCol(it)}"><div class="lockmsg">${RM.RARITY[it.r].n}</div><div class="iart big">${ART.item(it.slot, it.kind, rarCol(it))}</div><div class="big" style="color:${rarCol(it)};font-size:clamp(20px,6vw,28px)">${itemTitle(it)}</div>
+  <div class="ifx">${fxLines(RM.itemFx(it)).map(l => `<div>${l}</div>`).join('')}</div>
+  <div class="row" style="justify-content:center;gap:6px;margin-top:10px">${best && best.d > 0 ? `<button class="btn blood" id="cEq">Give to ${wdef(best.id).name} (+${best.d})</button>` : ''}<button class="btn" id="cKeep">Keep in Armory</button></div></div>`);
+ const e = $('#cEq'); if (e) e.onclick = () => { equipItem(it.id, best.id); toast(itemTitle(it) + ' given to ' + wdef(best.id).name + '.'); buildingSheet(from); };
+ $('#cKeep').onclick = () => buildingSheet(from);
+}
+// ---------- TAP TO KNOW + HELP MODE (v1.9) ----------
+// Tap anything informational (or long-press anything in battle) for a short card. The ? button turns on
+// help mode: the next taps explain instead of act. Every card closes with a tap.
+const Help = (() => {
+ let on = false, pressT = 0, suppress = false;
+ const hr = n => `${fmt(Math.round(n))} an hour`;
+ const B_ = () => typeof B !== 'undefined' ? B : null;
+ const unitOf = el => { const b = B_(); return b && el && el.dataset.uid ? b.all().find(u => u.uid === el.dataset.uid) : null; };
+ const CUR = {
+  silver:() => ({i:ART.ICON.silver, t:'Silver', b:['The everyday coin of the north.', '<b>Spend it on</b> leveling warriors, building and upgrading the village, and training troops.', '<b>Get more</b> by winning fights, collecting from the <b>Mead Hall</b> (' + hr(RM.idleRate(S.vil.mead)) + ' now), the Daily Blessing, and Raids.'], n:S.silver}),
+  iron:() => ({i:ART.ICON.iron, t:'Iron', b:['Raw ore for walls and weapons.', '<b>Spend it on</b> every building upgrade, the Jarl\'s Hall included, and on training troops.', '<b>Get more</b> from the <b>Mine</b> in your Village (' + (S.vil.mine ? hr(RM.mineRate(S.vil.mine)) : 'build one first, it\'s on the right of the map') + '), boss fights, Raids and Night Raids.'], n:S.iron}),
+  runes:() => ({i:ART.ICON.runes, t:'Bone Runes', b:['Carved bone, rare and old.', '<b>Spend them</b> to recruit new warriors in the Warriors tab.', '<b>Get more</b> from Deeds (the book icon), first-time boss kills, the <b>Lookout</b> (' + (S.vil.lookout ? RM.runeRate(S.vil.lookout) + ' an hour' : 'build one first') + ') and Raids.'], n:S.runes}),
+ };
+ const TABS = {saga:['The Saga', 'The story path. Clear each realm\'s fights to reach its boss. Every boss opens the next realm.'], warriors:['Warriors', 'Your squad. Level them up with silver, recruit new ones with bone runes, and pick who fights.'], village:['Village', 'Your home. Build to earn silver, iron and runes while you\'re away, and to defend against Night Raids.'], raid:['War', 'Raids, the weekly Warband Boss you share with friends, and the Arena where you raid their villages.']};
+ // each rule: [selector, (element) => card]
+ const RULES = [
+  ['.cur', el => CUR[el.id.replace('cur-', '')]()],
+  ['#helpBtn, #helpB', () => ({t:'Help', b:['Tap <b>?</b>, then tap anything to learn what it is. Tap <b>?</b> again to stop.', 'You can also press and hold things in battle.']})],
+  ['#bookBtn', () => ({t:'Saga Journal', b:['Your Deeds (achievements that pay bone runes), stats and records.']})],
+  ['#gearBtn', () => ({t:'Settings', b:['Sound, speed, effects, your warband, backups, and installing the game.']})],
+  ['.tab', el => ({t:TABS[el.dataset.tab][0], b:[TABS[el.dataset.tab][1]]})],
+  ['.bless', () => ({t:'Daily Blessing', b:['Your first win each day pays extra silver, iron and runes. Missing a day costs nothing.']})],
+  ['.node', el => { const r = +el.dataset.r, s = +el.dataset.s, R = RM.REALMS[r]; const boss = el.classList.contains('boss'); return {t:boss ? R.boss.n : R.name + ', fight ' + (s + 1), b:[boss ? 'The realm\'s boss. Beat it to open the next realm and win a relic.' : 'A fight in ' + R.name + '. Win it to move along the path.', el.classList.contains('lock') ? '<b>Locked.</b> Clear the fight before it first.' : el.classList.contains('done') ? 'Cleared. Replay it any time for more loot.' : 'Tap it to see the enemies and fight.']}; }],
+  ['.wcard', el => { const w = wdef(el.dataset.id), own = S.owned[w.id]; return {t:w.name + ', ' + w.title, b:[w.role ? '<b>' + w.role + '.</b> ' + (w.lore || '') : (w.lore || ''), own ? 'Level ' + own + '. Tap to see skills, level up, or give a relic.' : 'Not recruited yet. Costs ' + w.cost + ' bone runes.']}; }],
+  ['#vmap .bld', el => { const id = el.dataset.b, b = RM.BUILDINGS.find(x => x.id === id), l = S.vil[id] || 0, fx = bEffect(id, Math.max(1, l)); return {t:b.name + (l ? ', level ' + l : ', not built'), b:[b.desc, fx ? '<b>' + fx.big + '</b> ' + fx.what + (l ? '' : ' (at level 1)') : '', 'Tap it to build or upgrade.']}; }],
+  ['#coffers', () => ({t:'Coffers', b:['What your village has earned while you were away. Tap <b>Collect</b> to take it.', 'Silver comes from the Mead Hall, iron from the Mine, runes from the Lookout. Upgrade them to earn faster.']})],
+  ['#nightCard', () => ({t:'Night Raid', b:['Every 8 hours the dead come for your village. Tap Defend to fight them off.', 'Your squad, Garrison, walls, towers and pits all fight. Lose and they empty your coffers.']})],
+  ['#armyCard', () => ({t:'Troops', b:['Train Spearmen, Bowmen and Berserkers at the War Camp.', 'Your <b>Skirmish Band</b> fights beside your squad. Your <b>Garrison</b> stays home and defends.', 'Troops who die are gone, but the Infirmary saves some.']})],
+  ['.wband', () => ({t:'Your warband', b:['Your group of friends. Everyone types the same group code.', 'You share one Warband Boss and can raid each other\'s villages.']})],
+  ['.board', () => ({t:'Who hit hardest', b:['Everyone\'s wounds on this week\'s Warband Boss. Kill it together and everyone who hit it claims the spoils.']})],
+  ['.feed', () => ({t:'The warband feed', b:['Who joined, who hit the boss, who raided whom. Raids on your village show in red.']})],
+  ['.wbar', () => ({t:'Shared boss life', b:['The Warband Boss\'s life for the whole group this week. Every fight by anyone chips it down.']})],
+  ['#skills .sk[data-sid]', el => { const s = RM.SKILLS[el.dataset.sid]; return {i:'<em class="hrune">' + s.rune + '</em>', t:s.name, b:[s.desc, s.kind === 'ult' ? '<b>Ultimate.</b> Ready when the warrior\'s rage bar is full. Rage fills as they hit and get hit.' : s.cd ? 'Used, then rests for ' + s.cd + ' turns.' : 'Always ready.']}; }],
+  ['#party .card', el => { const u = unitOf(el); if (!u) return null; if (u.troop) return {t:u.name, b:['Your Skirmish Band. ' + RM.survivors(u) + ' of ' + u.n + ' still standing.', 'They hit weaker as they fall. Survivors go home after the fight.']}; const pv = RM.PASSIVES[u.id]; return {t:u.name + ', level ' + u.level, b:[Math.ceil(u.hp) + ' of ' + u.max + ' life. Rage ' + Math.floor(u.rage) + '%.', pv ? '<b>' + pv.n + ':</b> ' + pv.d : '', u.relic && relicDef(u.relic) ? '<b>' + relicDef(u.relic).n + ':</b> ' + relicDef(u.relic).d : '', 'The bar under them is rage. Full rage unlocks their Ultimate.']}; }],
+  ['.foe', el => { const u = unitOf(el); if (!u) return null; const af = u.affix && (typeof u.affix === 'object' ? u.affix : RM.AFFIXES.find(a => a.id === u.affix)); return {t:u.name + (u.title ? ', ' + u.title : ''), b:[Math.ceil(u.hp) + ' of ' + u.max + ' life.', u.boss && u.sigDesc ? '<b>Signature:</b> ' + u.sigDesc : '', u.trick ? '<b>' + u.trick.n + ':</b> ' + ({dot:'its hits leave wounds that hurt every turn.', blind:'its hits can blind, so your next attack may miss.', aoe:'it can hit your whole squad at once.'}[u.trick.k] || 'it ' + u.trick.d + '.') : '', af ? '<b>Elite, ' + af.n + ':</b> ' + af.d + '.' : '', u.mindReader ? '<b>She watches you.</b> She learns the moves you pick yourself.' : '', 'Tap it to make it your target.']}; }],
+  ['#autoT', () => ({t:'Auto or Manual', b:['<b>Auto</b>: your warriors choose their own moves.', '<b>Manual</b>: you pick each move and target.']})],
+  ['#speedB', () => ({t:'Battle speed', b:['Tap to switch between 1x, 2x and 3x.']})],
+  ['#fleeB', () => ({t:'Flee', b:['Leave the fight. You keep nothing from it, and troops who fell stay fallen.']})],
+  ['#vchips .vchip, #vchips span', () => ({t:'Village defenses', b:['Your walls, towers, pits and lookout are fighting in this battle.', 'Walls cut damage, towers shoot every round, pits hit on round 1, the lookout makes your side faster.']})],
+  ['.rchip', () => ({t:'Rival village', b:['Their power, Arena rating and defenses. Higher walls and towers mean a harder raid.']})],
+  ['.cost', el => CUR[el.dataset.cur] ? CUR[el.dataset.cur]() : null],
+  ['#armBtn', () => ({t:'The Armory', b:['Every weapon, armor and charm you own. Equip, upgrade or sell them here.']})],
+  ['#bestBtn, #eqBest', () => ({t:'Equip best', b:['One tap gives every warrior the gear that helps them most. Your squad gets first pick.', 'Old gear goes back to the Armory to hand out or sell.']})],
+  ['.itile, .lootitem', el => { const it = itemById(el.dataset.iid) || (el.classList.contains('lootitem') ? null : null); return it ? {i:ART.item(it.slot, it.kind, rarCol(it)), t:itemTitle(it), b:[RM.RARITY[it.r || 0].n + ' ' + SLOT_N[it.slot].toLowerCase() + ', tier ' + it.tier + '.', fxLines(RM.itemFx(it)).join(', ') + '.', 'Rarer pieces are stronger. Tier comes from where it was found or how big your Forge or Altar is.']} : {t:'Gear', b:['Weapons add attack, armor adds life and defense, charms carry a special power.']}; }],
+  ['.gslot', el => ({t:SLOT_N[el.dataset.slot] + ' slot', b:[{weapon:'Weapons add attack.', armor:'Armor adds life and defense.', charm:'Charms carry a special power: crits, rage, speed, life drain, healing, Ultimate damage or a ward.'}[el.dataset.slot], 'Tap to choose what goes here.']})],
+  ['.craft', el => ({t:el.dataset.s === 'charm' ? 'Bind a charm' : 'Forge ' + (el.dataset.s === 'armor' ? 'armor' : 'a weapon'), b:['Makes a random ' + el.dataset.s + ' at your building\'s tier. Rarity is luck, and a bigger building improves the odds.']})],
+  ['.kitrow', () => ({t:'Troop kits', b:['Each level gives every troop of that type +10% life and attack, for good.']})],
+ ];
+ function find(el){
+  for (const [sel, fn] of RULES){ const t = el.closest && el.closest(sel); if (t){ const c = fn(t); if (c) return {c, t}; } }
+  const d = el.closest && el.closest('[data-help]'); if (d) return {c:{t:d.dataset.helpT || 'About this', b:[d.dataset.help]}, t:d};
+  return null;
+ }
+ function card(c, target){
+  close();
+  const tip = document.createElement('div'); tip.id = 'tipcard';
+  tip.innerHTML = `<div class="th">${c.i ? `<span class="ti">${c.i}</span>` : ''}<b>${c.t}</b>${c.n != null ? `<span class="tn">${fmt(c.n)}</span>` : ''}</div>${c.b.filter(Boolean).map(x => `<p>${x}</p>`).join('')}<div class="tx">${on ? 'Tap something else, or ? to finish' : 'Tap anywhere to close'}</div>`;
+  $('#app').appendChild(tip);
+  const a = $('#app').getBoundingClientRect(), r = target.getBoundingClientRect(), h = tip.offsetHeight, w = tip.offsetWidth;
+  let top = r.bottom - a.top + 8; if (top + h > a.height - 10) top = Math.max(10, r.top - a.top - h - 8);
+  const left = Math.max(10, Math.min(a.width - w - 10, r.left - a.left + r.width / 2 - w / 2));
+  tip.style.top = top + 'px'; tip.style.left = left + 'px';
+  const arrowX = Math.max(14, Math.min(w - 14, r.left - a.left + r.width / 2 - left)); tip.style.setProperty('--ax', arrowX + 'px'); tip.classList.toggle('up', top < r.top - a.top);
+  requestAnimationFrame(() => tip.classList.add('on'));
+  try { sfx('tap'); } catch (e) {}
+ }
+ function close(){ const t = $('#tipcard'); if (t) t.remove(); }
+ function syncPlace(){ document.body.classList.toggle('help-battle', on && $('#battle').classList.contains('on')); }
+ function setOn(v){
+  on = v; document.body.classList.toggle('help-on', on); document.body.classList.toggle('help-battle', on && $('#battle').classList.contains('on')); $$('.helpbtn').forEach(b => b.classList.toggle('on', on));
+  close();
+ }
+ // things that do nothing when tapped get their card on a plain tap
+ const PASSIVE = '.cur, #coffers .cof, .wbar, .rchip, #vchips, .board, .feed, .wband .lockmsg';
+ function onTap(e){
+  const tip = $('#tipcard');
+  if (suppress){ suppress = false; e.preventDefault(); e.stopPropagation(); return; } // the click that follows a hold
+  if (e.target.closest('.helpbtn')){ return; }
+  if (on){
+   if (e.target.closest('#coach')) return;
+   let tgt = e.target;
+   if (e.target.closest('#tipcard')){ close(); tgt = document.elementFromPoint(e.clientX, e.clientY) || tgt; }
+   const f = find(tgt); e.preventDefault(); e.stopPropagation(); syncPlace();
+   if (f) card(f.c, f.t); else card({t:'Nothing to explain here', b:['Try a button, an icon, a building or a warrior.']}, tgt);
+   return;
+  }
+  if (tip){ close(); if (!e.target.closest(PASSIVE)) return; e.preventDefault(); e.stopPropagation(); return; }
+  if (e.target.closest(PASSIVE)){ const f = find(e.target); if (f){ e.preventDefault(); e.stopPropagation(); card(f.c, f.t); } }
+ }
+ return {
+  init(){
+   document.addEventListener('click', onTap, true);
+   // press and hold anything to learn about it, even things that act on a tap
+   document.addEventListener('pointerdown', e => {
+    clearTimeout(pressT); suppress = false; if (on || e.target.closest('#coach, #tipcard, .helpbtn') || $('#coach').classList.contains('on') || $('#veil').classList.contains('on')) return;
+    const x = e.clientX, y = e.clientY;
+    pressT = setTimeout(() => { const f = find(e.target); if (f){ suppress = true; card(f.c, f.t); try { navigator.vibrate && navigator.vibrate(12); } catch (er) {} } }, 480);
+    const cancel = ev => { if (!ev || ev.type !== 'pointermove' || Math.hypot(ev.clientX - x, ev.clientY - y) > 10){ clearTimeout(pressT); off(); } };
+    const off = () => { removeEventListener('pointerup', cancel, true); removeEventListener('pointermove', cancel, true); removeEventListener('pointercancel', cancel, true); };
+    addEventListener('pointerup', cancel, true); addEventListener('pointermove', cancel, true); addEventListener('pointercancel', cancel, true);
+   }, true);
+   document.addEventListener('contextmenu', e => { if (e.target.closest('#app')) e.preventDefault(); });
+   $$('.helpbtn').forEach(b => b.onclick = e => { e.stopPropagation(); setOn(!on); });
+  },
+  off(){ if (typeof on !== 'undefined' && on) setOn(false); else close(); },
+  explain(el){ const f = find(el); if (f) card(f.c, f.t); return f; },
+  isOn:() => on,
+ };
+})();
 // ---------- THE WHISPERING (v1.8) ----------
 // The Hel-Maiden notices the player: the clock, absences, habits, the warband, the battery, the real moon.
 // Everything she "knows" is read on this phone and never sent anywhere. Never fakes a system alert.
@@ -1645,7 +2083,7 @@ const ATMO = (() => {
  };
 })();
 function setBG(r, village, calm){ $('#bg').innerHTML = ART.sceneSVG(RM.REALMS[r], {village, full:Whisper.fullMoon()}); ATMO.set(calm ? '' : village ? 'village' : RM.REALMS[r].id); }
-function costHTML(c){ return Object.keys(c).filter(k => c[k]).map(k => `<span class="cost ${S[k] < c[k] ? 'short' : ''}">${ART.ICON[k]}${fmt(c[k])}</span>`).join(' '); }
+function costHTML(c){ return Object.keys(c).filter(k => c[k]).map(k => `<span data-cur="${k}" class="cost ${S[k] < c[k] ? 'short' : ''}">${ART.ICON[k]}${fmt(c[k])}</span>`).join(' '); }
 function afford(c){ return Object.keys(c).every(k => S[k] >= c[k]); }
 function pay(c){ Object.keys(c).forEach(k => S[k] -= c[k]); }
 function frontier(){ for (let r = 0; r < RM.REALMS.length; r++) if (S.cleared[r] < RM.STAGES) return r; return RM.REALMS.length - 1; }
@@ -1708,7 +2146,7 @@ function renderWarriors(){
  const cap = RM.levelCap(S.vil.barracks);
  let h = `<h2>Warriors</h2><p class="sub">Your squad fights in this order. Tap a warrior for details.</p><div class="squad">`;
  for (let i = 0; i < 3; i++){ const id = S.squad[i]; h += id ? `<button class="slot filled" data-id="${id}">${ART.heroArt(wdef(id).look)}${S.equip[id] && relicDef(S.equip[id]) ? `<span class="tagx gold" style="position:absolute;top:5px;right:5px;font-family:serif;font-size:11px">${relicDef(S.equip[id]).g}</span>` : ''}<div class="nm">${wdef(id).name}</div><div class="lv">LV ${S.owned[id]}</div></button>` : '<div class="slot"></div>'; }
- h += `</div><div class="row" style="justify-content:space-between;margin:0 0 8px"><span class="lockmsg">Level cap ${cap} (Barracks raises it)</span></div><div class="grid">`;
+ h += `</div><div class="row armrow" style="gap:6px;margin:0 0 10px"><button class="btn" id="armBtn">${ART.item('weapon', 'axe', '#f0c060')}Armory <small>${gearOk().items.length}</small>${S.gear.fresh ? '<span class="dot"></span>' : ''}</button><button class="btn blood" id="bestBtn">Equip best</button></div><div class="row" style="justify-content:space-between;margin:0 0 8px"><span class="lockmsg">Level cap ${cap} (Barracks raises it)</span></div><div class="grid">`;
  RM.WARRIORS.forEach(w => {
   const own = S.owned[w.id], inSq = S.squad.includes(w.id);
   const canLv = own && own < cap && S.silver >= RM.levelCost(own);
@@ -1718,16 +2156,19 @@ function renderWarriors(){
  h += '</div>';
  $('#panel').innerHTML = h;
  $$('#panel [data-id]').forEach(b => b.onclick = () => { sfx('tap'); warriorSheet(b.dataset.id); });
+ $('#armBtn').onclick = () => { sfx('tap'); armorySheet(); };
+ $('#bestBtn').onclick = () => { if (!gearOk().items.length){ toast('No gear yet. Bosses drop it, and the Forge makes it.'); return; } equipBest(); renderWarriors(); };
 }
 function warriorSheet(id){
  const w = wdef(id), own = S.owned[id], cap = RM.levelCap(S.vil.barracks);
- const h = RM.makeHero(id, own || 1, S.vil, S.equip[id]);
+ const h = RM.makeHero(id, own || 1, S.vil, S.equip[id], gfx(id));
  const rel = relicDef(S.equip[id]);
  const inSq = S.squad.includes(id);
  const lc = own ? RM.levelCost(own) : 0;
  let html = `<button class="btn small close" id="xs">Close</button><div class="row" style="flex-wrap:nowrap;gap:12px"><div style="width:96px;height:112px;flex:none;position:relative;border:1px solid #4a3a2c">${ART.heroArt(w.look)}</div><div><h3>${w.name}</h3><div class="lockmsg">${w.title} · ${w.role}</div><p style="margin:6px 0 0;font-size:14px">${w.lore}</p></div></div>
   <div style="margin:10px 0"><div class="stat"><span>LEVEL</span><span>${own ? own + ' / ' + cap : 'Not recruited'}</span></div><div class="stat"><span>LIFE</span><span>${h.max}${S.vil.mead ? ` <small class="vtag">Mead +${5 * S.vil.mead}%</small>` : ''}</span></div><div class="stat"><span>ATTACK</span><span>${h.atk}${S.vil.forge ? ` <small class="vtag">Forge +${8 * S.vil.forge}%</small>` : ''}</span></div><div class="stat"><span>DEFENSE</span><span>${h.def}</span></div><div class="stat"><span>SPEED</span><span>${h.spd}</span></div></div>`;
  const pv = RM.PASSIVES[id]; if (pv) html += `<div class="skillrow"><em style="color:#9fd8a0;text-shadow:0 0 8px #2d5e3a">&#5833;</em><span style="flex:1"><b>${pv.n.toUpperCase()}</b> <span class="lockmsg">Passive, always on</span><div>${pv.d}</div></span></div>`;
+ if (own) html += `<div class="lockmsg" style="margin:8px 0 4px">Gear</div>${gearRowHTML(id)}`;
  if (own) html += `<div class="skillrow" id="relicRow" style="cursor:pointer"><em class="u">${rel ? rel.g : '&#9675;'}</em><span style="flex:1"><b>RELIC</b> <span class="lockmsg">${rel ? rel.n : (Object.keys(S.relics).length ? 'Empty. Tap to choose.' : 'Empty. Bosses drop relics.')}</span><div>${rel ? rel.d : 'One cursed relic per warrior.'}</div></span><button class="btn small" id="relBtn">${rel ? 'Change' : 'Choose'}</button></div>`;
  w.skills.forEach((sid, i) => { const s = RM.SKILLS[sid]; html += `<div class="skillrow"><em class="${i === 2 ? 'u' : ''}">${s.rune}</em><span><b>${s.name}</b> <span class="lockmsg">${i === 0 ? 'Basic' : i === 1 ? 'Special, rests ' + s.cd + ' turns' : 'Ultimate, needs full Rage'}</span><div>${s.desc}</div></span></div>`; });
  html += '<div class="row" style="margin-top:14px">';
@@ -1738,6 +2179,7 @@ function warriorSheet(id){
  html += '</div>';
  sheet(html);
  $('#xs').onclick = closeSheet;
+ $$('.gearrow .gslot').forEach(g => g.onclick = () => { sfx('tap'); slotPicker(id, g.dataset.slot); });
  const rb = $('#relBtn'); if (rb) rb.onclick = e => { e.stopPropagation(); sfx('tap'); relicPicker(id); };
  const lv = $('#lvBtn'); if (lv) lv.onclick = () => { if (S.silver < lc) return; S.silver -= lc; S.owned[id]++; save(); sfx('up'); toast(w.name + ' reached level ' + S.owned[id] + '.'); Coach.emit('levelup'); warriorSheet(id); renderWarriors(); renderTop(); checkDeeds(); };
  const sq = $('#sqBtn'); if (sq) sq.onclick = () => {
@@ -1760,7 +2202,7 @@ function villageChips(){
 function upgradeReveal(id, before){
  const b = RM.BUILDINGS.find(x => x.id === id), l = S.vil[id];
  const was = bEffect(id, l - 1), now = bEffect(id, l);
- const after = S.squad.map(w => RM.makeHero(w, S.owned[w], S.vil, S.equip[w]));
+ const after = S.squad.map(w => RM.makeHero(w, S.owned[w], S.vil, S.equip[w], gfx(w)));
  const key = id === 'forge' ? 'atk' : id === 'mead' ? 'max' : null;
  let rows = '';
  if (key) rows = S.squad.map((w, i) => `<div class="stat"><span>${wdef(w).name.toUpperCase()} ${key === 'atk' ? 'ATTACK' : 'LIFE'}</span><span>${before[i][key]} <span style="color:#8a7a68">&#8594;</span> <b style="color:#9fd8a0">${after[i][key]}</b></span></div>`).join('');
@@ -1828,14 +2270,15 @@ function buildingSheet(id){
  sheet(`<button class="btn small close" id="xs">Close</button><div class="bsheet"><div class="bart">${art}</div><h3>${b.name}</h3><div class="pips" style="justify-content:center">${Array.from({length:RM.VMAX}, (_, i) => `<i class="pip ${i < l ? 'on' : ''} ${i >= mx ? 'capd' : ''}"></i>`).join('')}</div>
   <p class="bline">${b.desc}</p>
   <div class="nownext big"><div><small>NOW</small><b>${l ? now.big : 'Not built'}</b></div>${atMax ? '' : `<span class="arrow">&#8594;</span><div class="nx"><small>${l ? 'NEXT' : 'BUILD'}</small><b>${nxt.big}</b></div>`}</div>
-  <p class="bwhat">${(atMax ? now : nxt).what}</p>
+  <p class="bwhat">${(atMax ? now : nxt).what}</p>${workshopHTML(id, l)}
   ${atMax ? '<p class="lockmsg">Fully built.</p>' : hallCap ? `<p class="lockmsg" style="color:#f0c060">Raise the Jarl's Hall to ${toRoman(l + 1)} first.</p><button class="btn wide" id="toHall">Go to the Hall</button>` : `<div class="costrow">${costHTML(c)}</div><button class="btn blood wide" id="bUp" ${afford(c) ? '' : 'disabled'}>${l ? 'Upgrade' : 'Build'}</button>`}</div>`);
  $('#xs').onclick = closeSheet;
  const th = $('#toHall'); if (th) th.onclick = () => buildingSheet('hall');
+ wireWorkshop(id);
  const u = $('#bUp'); if (u) u.onclick = () => {
   const l0 = S.vil[id] || 0, c0 = RM.buildCost(l0, id); if (!afford(c0) || l0 >= RM.bmax(id, S.vil)) return;
   if (id === 'mead' || id === 'mine' || id === 'lookout') collectAll();
-  const before = S.squad.map(w => RM.makeHero(w, S.owned[w], S.vil, S.equip[w]));
+  const before = S.squad.map(w => RM.makeHero(w, S.owned[w], S.vil, S.equip[w], gfx(w)));
   pay(c0); S.vil[id] = l0 + 1; if (!l0 && id === 'mine') S.prod.ironAt = Date.now(); if (!l0 && id === 'lookout') S.prod.runeAt = Date.now(); save(); sfx('up'); vibe([20, 30, 40]);
   renderVillage(); renderTop(); upgradeReveal(id, before); checkDeeds();
  };
@@ -1852,14 +2295,14 @@ function fortChips(F){
 function myFort(){ return {side:'hero', tower:S.vil.tower || 0, wall:S.vil.wall || 0, pits:S.vil.pits || 0, lookout:S.vil.lookout || 0}; }
 
 // ---------- TROOPS ----------
-function bandFor(which, side){ const a = S.army[which]; return a.n > 0 ? RM.makeBand(a.type, a.n, S.vil, side || 'hero') : null; }
+function bandFor(which, side){ const a = S.army[which]; return a.n > 0 ? RM.makeBand(a.type, a.n, S.vil, side || 'hero', (S.kit || {})[a.type] || 0) : null; }
 function armySheet(){
  const cap = RM.campCap(S.vil.camp), used = S.army.skirmish.n + S.army.garrison.n;
  const sect = (which, title, blurb) => {
   const a = S.army[which];
   const types = RM.TROOPS.map(t => { const lock = (S.vil.barracks || 0) < t.needs, on = a.type === t.id;
    return `<button class="tcard ${on ? 'on' : ''} ${lock ? 'lock' : ''}" data-w="${which}" data-t="${t.id}">${ART.band(t.id, 'tart')}<b>${t.n}</b><small>${lock ? 'Barracks ' + t.needs : t.d}</small></button>`; }).join('');
-  const t = RM.TROOPS.find(x => x.id === a.type), st = RM.bandStats(a.type, Math.max(1, a.n), S.vil);
+  const t = RM.TROOPS.find(x => x.id === a.type), st = RM.bandStats(a.type, Math.max(1, a.n), S.vil, (S.kit || {})[a.type] || 0);
   const room = cap - used;
   const c1 = {silver:t.cost.silver, iron:t.cost.iron}, c5 = {silver:t.cost.silver * 5, iron:t.cost.iron * 5};
   return `<div class="armysec"><div class="row" style="justify-content:space-between"><div><div class="bname">${title}</div><div class="lockmsg">${blurb}</div></div><div class="bandn">${a.n}<small>${t.n}</small></div></div>
@@ -1939,13 +2382,14 @@ function cleanName(s){ return String(s || '').replace(/[^A-Za-z0-9 '\-]/g, '').r
 function cleanCode(s){ return String(s || '').toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 20); }
 function clampN(v, lo, hi){ v = Math.round(+v || 0); return Math.max(lo, Math.min(hi, v)); }
 // anything that arrives from another phone is checked before the engine sees it
+function cleanFx(fx){ const o = {}; if (!fx || typeof fx !== 'object') return o; for (const k in RM.FX_CAP){ const v = +fx[k]; if (isFinite(v) && v > 0) o[k] = Math.min(RM.FX_CAP[k], v); } return o; }
 function cleanLineup(L){
  if (!L || !Array.isArray(L.squad)) return null;
  const vil = {}; RM.BUILDINGS.forEach(b => { vil[b.id] = clampN(L.vil && L.vil[b.id], 0, RM.VMAX); }); vil.hall = Math.max(1, vil.hall); RM.BUILDINGS.forEach(b => { if (b.id !== 'hall') vil[b.id] = Math.min(vil[b.id], RM.bmax(b.id, vil)); });
- const seen = new Set(), squad = L.squad.filter(s => s && wdef(s.id) && !seen.has(s.id) && seen.add(s.id)).slice(0, 4).map(s => ({id:s.id, lv:clampN(s.lv, 1, RM.levelCap(RM.VMAX)), relic:RM.RELICS.some(r => r.id === s.relic) ? s.relic : null}));
+ const seen = new Set(), squad = L.squad.filter(s => s && wdef(s.id) && !seen.has(s.id) && seen.add(s.id)).slice(0, 4).map(s => ({id:s.id, lv:clampN(s.lv, 1, RM.levelCap(RM.VMAX)), relic:RM.RELICS.some(r => r.id === s.relic) ? s.relic : null, gx:cleanFx(s.gx)}));
  if (!squad.length) return null;
  const gt = L.garrison && RM.TROOPS.some(t => t.id === L.garrison.type) ? L.garrison.type : 'spear';
- const garrison = {type:gt, n:clampN(L.garrison && L.garrison.n, 0, RM.campCap(vil.camp))};
+ const garrison = {type:gt, n:clampN(L.garrison && L.garrison.n, 0, RM.campCap(vil.camp)), kit:clampN(L.garrison && L.garrison.kit, 0, Math.min(RM.KIT_MAX, vil.camp))};
  return {squad, garrison, vil, fort:{tower:vil.tower, wall:vil.wall, pits:vil.pits, lookout:vil.lookout}, name:cleanName(L.name) || 'A rival'};
 }
 const NET = {state:'off', uid:null, err:'', api:null, cache:{players:[], hits:[], feed:[], at:0}, p:null, busy:false, lastTry:0};
@@ -1980,7 +2424,7 @@ NET.init = function(){
 };
 function withTimeout(p, ms){ return Promise.race([p, new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), ms))]); }
 function wbWeek(){ const w = weekId(); if (S.wb.wk !== w){ S.wb.wk = w; S.wb.wkPts = 0; S.wb.wkBest = 0; S.wb.wkTries = 0; } }
-function myPower(){ return S.squad.reduce((a, id) => a + RM.power(id, S.owned[id], S.vil, S.equip[id]), 0); }
+function myPower(){ return S.squad.reduce((a, id) => a + RM.power(id, S.owned[id], S.vil, S.equip[id], gfx(id)), 0); }
 async function netPublish(){
  if (!netOn()) return false;
  const g = S.profile.group;
@@ -2097,10 +2541,10 @@ function startBoss(){
  CTX = {type:'boss', r:wb.r, bossMax:boss.max};
  const h = heroesFor(); runFight(h, [boss], {roundLimit:8});
 }
-function defenseLineup(){ return {squad:S.squad.map(id => ({id, lv:S.owned[id], relic:S.equip[id] || null})), garrison:Object.assign({}, S.army.garrison), fort:{tower:S.vil.tower || 0, wall:S.vil.wall || 0, pits:S.vil.pits || 0, lookout:S.vil.lookout || 0}, vil:Object.assign({}, S.vil), name:S.profile.name || 'You'}; }
+function defenseLineup(){ return {squad:S.squad.map(id => ({id, lv:S.owned[id], relic:S.equip[id] || null, gx:gfx(id)})), garrison:Object.assign({kit:(S.kit || {})[S.army.garrison.type] || 0}, S.army.garrison), fort:{tower:S.vil.tower || 0, wall:S.vil.wall || 0, pits:S.vil.pits || 0, lookout:S.vil.lookout || 0}, vil:Object.assign({}, S.vil), name:S.profile.name || 'You'}; }
 function lineupFoes(L, shadow){
- const f = L.squad.map(s => { const h = RM.makeHero(s.id, s.lv, L.vil, s.relic); h.side = 'foe'; h.uid = 'f_' + s.id; h.realm = 0; if (shadow) h.name = 'Shadow ' + h.name; return h; });
- if (L.garrison && L.garrison.n > 0){ const b = RM.makeBand(L.garrison.type, L.garrison.n, L.vil, 'foe'); b.realm = 0; f.push(b); }
+ const f = L.squad.map(s => { const h = RM.makeHero(s.id, s.lv, L.vil, s.relic, s.gx); h.side = 'foe'; h.uid = 'f_' + s.id; h.realm = 0; if (shadow) h.name = 'Shadow ' + h.name; return h; });
+ if (L.garrison && L.garrison.n > 0){ const b = RM.makeBand(L.garrison.type, L.garrison.n, L.vil, 'foe', L.garrison.kit || 0); b.realm = 0; f.push(b); }
  return f;
 }
 function startArena(L, practice){
@@ -2150,7 +2594,7 @@ function renderWar(){
  const jb = $('#joinBtn'); if (jb) jb.onclick = () => { sfx('tap'); joinSheet(); };
  const rf = $('#wbRef'); if (rf) rf.onclick = () => { sfx('tap'); if (NET.importFailed){ save(); location.reload(); return; } rf.disabled = true; rf.textContent = '...'; netPublish().then(netRefresh).then(() => { if (TAB === 'raid' && !B) renderWar(); }); };
  const rb = $('#rivBtn'); if (rb) rb.onclick = () => { sfx('tap'); if (!NET.cache.at){ toast('Still gathering the warband. Try again in a moment.'); return; } rivalsSheet(); };
- const cb = $('#claimBtn'); if (cb) cb.onclick = () => { const r = Math.max(0, raidRealm()), L2 = {silver:Math.round(400 * Math.pow(1.8, r)), iron:40 + 30 * r, runes:20 + 5 * r}; S.wb.claimed = S.wb.wk; S.silver += L2.silver; S.iron += L2.iron; S.runes += L2.runes; save(); sfx('win'); renderTop(); sheet(`<div class="result"><div class="lockmsg">The warband stands over the corpse</div><div class="big">Spoils</div><div class="loot">${lootHTML(L2)}</div><button class="btn blood" id="rDone">Take it</button></div>`); $('#rDone').onclick = () => { closeSheet(); renderWar(); }; };
+ const cb = $('#claimBtn'); if (cb) cb.onclick = () => { const r = Math.max(0, raidRealm()), L2 = {silver:Math.round(400 * Math.pow(1.8, r)), iron:40 + 30 * r, runes:20 + 5 * r}; S.wb.claimed = S.wb.wk; S.silver += L2.silver; S.iron += L2.iron; S.runes += L2.runes; L2.item = dropItem(r, 1, 3, Math.random() < 0.3 ? 3 : 2, 1); save(); sfx('win'); renderTop(); sheet(`<div class="result"><div class="lockmsg">The warband stands over the corpse</div><div class="big">Spoils</div><div class="loot">${lootHTML(L2)}</div><button class="btn blood" id="rDone">Take it</button></div>`); $('#rDone').onclick = () => { closeSheet(); renderWar(); }; };
  // background sync: refresh at most once a minute while the War tab is open
  if (joined && !NET.busy && Date.now() - (NET.lastTry || 0) > 60000){ netRefresh().then(ok => { if (ok && TAB === 'raid' && !B && !$('#veil').classList.contains('on')) renderWar(); else if (!ok && TAB === 'raid' && !B && NET.state === 'err' && !$('#veil').classList.contains('on')) renderWar(); }); }
 }
@@ -2158,7 +2602,7 @@ function raidRealm(){ let r = -1; S.cleared.forEach((c, i) => { if (c >= RM.STAG
 
 // ---------- BATTLE ----------
 let B = null, CTX = null, TGT = null, PICK = null, FLEE = false, BID = 0, LASTKIND = '', BOSSULT = false, HERODOWN = false;
-function heroesFor(withBand){ const h = S.squad.map(id => RM.makeHero(id, S.owned[id], S.vil, S.equip[id])); if (withBand !== false && S.tut.done){ const b = bandFor('skirmish'); if (b){ h.push(b); if (CTX){ CTX.band = b; CTX.bandKey = 'skirmish'; } } } return h; }
+function heroesFor(withBand){ const h = S.squad.map(id => RM.makeHero(id, S.owned[id], S.vil, S.equip[id], gfx(id))); if (withBand !== false && S.tut.done){ const b = bandFor('skirmish'); if (b){ h.push(b); if (CTX){ CTX.band = b; CTX.bandKey = 'skirmish'; } } } return h; }
 function startSaga(r, s, foes){ CTX = {type:'saga', r, s}; runFight(heroesFor(), foes || RM.encounter(r, s)); }
 function startRaid(rr){
  CTX = {type:'raid', r:rr, wave:0, loot:{silver:0, iron:0, runes:0}};
@@ -2233,7 +2677,7 @@ function renderBattle(){
   return `<div class="foe ${f.boss ? 'boss' : ''} ${f.affix ? 'elite' : ''} ${f.shape ? '' : 'rival'}" data-uid="${f.uid}" style="--rim:${f.affix ? '#f0c060aa' : f.shape ? R.moon + '66' : '#e0334a88'}">${art}<div class="hp"><i style="width:100%"></i></div><div class="fname">${f.name}</div></div>`; }).join('');
  $('#party').innerHTML = B.heroes.map(h => `<button class="card ${h.troop ? 'band' : ''}" data-uid="${h.uid}">${h.troop ? ART.band(h.band) : ART.heroArt(h.look)}<div class="buffs"></div><div class="nm">${h.troop ? RM.TROOPS.find(t => t.id === h.band).n.split(' ')[0] : h.name}</div><div class="bars"><div class="bar life"><i></i></div>${h.troop ? '<div class="bandct">x' + h.n + '</div>' : '<div class="bar rage"><i></i></div>'}</div></button>`).join('');
  $$('#foes .foe').forEach(el => el.onclick = () => { const f = B.foes.find(x => x.uid === el.dataset.uid); if (!f || !f.alive) return; TGT = f; sfx('tap'); updateUnits(); Coach.emit('target'); });
- $$('#party .card').forEach(el => el.onclick = () => { const h = B.heroes.find(x => x.uid === el.dataset.uid); if (h) toast(h.name + ': ' + Math.ceil(h.hp) + ' / ' + h.max + ' life, ' + Math.floor(h.rage) + '% rage'); });
+ $$('#party .card').forEach(el => el.onclick = () => { const f = Help.explain(el); });
  updateUnits();
 }
 const BUFFTXT = {shield:['ᛟ', 0], atkUp:['ᚹ', 0], defUp:['ᛇ', 0], taunt:['ᛇ!', 0], atkDown:['ᚺ', 1], stun:['✕', 1], enrage:['ᛞ', 1], dot:['☠', 1], blind:['◉', 1]};
@@ -2470,6 +2914,7 @@ function afterFight(res){
   if (hadBoss){ S.bossKills[CTX.r]++; if (!HERODOWN){ S.stats.flawless++; FLAGS.flawless = RM.REALMS[CTX.r].id; } if (BOSSULT) S.stats.ultKills++; }
   const DB = dailyBlessing(L);
   const REL = hadBoss ? rollRelic(CTX.r, first ? 1 : 0.4) : null;
+  L.item = dropItem(CTX.r, hadBoss ? (first ? 1 : 0.5) : 0.08, hadBoss ? 2 : 0); // first boss kill always drops gear, replays half the time
   save(); sfx('win'); if (REL) setTimeout(() => sfx('ult'), 500);
   const nextS = CTX.s + 1 < RM.STAGES ? {r:CTX.r, s:CTX.s + 1} : (CTX.r + 1 < RM.REALMS.length ? {r:CTX.r + 1, s:0} : null);
   sheet(`<div class="result"><div class="lockmsg">${bossDown ? R.boss.n + ' is destroyed' : 'The fog thins'}</div><div class="big">Victory</div>${bossDown ? `<p>${CTX.r + 1 < RM.REALMS.length ? RM.REALMS[CTX.r + 1].name + ' is open.' : 'You have broken every realm, for now.'}${CTX.r === 0 ? ' Raids are open.' : ''}</p>` : ''}<div class="loot">${lootHTML(L)}</div>${DB}${relicFoundHTML(REL)}${bandMsg}
@@ -2494,7 +2939,7 @@ function afterNight(res){
  const bandMsg = settleBand('garrison', CTX.band), win = res === 'win';
  S.night.next = Date.now() + NIGHT_MS;
  let L = null;
- if (win){ L = nightLoot(); S.silver += L.silver; S.iron += L.iron; S.runes += L.runes; S.night.wins++; }
+ if (win){ L = nightLoot(); S.silver += L.silver; S.iron += L.iron; S.runes += L.runes; S.night.wins++; L.item = dropItem(Math.max(0, raidRealm()), 0.35, 1); }
  else { const now = Date.now(); S.idleAt = now; S.prod.ironAt = now; S.prod.runeAt = now; S.night.losses++; }
  save(); sfx(win ? 'win' : 'lose');
  sheet(`<div class="result"><div class="lockmsg">${win ? 'The gates held' : 'The dead got through'}</div><div class="big" ${win ? '' : 'style="color:#a99"'}>${win ? 'Village Held' : 'Overrun'}</div>
@@ -2537,12 +2982,13 @@ function endRaid(full, lost){
  const bandMsg = settleBand(CTX.bandKey, CTX.band);
  S.raid.runs++;
  if (waves > S.raid.best) S.raid.best = waves; if (full) S.raid.clears++;
+ if (full && L) L.item = dropItem(CTX.r, 1, 3, null, 1); // raid clears drop one tier higher, so the last realm gives tier 6
  save(); setTimeout(checkDeeds, 400); sfx(full ? 'win' : lost ? 'lose' : 'coin');
  sheet(`<div class="result"><div class="lockmsg">${waves} of 5 waves</div><div class="big">${full ? 'Raid Cleared' : lost ? 'Overrun' : 'Withdrawn'}</div><p>${full ? 'The boss falls a second time. It will be back.' : 'You keep everything from the waves you cleared.'}${L.blessed ? ' Includes today\'s Daily Blessing.' : ''}</p><div class="loot">${lootHTML(L)}</div>${relicFoundHTML(CTX.relic)}${bandMsg}<button class="btn blood" id="rDone">Back to camp</button></div>`);
  $('#veil')._lock = true;
  $('#rDone').onclick = () => { closeSheet(); toHub('raid'); };
 }
-function lootHTML(L){ return ['silver','iron','runes'].map(k => L[k] ? `<div>${ART.ICON[k]}+${fmt(L[k])}</div>` : '').join(''); }
+function lootHTML(L){ return ['silver','iron','runes'].map(k => L[k] ? `<div>${ART.ICON[k]}+${fmt(L[k])}</div>` : '').join('') + (L.item ? lootItemHTML(L.item) : ''); }
 function toHub(tab){ B = null; showScreen('hub'); go(tab || 'saga'); }
 
 // ---------- COACH (guided walkthrough) ----------
@@ -2568,6 +3014,7 @@ const Coach = (() => {
  }
  // show a coach step; resolves when waitFor event fires or Next is tapped
  function show(o){
+  Help.off();
   if (o.story) return storyIntro();
   return new Promise(res => {
    active = true; target = o.target || null; waitFor = o.wait || null; resolveStep = res;
@@ -2970,6 +3417,7 @@ function boot(){
  $('#gearBtn').innerHTML = ART.ICON.gear + '<span class="dot" id="gearDot"></span>';
  ATMO.init();
  Whisper.init();
+ Help.init();
  setBG(0);
  $('#startBtn').textContent = S.tut.done || S.stats.wins ? 'Continue the saga' : 'Begin the saga';
  $('#startBtn').onclick = () => { ac(); sfx('boss'); Whisper.onOpen(); if (S.set.music) musicOn(); showScreen('hub'); go('saga'); setTimeout(() => { if (!S.tut.done) Coach.intro(); else whatsNew(false); }, 350); setTimeout(checkDeeds, 600); };
