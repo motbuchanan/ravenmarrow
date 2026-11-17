@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<!-- Ravenmarrow v2.0.1 · Nov 17 2026 -->
+<!-- Ravenmarrow v2.1 · Nov 17 2026 -->
 <html lang="en"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-<meta name="build" content="2.0.1">
+<meta name="build" content="2.1">
 <meta name="build-date" content="Nov 17 2026">
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#050304">
@@ -549,6 +549,62 @@ body.help-on.help-battle #app::after{bottom:auto;top:56px}
 .reveal .iart .iico{animation:revealp 1.2s ease-out}
 @keyframes revealp{0%{transform:scale(.4) rotate(-20deg);opacity:0}60%{transform:scale(1.12)}100%{transform:none;opacity:1}}
 @media (prefers-reduced-motion:reduce){.itile.r3,.itile.r4,.reveal .iart .iico{animation:none}}
+/* ---------- v2.1 title art + cinematic intro ---------- */
+#title{justify-content:flex-start;padding-top:calc(env(safe-area-inset-top,0px) + 11vh);overflow:hidden}
+#title > *:not(.tart){position:relative;z-index:1}
+#title #ravenMark{display:none}
+#title #startBtn{margin-top:auto}
+.tart{position:absolute;inset:0;z-index:0;background:#050304}
+.tart img{width:100%;height:100%;object-fit:cover;object-position:50% 60%;animation:tartdrift 40s ease-in-out infinite alternate}
+.tart::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,3,4,.55) 0%,rgba(5,3,4,0) 26%,rgba(5,3,4,0) 58%,rgba(5,3,4,.92) 88%,#050304 100%)}
+.tglowm{position:absolute;left:50%;top:41%;width:70vmin;height:70vmin;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(220,30,40,.28),rgba(220,30,40,0) 65%);mix-blend-mode:screen;animation:tglowm 5s ease-in-out infinite alternate;pointer-events:none}
+.tfog{position:absolute;left:-20%;right:-20%;bottom:18%;height:22%;background:radial-gradient(ellipse at 30% 50%,rgba(170,180,190,.16),transparent 60%),radial-gradient(ellipse at 75% 60%,rgba(170,180,190,.12),transparent 60%);filter:blur(6px);animation:tfog 18s ease-in-out infinite alternate;pointer-events:none}
+@keyframes tartdrift{from{transform:scale(1.04) translateY(0)}to{transform:scale(1.1) translateY(-1.5%)}}
+@keyframes tglowm{from{opacity:.55}to{opacity:1}}
+@keyframes tfog{from{transform:translateX(-6%)}to{transform:translateX(6%)}}
+#title .logo{font-size:clamp(28px,10vw,50px)}
+#title.reveal .logo{animation:logoin 2.2s ease-out both}
+#title.reveal .tagline{animation:fadein 1.4s .9s ease-out both}
+#title.reveal #startBtn,#title.reveal #howTitle{animation:fadein 1s 1.6s ease-out both}
+@keyframes logoin{0%{opacity:0;filter:blur(14px);letter-spacing:14px}60%{opacity:1}100%{opacity:1;filter:blur(0);letter-spacing:2px}}
+@keyframes fadein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+#intro{position:absolute;inset:0;z-index:95;background:#000;display:none;overflow:hidden;cursor:pointer}
+#intro.on{display:block}
+#intro.out{animation:introout .9s forwards}
+@keyframes introout{to{opacity:0}}
+.ishot{position:absolute;inset:0;opacity:0;transition:opacity 1s ease}
+.ishot.on{opacity:1}
+.ishot img{width:100%;height:100%;object-fit:cover;display:block}
+.ishot.push img{animation:ipush 4.6s ease-out forwards}
+.ishot.quake img{animation:iquake 4.6s ease-in-out forwards}
+.ishot.rise img{animation:irise 4.6s ease-out forwards}
+.ishot.tilt img{animation:itilt 4.6s ease-in-out forwards}
+@keyframes ipush{from{transform:scale(1.02)}to{transform:scale(1.16)}}
+@keyframes irise{from{transform:scale(1.14) translateY(4%)}to{transform:scale(1.04) translateY(0)}}
+@keyframes itilt{from{transform:scale(1.22) translateY(9%)}to{transform:scale(1.22) translateY(-9%)}}
+@keyframes iquake{0%{transform:scale(1.08)}20%{transform:scale(1.08) translate(-.6%,.3%)}22%{transform:scale(1.08) translate(.7%,-.4%)}24%{transform:scale(1.08) translate(-.5%,.5%)}26%{transform:scale(1.08)}55%{transform:scale(1.1) translate(.5%,-.3%)}57%{transform:scale(1.1) translate(-.6%,.4%)}59%{transform:scale(1.1)}100%{transform:scale(1.13)}}
+.ifx{position:absolute;inset:0;pointer-events:none}
+.ifx .lid{position:absolute;left:0;right:0;height:50%;background:#000;animation:lid 4.2s ease-in-out forwards}
+.ifx .lid.t{top:0;transform-origin:top}.ifx .lid.b{bottom:0;transform-origin:bottom}
+@keyframes lid{0%{transform:scaleY(1)}18%{transform:scaleY(0)}52%{transform:scaleY(0)}56%{transform:scaleY(1)}60%{transform:scaleY(0)}100%{transform:scaleY(0)}}
+.ifx .glow{position:absolute;width:60px;height:60px;margin:-30px 0 0 -30px;border-radius:50%;mix-blend-mode:screen}
+.ifx .glow.teal{width:60vmin;height:30vmin;margin:-15vmin 0 0 -30vmin;background:radial-gradient(ellipse,rgba(80,255,200,.45),transparent 65%);animation:ipulse 1.1s ease-in-out infinite alternate}
+.ifx .glow.eye{width:22px;height:22px;margin:-11px 0 0 -11px;background:radial-gradient(circle,#dfffff 0%,#5ff0e0 35%,rgba(95,240,224,0) 70%);box-shadow:0 0 30px 10px rgba(95,240,224,.5);opacity:0;animation:ieye 4.2s ease-in forwards}
+@keyframes ipulse{from{opacity:.35}to{opacity:1}}
+@keyframes ieye{0%,45%{opacity:0;transform:scale(.4)}60%{opacity:1;transform:scale(1.4)}100%{opacity:.85;transform:scale(1)}}
+.ifx .emb{position:absolute;bottom:-10px;width:4px;height:4px;border-radius:50%;background:#ffb347;box-shadow:0 0 8px 2px rgba(255,120,40,.8);animation:iemb linear infinite}
+@keyframes iemb{0%{transform:translate(0,0);opacity:0}10%{opacity:1}100%{transform:translate(20px,-100vh);opacity:0}}
+.iflash{position:absolute;inset:0;background:#dff4ff;opacity:0;pointer-events:none;mix-blend-mode:screen}
+.iflash.on{animation:iflash .5s ease-out}
+@keyframes iflash{0%{opacity:0}8%{opacity:.6}20%{opacity:.1}30%{opacity:.4}100%{opacity:0}}
+.icap{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 12%);margin:0;padding:0 28px;text-align:center;font-family:fell,Georgia,serif;font-style:italic;font-size:clamp(20px,6.2vw,28px);line-height:1.3;color:#f4e8d8;text-shadow:0 0 14px #000,0 2px 4px #000,0 0 30px rgba(179,24,42,.6);pointer-events:none}
+.icap span{display:inline-block;opacity:0;filter:blur(6px);animation:capin .9s forwards}
+@keyframes capin{to{opacity:1;filter:blur(0)}}
+.iskip{position:absolute;top:calc(env(safe-area-inset-top,0px) + 12px);right:12px;z-index:2;min-height:40px;padding:0 16px;background:rgba(10,6,8,.6);border:1px solid #6b5a44;color:#c9b38f;font-family:cinzel,serif;font-size:13px;letter-spacing:2px}
+.itap{position:absolute;bottom:calc(env(safe-area-inset-bottom,0px) + 18px);left:0;right:0;text-align:center;font-family:cinzel,serif;font-size:10px;letter-spacing:3px;color:rgba(201,179,143,.55);pointer-events:none}
+@media (prefers-reduced-motion:reduce){.tart img,.tglowm,.tfog,#title.reveal *,.ishot img{animation:none !important}}
+#toast{z-index:97}
+@media (orientation:landscape){.ishot[data-k="1"] img{object-position:30% 85%}.ishot[data-k="2"] img{object-position:50% 6%}.ishot[data-k="0"] img{object-position:40% 40%}.tglowm{display:none}.tart img{object-position:50% 30%}}
 
 </style>
 </head><body>
@@ -557,6 +613,7 @@ body.help-on.help-battle #app::after{bottom:auto;top:56px}
  <div class="ash" id="ash"></div>
  <canvas id="atmo"></canvas><div id="skyflash"></div>
  <section class="screen on" id="title">
+  <div class="tart" aria-hidden="true"><img src="rm-title.webp" alt=""><i class="tglowm"></i><i class="tfog"></i></div>
   <div id="ravenMark" style="margin-bottom:6px"></div>
   <div class="logo">RAVENMARROW</div>
   <div class="tagline">A saga of the restless dead</div>
@@ -582,6 +639,7 @@ body.help-on.help-battle #app::after{bottom:auto;top:56px}
   <div id="skills"></div>
  </section>
  <canvas id="fxc"></canvas>
+ <div id="intro" aria-label="Intro"></div>
  <div id="whisper"><p></p></div>
  <div id="flipmsg">ᛊᚺᛖ ᛊᛖᛖᛊ ᛃᛟᚢ<br><b>SHE SEES YOU</b></div>
  <div id="hurtflash"></div>
@@ -1403,6 +1461,7 @@ const VERSION = document.querySelector('meta[name="build"]').content; // e.g. "1
 const BUILD_DATE = document.querySelector('meta[name="build-date"]').content;
 // Newest first. Every update adds an entry; it shows once after the update lands.
 const CHANGELOG = [
+ {v:'2.1', d:'Nov 17 2026', notes:['A new title screen and a cinematic intro. Watch it again any time from Settings.', 'A new raven icon for your home screen.']},
  {v:'2.0.1', d:'Nov 17 2026', notes:['Equip best is smarter: it gives each piece to whoever gains the most and never leaves your squad weaker.', 'Raid clears in the last realm can drop tier 6 Drowned Gold gear.']},
  {v:'2.0', d:'Nov 17 2026', notes:[
   'Gear has arrived: weapons, armor and charms. Every warrior has three gear slots.',
@@ -1607,6 +1666,66 @@ function toast(t, ms){ const el = $('#toast'); el.textContent = t; el.classList.
 function sheet(html, cls){ Help.off(); const v = $('#veil'); v.innerHTML = `<div class="sheet ${cls || ''}" style="position:relative">${html}</div>`; v.classList.add('on'); v.onclick = e => { if (e.target === v && !v._lock) closeSheet(); }; return v.firstChild; }
 function closeSheet(){ const v = $('#veil'); v.classList.remove('on'); v.innerHTML = ''; v._lock = false; }
 function showScreen(id){ Help.off(); $$('.screen').forEach(s => s.classList.toggle('on', s.id === id)); }
+// ---------- TITLE + CINEMATIC INTRO (v2.1) ----------
+// Plays once on first launch, and any time from Settings. Images live beside index.html.
+const INTRO = [
+ {img:'rm-eye.webp', move:'push', cap:'The ravens saw it first.', fx:'blink'},
+ {img:'rm-barrow.webp', move:'quake', cap:'The barrows split open. The dead climbed out.', fx:'teal'},
+ {img:'rm-hel.webp', move:'rise', cap:'She called them home.', fx:'eye'},
+ {img:'rm-realms.webp', move:'tilt', cap:'Iron, Hel, Root and Sea. Every realm fell to the dark.', fx:'storm'},
+ {img:'rm-squad.webp', move:'push', cap:'Three still stand.', fx:'embers'},
+];
+const Intro = (() => {
+ let i = -1, timer = 0, running = false, onDone = null;
+ const SHOT_MS = 4200, IMG_RATIO = 1008 / 1792;
+ const low = () => !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+ // put an overlay on a spot of the image, wherever "cover" cropping lands it on this screen
+ function spot(fx, fy){ const a = $('#intro').getBoundingClientRect(); let w = a.width, h = w / IMG_RATIO; if (h < a.height){ h = a.height; w = h * IMG_RATIO; }
+  const im = $$('#intro .ishot')[i] && $$('#intro .ishot')[i].querySelector('img'), op = im ? getComputedStyle(im).objectPosition.split(' ').map(v => parseFloat(v) / 100) : [.5, .5];
+  return {x:(a.width - w) * (isFinite(op[0]) ? op[0] : .5) + fx * w, y:(a.height - h) * (isFinite(op[1]) ? op[1] : .5) + fy * h}; }
+ function build(){
+  const el = $('#intro'); if (el.dataset.built) return;
+  el.innerHTML = INTRO.map((s, k) => `<div class="ishot" data-k="${k}"><img alt="" src="${s.img}" decoding="async"></div>`).join('') + `<div class="ifx"></div><div class="iflash"></div><p class="icap"></p><button class="iskip" id="iSkip">Skip</button><div class="itap">Tap to continue</div>`;
+  el.dataset.built = 1;
+  $('#iSkip').onclick = e => { e.stopPropagation(); finish(); };
+  el.onclick = () => { if (running) next(); };
+  el.querySelectorAll('img').forEach((im, k) => im.onerror = () => { INTRO[k].bad = true; if (running && (k === 0 || k === i)) next(); }); // a missing shot is skipped; if none load, the title shows
+ }
+ function caption(t){ const c = $('#intro .icap'); c.innerHTML = ''; t.split(' ').forEach((w, k) => { const s = document.createElement('span'); s.textContent = w; s.style.animationDelay = (0.5 + k * 0.12) + 's'; if (k) c.appendChild(document.createTextNode(' ')); c.appendChild(s); }); }
+ function effects(s){
+  const f = $('#intro .ifx'); f.innerHTML = ''; f.className = 'ifx';
+  if (low()) return;
+  if (s.fx === 'blink') f.innerHTML = '<i class="lid t"></i><i class="lid b"></i>';
+  if (s.fx === 'teal'){ const p = spot(0.3, 0.86); f.innerHTML = `<i class="glow teal" style="left:${p.x}px;top:${p.y}px"></i>`; }
+  if (s.fx === 'eye'){ const p = spot(0.573, 0.098); f.innerHTML = `<i class="glow eye" style="left:${p.x}px;top:${p.y}px"></i>`; }
+  if (s.fx === 'storm'){ const fl = $('#intro .iflash'); [900, 1150, 2900].forEach(t => setTimeout(() => { if (running && INTRO[i] === s){ fl.classList.remove('on'); void fl.offsetWidth; fl.classList.add('on'); } }, t)); }
+  if (s.fx === 'embers') f.innerHTML = Array.from({length:22}, (_, k) => `<i class="emb" style="left:${(k * 37) % 100}%;animation-delay:-${(k * 0.37).toFixed(2)}s;animation-duration:${(2.6 + (k % 5) * 0.5).toFixed(1)}s"></i>`).join('');
+ }
+ function show(k){
+  i = k; const s = INTRO[k];
+  $$('#intro .ishot').forEach((sh, n) => { sh.classList.toggle('on', n === k); sh.classList.remove('push', 'quake', 'rise', 'tilt'); if (n === k && !low()){ void sh.offsetWidth; sh.classList.add(s.move); } });
+  caption(s.cap); effects(s);
+  clearTimeout(timer); timer = setTimeout(next, SHOT_MS);
+ }
+ function next(){ if (!running) return; let k = i + 1; while (k < INTRO.length && INTRO[k].bad) k++; if (k < INTRO.length) show(k); else finish(); }
+ function finish(){
+  if (!running) return; running = false; clearTimeout(timer);
+  S.set.introSeen = true; save();
+  const el = $('#intro'); el.classList.add('out'); titleReveal();
+  setTimeout(() => { el.classList.remove('on', 'out'); $$('#intro .ishot').forEach(sh => sh.classList.remove('on')); if (onDone) onDone(); }, 900);
+ }
+ return {
+  play(done){
+   build(); onDone = done || null; running = true;
+   // wait for the first image so the intro never opens on black
+   const first = $('#intro img'); const go = () => { if (!running) return; if (!$('#title').classList.contains('on')){ running = false; return; } $('#intro').classList.add('on'); show(0); };
+   if (first.complete && first.naturalWidth) go(); else { first.addEventListener('load', go, {once:true}); first.addEventListener('error', () => { if (running && !$('#intro').classList.contains('on')){ let k = 1; while (k < INTRO.length && INTRO[k].bad) k++; if (k < INTRO.length){ $('#intro').classList.add('on'); show(k); } else finish(); } }, {once:true}); setTimeout(() => { if (running && !$('#intro').classList.contains('on')) finish(); }, 6000); }
+   INTRO.forEach(s => { const im = new Image(); im.src = s.img; });
+  },
+  running:() => running,
+ };
+})();
+function titleReveal(){ const t = $('#title'); t.classList.remove('reveal'); void t.offsetWidth; t.classList.add('reveal'); }
 // ---------- GEAR, ARMORY, EQUIP BEST (v2.0) ----------
 const SLOTS = ['weapon', 'armor', 'charm'], SLOT_N = {weapon:'Weapon', armor:'Armor', charm:'Charm'}, ARMORY_CAP = 80;
 function gearOk(){ if (!S.gear || typeof S.gear !== 'object') S.gear = {items:[], eq:{}}; if (!Array.isArray(S.gear.items)) S.gear.items = []; if (!S.gear.eq || typeof S.gear.eq !== 'object') S.gear.eq = {}; if (!S.kit) S.kit = {spear:0, bow:0, berserk:0}; return S.gear; }
@@ -3248,6 +3367,7 @@ function settingsSheet(){
  sheet(`<button class="btn small close" id="xs">Close</button><h3>Settings</h3>
   <div class="stat"><span>SOUND EFFECTS</span><button class="btn small" id="tSfx">${S.set.sfx ? 'On' : 'Off'}</button></div>
   <div class="stat"><span>MUSIC</span><button class="btn small" id="tMus">${S.set.music ? 'On' : 'Off'}</button></div>
+  <div class="stat"><span>INTRO</span><button class="btn small" id="tIntro">Watch</button></div>
   <div class="stat"><span>LET HER IN</span><button class="btn small" id="tWh">${S.set.whisper !== false ? 'On' : 'Off'}</button></div>
   <div class="stat"><span>WEATHER &amp; MAGIC</span><button class="btn small" id="tFx">${S.set.fx !== false ? 'On' : 'Off'}</button></div>
   <div class="row" style="margin:14px 0 6px"><button class="btn" id="howBtn">How to play</button><button class="btn" id="tutBtn">Replay guide</button></div>
@@ -3263,6 +3383,7 @@ function settingsSheet(){
  S.set.seenInstall = true; save(); renderTop();
  $('#xs').onclick = closeSheet;
  $('#tSfx').onclick = () => { S.set.sfx = !S.set.sfx; save(); sfx('tap'); settingsSheet(); };
+ $('#tIntro').onclick = () => { closeSheet(); showScreen('title'); Intro.play(); };
  $('#tWh').onclick = () => { S.set.whisper = S.set.whisper === false; save(); sfx('tap'); settingsSheet(); };
  $('#tFx').onclick = () => { S.set.fx = S.set.fx === false; save(); ATMO.toggle(S.set.fx); sfx('tap'); settingsSheet(); };
  $('#tMus').onclick = () => { S.set.music = !S.set.music; save(); S.set.music ? musicOn() : musicOff(); settingsSheet(); };
@@ -3419,6 +3540,7 @@ function boot(){
  Whisper.init();
  Help.init();
  setBG(0);
+ if (!S.set.introSeen) Intro.play(); else titleReveal();
  $('#startBtn').textContent = S.tut.done || S.stats.wins ? 'Continue the saga' : 'Begin the saga';
  $('#startBtn').onclick = () => { ac(); sfx('boss'); Whisper.onOpen(); if (S.set.music) musicOn(); showScreen('hub'); go('saga'); setTimeout(() => { if (!S.tut.done) Coach.intro(); else whatsNew(false); }, 350); setTimeout(checkDeeds, 600); };
  $('#howTitle').onclick = () => { ac(); howSheet(); };

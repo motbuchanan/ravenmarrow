@@ -1,6 +1,6 @@
 // Ravenmarrow service worker. Cache name changes every version so installed phones update.
-const CACHE = 'ravenmarrow-v2.0.1';
-const CORE = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
+const CACHE = 'ravenmarrow-v2.1';
+const CORE = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png', './apple-touch-icon.png', './rm-title.webp', './rm-eye.webp', './rm-barrow.webp', './rm-hel.webp', './rm-realms.webp', './rm-squad.webp'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)));
 });
@@ -14,8 +14,8 @@ self.addEventListener('fetch', e => {
   const isPage = req.mode === 'navigate' || req.url.endsWith('.html');
   if (isPage) {
     // network first: new chapters show up as soon as there is signal
-    e.respondWith(fetch(req, {cache: 'no-store'}).then(r => { const copy = r.clone(); caches.open(CACHE).then(c => c.put('./index.html', copy)); return r; }).catch(() => caches.match('./index.html')));
+    e.respondWith(fetch(req, {cache: 'no-store'}).then(r => { if (r.ok){ const copy = r.clone(); caches.open(CACHE).then(c => c.put('./index.html', copy)); } return r; }).catch(() => caches.match('./index.html')));
   } else {
-    e.respondWith(caches.match(req).then(r => r || fetch(req)));
+    e.respondWith(caches.match(req).then(r => r || fetch(req).then(res => { if (res.ok){ const copy = res.clone(); caches.open(CACHE).then(c => c.put(req, copy)); } return res; })));
   }
 });

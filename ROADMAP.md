@@ -1,6 +1,6 @@
 # Ravenmarrow: Roadmap
 
-**Current version:** 2.0.1 · Nov 17 2026
+**Current version:** 2.1 · Nov 17 2026
 **Live URL:** https://motbuchanan.github.io/ravenmarrow/ (repo: ravenmarrow, files at the root)
 **What it is:** A gothic Norse boss-battle game drawn entirely in code. A gift build inspired by a mobile Viking strategy RPG, built around boss fights, a warrior roster, and a light village. No money, no accounts, no data leaves the phone.
 
@@ -50,6 +50,13 @@ Her weekend feedback: had a blast, got far, played between Vikingard raids. Comb
 - Attack styles per warrior look (HSTYLE) and per enemy shape (FSTYLE) in ui.js: body moves (release), projectiles (orb, arrow, ravens, sound ring, embers), impact variants (stab, cleave, claw marks, bite, slam rings), random variant + timing jitter on every strike.
 - Engine: PASSIVES (one per warrior), TRICKS per enemy shape (poison, bleed, blind, all-hit), AFFIXES elites (Armored, Frenzied, Vampiric, Hulking) from realm 2 on, DoT/miss/endure events. Tutorial fight has no tricks. Foe stats raised ~12% to offset passives (sim curve unchanged).
 - Village clarity: Now/Next numbers on every building, before/after squad stats on upgrade, bonus chips at the top of every fight, stat annotations on warrior pages.
+
+## Shipped in 2.1 (Nov 17 2026)
+Title screen + cinematic intro from Mot's generated art (6 webp files beside index.html, about 790 KB total, all in the service worker's offline list; the SW now also caches any same-origin file it fetches).
+- Files: rm-title.webp (title key art), rm-eye, rm-barrow, rm-hel, rm-realms, rm-squad (intro shots); new icon-192/512 and apple-touch-icon from the raven emblem. Source art is kept in art/ and build.py copies it into dist.
+- Intro module (ui.js): 5 shots x 4.2 s with a camera move each (push, quake, rise, tilt) and an effect (eyelid blink, teal crack glow, Hel-Maiden eye ignite placed with cover-crop math, lightning flashes, embers), word-by-word captions, tap to advance, Skip. Plays once (S.set.introSeen), replay from Settings > Intro. Falls straight to the title if an image fails to load. No sound.
+- Title: key art with slow drift, pulsing moon glow and fog; logo burns in, buttons fade in after.
+- Tests: intro must be skipped with `typeof Intro !== 'undefined' && Intro.running()` (const is not on window).
 
 ## Shipped in 2.0.1 (Nov 17 2026)
 - Equip best rewritten: each round hands out the single biggest gain across the whole roster (squad gains count triple), and it never saves a layout weaker than the current one. Tested on 40 random armories: never weaker, no item on two warriors, about 70 ms.
