@@ -1,6 +1,6 @@
 # Ravenmarrow: Roadmap
 
-**Current version:** 3.0 · Nov 18 2026
+**Current version:** 3.1 · Nov 18 2026
 **Live URL:** https://motbuchanan.github.io/ravenmarrow/ (repo: ravenmarrow, files at the root)
 **What it is:** A gothic Norse boss-battle game drawn entirely in code. A gift build inspired by a mobile Viking strategy RPG, built around boss fights, a warrior roster, and a light village. No money, no accounts, no data leaves the phone.
 
@@ -51,6 +51,14 @@ Her weekend feedback: had a blast, got far, played between Vikingard raids. Comb
 - Attack styles per warrior look (HSTYLE) and per enemy shape (FSTYLE) in ui.js: body moves (release), projectiles (orb, arrow, ravens, sound ring, embers), impact variants (stab, cleave, claw marks, bite, slam rings), random variant + timing jitter on every strike.
 - Engine: PASSIVES (one per warrior), TRICKS per enemy shape (poison, bleed, blind, all-hit), AFFIXES elites (Armored, Frenzied, Vampiric, Hulking) from realm 2 on, DoT/miss/endure events. Tutorial fight has no tricks. Foe stats raised ~12% to offset passives (sim curve unchanged).
 - Village clarity: Now/Next numbers on every building, before/after squad stats on upgrade, bonus chips at the top of every fight, stat annotations on warrior pages.
+
+## Shipped in 3.1 (Nov 18 2026)
+Living Village, Phase 2 of 5.
+- Controls fix (Mot's phone test of 3.0: panning felt reversed). Sideways drags were mirrored. Now a drag keeps the ground point under the finger (groundAt), pinch and wheel zoom toward the fingers or cursor, the finger left after a pinch keeps panning, and a double-tap on empty ground calls fit().
+- art.js: figure(kind, frame, mode, torch) gives block people (walk 4 frames, work arm swing, torch), scaled 1.35x to read on a phone. Kinds: elder, smith, miner, priest, brewer, healer, scout, trainer, guard, villager, plus the troop types spear, bow, axe, shield. WORK holds the spot and job at each building. MATS grew to 32 (skin, hair, fur, robe, apron, tunics).
+- village-iso.js: actors (route, waits, work at the far end, facing, torch light that moves with them), drawn in both the shadow and main passes. Raise animation: an upgraded building shows scaffolding and two builders, then its blocks rise from the ground over 3 seconds. It waits while a sheet or Vision covers the village (canAnimate). Smoke and dust are smaller and shrink as they rise.
+- ui.js: villageActors(L). Villagers number 4 + 3 per Hall level (max 19), work at built buildings and walk real paths home. Up to 3 guards walk the inside of the palisade. Up to 12 troops drill in front of the War Camp, matching the skirmish and garrison types. At night, half as many are out and they carry torches. FX off or reduced motion: everyone stands at their post. vilRaise marks the upgraded building.
+- Tests: basecheck.js adds every-building-pair walks with no wall crossings; vil2.py checks walking, working, the raise finishing at the new level, the thinner night crowd and FX off.
 
 ## Shipped in 3.0 (Nov 18 2026)
 Living Village, Phase 1 of 5 (plan: ravenmarrow-village-plan.md). Caleb's idea: draw the village with The Keep's iso block engine.

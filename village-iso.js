@@ -1,4 +1,4 @@
-// Ravenmarrow · village-iso.js · v3.0 · Nov 18 2026
+// Ravenmarrow · village-iso.js · v3.1 · Nov 18 2026
 // The village seen the way The Keep's Isometric mode sees its world: an orthographic camera at a fixed slant, every
 // building made of lit blocks, a real shadow map from the sun or the blood moon, warm torch light pooling on the ground,
 // and fog closing in at the edges. It only draws what it is handed (parts made of boxes), so another game can reuse it.
@@ -73,7 +73,7 @@ precision mediump float; out vec4 o; void main(){ o = vec4(1.0); }`;
 let canvas = null, gl = null, host = null, labelLayer = null, P = null, PD = null, shTex = null, shFb = null;
 let geo = null, dyn = null, lastScene = null, lost = false;
 const cam = {tx:14, ty:14, zoom:9.5, minZ:4.5, maxZ:22, fitted:false};
-const st = {dirty:true, raf:0, last:0, t0:performance.now(), frames:0, fpsT:0, fps:0, verts:0, hour:null, mounted:false, onTap:null, reduce:false, labels:[], parts:[], lights:[], smokeSrc:[], puffs:[], cost:8, visible:true};
+const st = {dirty:true, raf:0, last:0, t0:performance.now(), frames:0, fpsT:0, fps:0, verts:0, hour:null, mounted:false, onTap:null, reduce:false, labels:[], parts:[], lights:[], smokeSrc:[], puffs:[], cost:8, visible:true, actors:[], anim:null, canAnim:null};
 
 function compile(type, src){ const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s)); return s; }
 function program(vs, fs, names){ const p = gl.createProgram(); gl.attachShader(p, compile(gl.VERTEX_SHADER, vs)); gl.attachShader(p, compile(gl.FRAGMENT_SHADER, fs)); gl.linkProgram(p);
@@ -151,15 +151,17 @@ function groundBoxes(sc){
 function build(sc){
  const V = [], I = [];
  groundBoxes(sc).forEach(b => pushBox(V, I, b, 0, 0));
- st.lights = []; st.smokeSrc = []; st.labels.forEach(l => l.el.remove()); st.labels = []; st.parts = [];
+ let hasAnim = false; st.lights = []; st.smokeSrc = []; st.labels.forEach(l => l.el.remove()); st.labels = []; st.parts = [];
  (sc.parts || []).forEach(p => {
-  p.boxes.forEach(b => pushBox(V, I, b, p.x, p.y));
+  if (p.anim && !st.reduce){ hasAnim = true; if (!st.anim || st.anim.part.id !== p.id) st.anim = {part:p, t:0, dur:3}; }
+  else p.boxes.forEach(b => pushBox(V, I, b, p.x, p.y));
   (p.lights || []).forEach(L => st.lights.push([L[0] + p.x, L[1] + p.y, L[2], L[3]]));
   (p.smoke || []).forEach(s => st.smokeSrc.push([s[0] + p.x, s[1] + p.y, s[2]]));
   if (p.tap) st.parts.push({id:p.id, x0:p.x, y0:p.y, x1:p.x + p.fw, y1:p.y + p.fh, top:p.top || 1});
   if (p.label){ const el = document.createElement('div'); el.className = 'vlab' + (p.labelCls ? ' ' + p.labelCls : ''); el.innerHTML = p.label; el.dataset.b = p.id; labelLayer.appendChild(el);
    st.labels.push({el, x:p.x + p.fw / 2, y:p.y + p.fh / 2, z:(p.top || 1) + .2}); }
  });
+ if (!hasAnim) st.anim = null;
  geo = upload(geo, V, I); st.verts = V.length / 8; st.dirty = true;
 }
 
@@ -213,13 +215,63 @@ function pick(px, py){
 // ---------- smoke: a few grey blocks drifting up from chimneys ----------
 function stepSmoke(dt){
  if (st.reduce) { st.puffs.length = 0; return; }
- st.smokeSrc.forEach((s, i) => { s.acc = (s.acc || hash(i, 3)) + dt; if (s.acc > .7){ s.acc = 0; if (st.puffs.length < 70) st.puffs.push({x:s[0], y:s[1], z:s[2], age:0, sz:.16 + Math.random() * .08}); } });
+ st.smokeSrc.forEach((s, i) => { s.acc = (s.acc || hash(i, 3)) + dt; if (s.acc > .7){ s.acc = 0; if (st.puffs.length < 70) st.puffs.push({x:s[0], y:s[1], z:s[2], age:0, sz:.1 + Math.random() * .05}); } });
  st.puffs.forEach(p => { p.age += dt; p.z += dt * .35; p.x -= dt * .12; p.y += dt * .05; });
  st.puffs = st.puffs.filter(p => p.age < 3.2);
 }
-function smokeGeo(){
+// ---------- actors: block people walking routes, working, standing guard ----------
+// an actor: {route:[[x,y,z],...], fig(frame, mode, torch)->boxes, speed, waitEnd:[s,s], workEnd:[bool,bool], torch, loop}
+function rot(B, f){ // f: 0 faces +y, 1 faces +x, 2 faces -y, 3 faces -x
+ if (!f) return B; return B.map(b => { let [x, y, z, w, d, h, m] = b; for (let i = 0; i < f; i++){ const nx = y, ny = -(x + w); x = nx; y = ny; const t = w; w = d; d = t; } return [x, y, z, w, d, h, m]; }); }
+function setActors(list){ st.actors = (list || []).filter(a => a.route && a.route.length).map((a, i) => Object.assign({seg:0, t:0, dir:1, wait:Math.random() * 2, face:0, anim:Math.random() * 4, mode:'idle'}, a)); st.dirty = true; }
+function stepActors(dt){
+ for (const a of st.actors){
+  a.anim += dt;
+  const R = a.route;
+  if (R.length < 2){ a.mode = a.drill ? 'work' : 'idle'; a.pos = R[0]; a.face = a.faceAt || 0; continue; }
+  if (a.wait > 0){ a.wait -= dt; a.mode = a.working ? 'work' : 'idle'; continue; }
+  const i = a.seg, j = i + a.dir, p = R[i], q = R[j], len = Math.hypot(q[0] - p[0], q[1] - p[1], q[2] - p[2]) || .001;
+  a.t += dt * (a.speed || .9) / len; a.mode = 'walk';
+  const dx = q[0] - p[0], dy = q[1] - p[1]; a.face = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 1 : 3) : (dy > 0 ? 0 : 2);
+  if (a.t >= 1){ a.t = 0; a.seg = j;
+   const end = a.seg === R.length - 1 ? 1 : a.seg === 0 ? 0 : -1;
+   if (end >= 0){ a.dir = end === 1 ? -1 : 1; a.wait = a.waitEnd ? a.waitEnd[end] * (.7 + Math.random() * .6) : 0; a.working = !!(a.workEnd && a.workEnd[end]);
+    if (a.working && a.workFace != null && end === 1) a.face = a.workFace; }
+  }
+  const s = R[a.seg], n = R[Math.min(R.length - 1, Math.max(0, a.seg + a.dir))], t = a.wait > 0 ? 0 : a.t;
+  a.pos = [s[0] + (n[0] - s[0]) * t, s[1] + (n[1] - s[1]) * t, s[2] + (n[2] - s[2]) * t];
+ }
+}
+// the building being raised: scaffold poles, then its blocks rise from the ground up
+function animBoxes(){
+ const A = st.anim; if (!A) return [];
+ const p = A.part, k = Math.min(1, A.t / A.dur), top = p.top || 1, cut = top * k, out = [];
+ p.boxes.forEach(b => { if (b[2] >= cut) return; out.push([b[0] + p.x, b[1] + p.y, b[2], b[3], b[4], Math.min(b[5], cut - b[2]), b[6]]); });
+ if (k < 1){ const sh = top + .2, x0 = p.x - .05, y0 = p.y - .05, x1 = p.x + p.fw - .05, y1 = p.y + p.fh - .05;
+  [[x0, y0], [x1, y0], [x0, y1], [x1, y1]].forEach(([x, y]) => out.push([x, y, 0, .07, .07, sh, 5]));
+  for (let z = .35; z < sh; z += .45){ out.push([x0, y0, z, p.fw, .05, .04, 5]); out.push([x0, y1, z, p.fw, .05, .04, 5]); out.push([x0, y0, z, .05, p.fh, .04, 5]); out.push([x1, y0, z, .05, p.fh, .04, 5]); }
+  // two builders hammering at the front
+  const fr = Math.floor(A.t * 6); [[p.x + p.fw * .3, p.y + p.fh + .25], [p.x + p.fw * .7, p.y + p.fh + .25]].forEach(([x, y], i) => rot(st.fig ? st.fig('villager', fr + i * 2, 'work', false) : [], 2).forEach(b => out.push([b[0] + x, b[1] + y, b[2], b[3], b[4], b[5], b[6]])));
+ }
+ return out;
+}
+function stepAnim(dt){
+ const A = st.anim; if (!A) return;
+ if (st.canAnim && !st.canAnim()) return;      // wait until nothing covers the village
+ A.t += dt;
+ if (A.t > .3 && Math.random() < dt * 6 && st.puffs.length < 70) st.puffs.push({x:A.part.x + Math.random() * A.part.fw, y:A.part.y + A.part.fh, z:.05, age:1.2, sz:.05 + Math.random() * .04});
+ if (A.t >= A.dur){ A.part.anim = false; st.anim = null; if (lastScene) build(lastScene); }
+}
+function dynGeo(){
  const V = [], I = [];
- st.puffs.forEach(p => { const s = p.sz * (1 + p.age * .5); pushBox(V, I, [p.x - s / 2, p.y - s / 2, p.z, s, s, s, 24], 0, 0); });
+ st.puffs.forEach(p => { const s = p.sz * (1 + Math.min(p.age, 1.2) * .6) * Math.max(.2, 1 - Math.max(0, p.age - 1.2) / 2.4); pushBox(V, I, [p.x - s / 2, p.y - s / 2, p.z, s, s, s, 24], 0, 0); });
+ st.dynLights = [];
+ for (const a of st.actors){ if (!a.pos) continue;
+  const fr = a.mode === 'walk' ? Math.floor(a.anim * 7) : a.mode === 'work' ? Math.floor(a.anim * (a.drill ? 2.5 : 3.2)) : 0;
+  const bs = rot(a.fig(fr, a.mode, a.torch), a.face);
+  for (const b of bs) pushBox(V, I, [b[0] + a.pos[0], b[1] + a.pos[1], b[2] + a.pos[2], b[3], b[4], b[5], b[6]], 0, 0);
+  if (a.torch) st.dynLights.push([a.pos[0], a.pos[1], a.pos[2] + .5, 1.6]); }
+ animBoxes().forEach(b => pushBox(V, I, b, 0, 0));
  dyn = upload(dyn, V, I);
 }
 
@@ -227,11 +279,13 @@ function smokeGeo(){
 function draw(now){
  if (!gl || lost || !geo) return;
  const S = sky(), m = camMats(), LVP = lightMat(S.dir);
+ dynGeo();
  // shadow pass
  gl.bindFramebuffer(gl.FRAMEBUFFER, shFb); gl.viewport(0, 0, SHADOW, SHADOW); gl.clear(gl.DEPTH_BUFFER_BIT);
  gl.enable(gl.DEPTH_TEST); gl.enable(gl.CULL_FACE); gl.cullFace(gl.BACK);
  gl.useProgram(PD.p); gl.uniformMatrix4fv(PD.u.uLVP, false, LVP);
  gl.bindVertexArray(geo.vao); gl.drawElements(gl.TRIANGLES, geo.n, gl.UNSIGNED_INT, 0);
+ if (dyn && dyn.n){ gl.bindVertexArray(dyn.vao); gl.drawElements(gl.TRIANGLES, dyn.n, gl.UNSIGNED_INT, 0); }
  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
  // main pass
  gl.viewport(0, 0, canvas.width, canvas.height);
@@ -241,11 +295,11 @@ function draw(now){
  gl.uniform4fv(u.uMat, st.mats); gl.uniform3fv(u.uAmb, S.amb); gl.uniform3fv(u.uSky, S.sky); gl.uniform3fv(u.uSunC, S.sunC); gl.uniform3fv(u.uSunD, S.dir);
  gl.uniform3fv(u.uBg, S.bg); gl.uniform2f(u.uCtr, 14, 14); gl.uniform1f(u.uTime, (now - st.t0) / 1000); gl.uniform1f(u.uTorch, S.torch); gl.uniform1f(u.uFlick, st.reduce ? 0 : 1);
  // the lights nearest the camera's focus
- const Ls = st.lights.slice().sort((a, b) => Math.hypot(a[0] - cam.tx, a[1] - cam.ty) - Math.hypot(b[0] - cam.tx, b[1] - cam.ty)).slice(0, MAXL), lp = new Float32Array(MAXL * 4);
+ const Ls = st.lights.concat(st.dynLights || []).sort((a, b) => Math.hypot(a[0] - cam.tx, a[1] - cam.ty) - Math.hypot(b[0] - cam.tx, b[1] - cam.ty)).slice(0, MAXL), lp = new Float32Array(MAXL * 4);
  Ls.forEach((L, i) => lp.set(L, i * 4)); gl.uniform1i(u.uNL, Ls.length); gl.uniform4fv(u.uLP, lp);
  gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, shTex); gl.uniform1i(u.uSh, 0);
  gl.bindVertexArray(geo.vao); gl.drawElements(gl.TRIANGLES, geo.n, gl.UNSIGNED_INT, 0);
- if (st.puffs.length){ smokeGeo(); gl.bindVertexArray(dyn.vao); gl.drawElements(gl.TRIANGLES, dyn.n, gl.UNSIGNED_INT, 0); }
+ if (dyn && dyn.n){ gl.bindVertexArray(dyn.vao); gl.drawElements(gl.TRIANGLES, dyn.n, gl.UNSIGNED_INT, 0); }
  gl.bindVertexArray(null);
  if (host) host.style.background = `rgb(${S.bg.map(v => Math.round(v * 255)).join(',')})`;
 }
@@ -258,27 +312,40 @@ function loop(now){
  // idle animation (torch flicker, smoke) runs at about 24 fps, slower if frames are expensive on this phone
  const dt = Math.min(.1, (now - (st.last || now)) / 1000), animate = !st.reduce, idleGap = Math.max(42, st.cost * 4), due = st.dirty || (animate && now - st.last >= idleGap);
  if (!due) return;
- stepSmoke(dt); st.last = now;
+ stepSmoke(dt); if (!st.reduce) stepActors(dt); else st.actors.forEach(a => { if (!a.pos){ const R = a.route, e = R[R.length - 1]; a.pos = e; a.mode = 'idle'; a.face = a.workFace || 0; } }); stepAnim(dt); st.last = now;
  if (st.dirty) placeLabels();
  st.dirty = false; const t0 = performance.now(); draw(now); st.cost = st.cost * .8 + (performance.now() - t0) * .2;
  st.frames++; if (now - st.fpsT > 1000){ st.fps = Math.round(st.frames * 1000 / (now - st.fpsT)); st.frames = 0; st.fpsT = now; }
 }
 
 // ---------- input: drag pans, pinch and wheel zoom, a short still touch taps ----------
-const ptr = new Map(); let pinch0 = 0, zoom0 = 0, downAt = 0, moved = 0, downXY = null;
+const ptr = new Map(); let pinch0 = 0, zoom0 = 0, mid0 = null, downAt = 0, moved = 0, downXY = null, lastTapAt = 0;
+// the ground point under a screen point (z = 0), used so a drag or pinch keeps the ground under the fingers
+function groundAt(px, py){ const r = canvas.getBoundingClientRect(), iv = inv(camMats().VP), nx = (px / r.width) * 2 - 1, ny = 1 - (py / r.height) * 2;
+ const a = xform(iv, [nx, ny, -1]), b = xform(iv, [nx, ny, 1]), t = a[2] / (a[2] - b[2]); return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t]; }
+function local(e){ const r = canvas.getBoundingClientRect(); return [e[0] - r.left, e[1] - r.top]; }
 function onDown(e){ canvas.setPointerCapture && canvas.setPointerCapture(e.pointerId); ptr.set(e.pointerId, [e.clientX, e.clientY]);
  if (ptr.size === 1){ downAt = performance.now(); moved = 0; downXY = [e.clientX, e.clientY]; const r = canvas.getBoundingClientRect(); window.VIL.lastPick = pick(e.clientX - r.left, e.clientY - r.top); }
- if (ptr.size === 2){ const [a, b] = [...ptr.values()]; pinch0 = Math.hypot(a[0] - b[0], a[1] - b[1]); zoom0 = cam.zoom; } }
-function onMove(e){ if (!ptr.has(e.pointerId)) return; const prev = ptr.get(e.pointerId), cur = [e.clientX, e.clientY]; ptr.set(e.pointerId, cur);
- if (ptr.size === 1){ const dx = cur[0] - prev[0], dy = cur[1] - prev[1]; moved += Math.abs(dx) + Math.abs(dy);
-  const r = canvas.getBoundingClientRect(), k = 2 * cam.zoom / r.height;
-  // screen right is world (cos, -sin) of the yaw; screen up is the ground forward, stretched by the slant
-  const rx = Math.cos(YAW), ry = -Math.sin(YAW), fx = -Math.sin(YAW), fy = -Math.cos(YAW), s = 1 / Math.sin(PITCH);
-  cam.tx -= (dx * rx - dy * fx * s) * k; cam.ty -= (dx * ry - dy * fy * s) * k; clampCam(); st.dirty = true; }
- else if (ptr.size === 2){ const [a, b] = [...ptr.values()], d = Math.hypot(a[0] - b[0], a[1] - b[1]); if (pinch0) { cam.zoom = zoom0 * pinch0 / d; clampCam(); st.dirty = true; moved = 99; } } }
-function onUp(e){ const was = ptr.size; ptr.delete(e.pointerId); if (ptr.size < 2) pinch0 = 0;
- if (was === 1 && moved < 10 && performance.now() - downAt < 600 && st.onTap){ const r = canvas.getBoundingClientRect(), id = pick(e.clientX - r.left, e.clientY - r.top); if (id) st.onTap(id); } }
-function onWheel(e){ e.preventDefault(); cam.zoom *= Math.exp(e.deltaY * .0012); clampCam(); st.dirty = true; }
+ if (ptr.size === 2){ const [a, b] = [...ptr.values()]; pinch0 = Math.hypot(a[0] - b[0], a[1] - b[1]); zoom0 = cam.zoom; mid0 = groundAt(...local([(a[0] + b[0]) / 2, (a[1] + b[1]) / 2])); moved = 99; } }
+function onMove(e){ if (!ptr.has(e.pointerId)) return; const prev = ptr.get(e.pointerId), cur = [e.clientX, e.clientY];
+ if (ptr.size === 1){
+  // grab the ground: whatever was under the finger stays under the finger
+  const g0 = groundAt(...local(prev)), g1 = groundAt(...local(cur)); ptr.set(e.pointerId, cur);
+  moved += Math.abs(cur[0] - prev[0]) + Math.abs(cur[1] - prev[1]);
+  cam.tx += g0[0] - g1[0]; cam.ty += g0[1] - g1[1]; clampCam(); st.dirty = true; return; }
+ ptr.set(e.pointerId, cur);
+ if (ptr.size === 2 && pinch0){ const [a, b] = [...ptr.values()], d = Math.hypot(a[0] - b[0], a[1] - b[1]), mid = local([(a[0] + b[0]) / 2, (a[1] + b[1]) / 2]);
+  // zoom toward the point between the fingers, and let the two fingers pan together
+  cam.zoom = zoom0 * pinch0 / d; clampCam(); const after = groundAt(...mid);
+  cam.tx += mid0[0] - after[0]; cam.ty += mid0[1] - after[1]; clampCam(); st.dirty = true; } }
+function onUp(e){ const was = ptr.size; ptr.delete(e.pointerId);
+ if (ptr.size < 2){ pinch0 = 0; zoom0 = cam.zoom; }
+ if (ptr.size === 1){ const [k, v] = [...ptr.entries()][0]; ptr.set(k, v); }  // the finger left behind keeps panning from where it is
+ if (was === 1 && moved < 10 && performance.now() - downAt < 600){
+  const now = performance.now(), r = canvas.getBoundingClientRect(), id = pick(e.clientX - r.left, e.clientY - r.top);
+  if (!id && now - lastTapAt < 350){ fit(); lastTapAt = 0; return; }           // double-tap empty ground: back to the whole village
+  lastTapAt = now; if (id && st.onTap) st.onTap(id); } }
+function onWheel(e){ e.preventDefault(); const p = local([e.clientX, e.clientY]), g0 = groundAt(...p); cam.zoom *= Math.exp(e.deltaY * .0012); clampCam(); const g1 = groundAt(...p); cam.tx += g0[0] - g1[0]; cam.ty += g0[1] - g1[1]; clampCam(); st.dirty = true; }
 function resize(){ if (!canvas || !host) return; const r = host.getBoundingClientRect(), dpr = Math.min(window.devicePixelRatio || 1, 2);
  const w = Math.max(1, Math.round(r.width * dpr)), h = Math.max(1, Math.round(r.height * dpr)); if (canvas.width !== w || canvas.height !== h){ canvas.width = w; canvas.height = h; } st.dirty = true; }
 
@@ -298,16 +365,17 @@ function mount(el, opts){
  }
  if (lost) return false;
  host = el; host.appendChild(canvas); host.appendChild(labelLayer);
- st.onTap = opts.onTap || null; st.reduce = !!opts.reduce;
+ st.onTap = opts.onTap || null; st.reduce = !!opts.reduce; st.fig = opts.figure || null; st.canAnim = opts.canAnimate || null;
  st.mats = new Float32Array(32 * 4); (opts.mats || []).forEach((m, i) => { if (i < 32) st.mats.set([m[0] / 255, m[1] / 255, m[2] / 255, m[3] || 0], i * 4); });
  st.mounted = true; resize(); if (!cam.fitted){ fit(); cam.fitted = true; } cancelAnimationFrame(st.raf); st.last = 0; st.raf = requestAnimationFrame(loop);
  return true;
 }
-function update(scene){ lastScene = scene; if (!gl || lost) return; build(scene); }
+function update(scene){ lastScene = scene; if (!gl || lost) return; build(scene); setActors(scene.actors); }
 function unmount(){ st.mounted = false; cancelAnimationFrame(st.raf); if (canvas && canvas.parentNode) canvas.parentNode.removeChild(canvas); if (labelLayer && labelLayer.parentNode) labelLayer.parentNode.removeChild(labelLayer); host = null; }
 window.VIL = {mount, update, unmount, project,
  setHour(h){ st.hour = h; st.dirty = true; },
- stats(){ return {fps:st.fps, verts:st.verts, lights:st.lights.length, lost, zoom:cam.zoom}; },
+ getHour(){ return st.hour; },
+ stats(){ return {fps:st.fps, verts:st.verts, lights:st.lights.length, lost, zoom:cam.zoom, actors:st.actors.length, moving:st.actors.filter(a => a.mode === 'walk').length, working:st.actors.filter(a => a.mode === 'work').length, building:st.anim ? +(st.anim.t / st.anim.dur).toFixed(2) : null}; },
  view(v){ if (v){ Object.assign(cam, v); clampCam(); st.dirty = true; } return {tx:cam.tx, ty:cam.ty, zoom:cam.zoom}; },
  pick(px, py){ return pick(px, py); },
  fit(){ fit(); return {tx:cam.tx, ty:cam.ty, zoom:cam.zoom}; },

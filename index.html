@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<!-- Ravenmarrow v3.0 · Nov 18 2026 -->
+<!-- Ravenmarrow v3.1 · Nov 18 2026 -->
 <html lang="en"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-<meta name="build" content="3.0">
+<meta name="build" content="3.1">
 <meta name="build-date" content="Nov 18 2026">
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#050304">
@@ -1561,7 +1561,8 @@ const MATS = [ // [r, g, b, glow 0..1]
  [70, 220, 200, 1], [52, 50, 56, 0], [34, 58, 40, 0], [22, 40, 30, 0],      // 12 rune teal, 13 iron, 14 pine, 15 pine dark
  [222, 210, 182, 0], [58, 52, 58, 0], [10, 8, 10, 0], [150, 120, 90, 0],    // 16 bone, 17 slate shingle, 18 void, 19 ore
  [58, 92, 46, 0], [150, 130, 104, 0], [140, 34, 30, .9], [44, 30, 22, 0],   // 20 herb, 21 tent canvas, 22 ember coal, 23 dark wood
- [92, 88, 94, 0]                                                            // 24 smoke
+ [128, 124, 130, 0], [176, 132, 104, 0], [40, 28, 22, 0], [118, 98, 78, 0],    // 24 smoke, 25 skin, 26 hair, 27 fur
+ [96, 22, 32, 0], [86, 60, 42, 0], [58, 68, 88, 0], [54, 72, 50, 0]       // 28 dark red robe, 29 leather apron, 30 blue-grey tunic, 31 green tunic
 ];
 function blocks(id, l){
  const B = [], L = [], S = [];
@@ -1723,7 +1724,46 @@ function wallBlocks(lv, shape){
  if (lv >= 2){ if (shape & 5) box(.46, (shape & 1) ? 0 : .5, h * .55, .08, (shape & 1) && (shape & 4) ? 1 : .5, .05, 23); if (shape & 10) box((shape & 8) ? 0 : .5, .46, h * .7, (shape & 8) && (shape & 2) ? 1 : .5, .08, .05, 23); }
  return {boxes:B, lights:L, smoke:[], top:h + .1};
 }
-return {ICON, sceneSVG, heroArt, foeArt, raven, seer, band, building, villageMap, SLOTS, item, MATS, blocks, wallBlocks};
+// ---------- v3.1 FIGURES: villagers, guards and troops as little block people ----------
+// A figure faces +y (south) with its feet at the origin. frame 0..3 walks, mode 'work' swings the tool arm, 'idle' stands.
+const FIG = {  // [tunic, legs, head-top, tool]
+ elder:[27, 23, 16, 'staff'], smith:[29, 23, 26, 'hammer'], miner:[29, 23, 26, 'pick'], priest:[28, 28, 28, 'none'], brewer:[31, 23, 26, 'keg'],
+ healer:[31, 23, 26, 'herb'], scout:[30, 23, 30, 'bow'], trainer:[30, 23, 13, 'spear'], guard:[30, 13, 13, 'spear'], villager:[27, 23, 26, 'none'],
+ spear:[30, 13, 13, 'spear'], bow:[31, 23, 30, 'bow'], axe:[29, 13, 13, 'axe'], shield:[30, 13, 13, 'shield']
+};
+function figure(kind, frame, mode, torch){
+ const f = FIG[kind] || FIG.villager, B = [], box = (x, y, z, w, d, h, m) => B.push([x, y, z, w, d, h, m]);
+ const walk = mode === 'walk', sw = walk ? [0, .05, 0, -.05][frame & 3] : 0, work = mode === 'work', up = work && (frame & 2);
+ const robe = kind === 'priest';
+ // legs (a robe hides them)
+ if (robe) box(-.08, -.05, 0, .16, .1, .2, f[1]);
+ else { box(-.07, -.03 + sw, 0, .055, .06, .15, f[1]); box(.015, -.03 - sw, 0, .055, .06, .15, f[1]); }
+ box(-.085, -.055, .14, .17, .11, .17, f[0]);                    // body
+ box(-.05, -.045, .31, .1, .09, .09, 25);                        // head
+ box(-.055, -.05, .38, .11, .1, .035, f[2]);                     // hair, hood or helmet
+ if (f[2] === 13) box(-.012, .04, .33, .024, .02, .06, 13);      // helmet nose guard
+ // arms: the left swings with the walk, the right holds the tool
+ box(-.12, -.03 - sw, .17, .035, .06, .13, f[0]);
+ const ra = up ? .24 : .17; box(.085, -.03 + (work ? .04 : sw), ra, .035, .06, .13, f[0]);
+ const hx = .1, hy = work ? .06 : .02, hz = ra + (up ? .14 : .02);
+ const t = f[3];
+ if (t === 'hammer'){ box(hx, hy, hz, .02, .02, .12, 23); box(hx - .03, hy - .015, hz + (up ? .12 : -.02), .08, .05, .04, 13); }
+ else if (t === 'pick'){ box(hx, hy, hz, .02, .02, .14, 23); box(hx - .06, hy, hz + (up ? .13 : .12), .14, .025, .025, 13); }
+ else if (t === 'spear'){ box(hx, hy + (work && up ? .1 : 0), .1, .02, .02, .5, 23); box(hx - .005, hy + (work && up ? .1 : 0), .6, .03, .03, .06, 13); }
+ else if (t === 'axe'){ box(hx, hy, hz, .02, .02, .16, 23); box(hx - .01, hy - .04, hz + .1, .04, .07, .06, 13); }
+ else if (t === 'bow'){ box(hx + .01, hy - .01, .14, .015, .02, .32, 23); }
+ else if (t === 'staff'){ box(hx, hy, .02, .025, .025, .48, 23); box(hx - .01, hy - .01, .48, .045, .045, .04, 9); }
+ else if (t === 'keg'){ if (!walk) box(hx - .02, hy, hz - .02, .08, .07, .08, 4); }
+ else if (t === 'herb'){ box(hx - .01, hy + .02, hz + .06, .05, .04, .05, 20); }
+ else if (t === 'shield'){ box(-.16, -.06, .14, .03, .14, .16, 10); }
+ if (kind === 'priest' && work) box(-.02, .08, .3 + (up ? .06 : 0), .04, .02, .04, 12);
+ if (torch){ box(-.14, .02, .2, .025, .025, .2, 23); box(-.15, .01, .4, .045, .045, .05, 11); }
+ const K = 1.35; return B.map(b => [b[0] * K, b[1] * K, b[2] * K, b[3] * K, b[4] * K, b[5] * K, b[6]]);  // a touch bigger than life so they read on a phone
+}
+// where a worker stands at each building (local tiles) and which job they do there
+const WORK = {hall:[2, 3.35, 'elder'], forge:[2.1, 1.75, 'smith'], mine:[1.1, 2.6, 'miner'], altar:[1.5, 1.05, 'priest'], mead:[1.0, 2.75, 'brewer'],
+ infirmary:[1.3, 2.7, 'healer'], lookout:[1.5, 2.65, 'scout'], barracks:[1.95, 2.75, 'trainer']};
+return {ICON, sceneSVG, heroArt, foeArt, raven, seer, band, building, villageMap, SLOTS, item, MATS, blocks, wallBlocks, figure, WORK};
 })();
 
 // ===== RAVENMARROW UI =====
@@ -1731,6 +1771,7 @@ const VERSION = document.querySelector('meta[name="build"]').content; // e.g. "1
 const BUILD_DATE = document.querySelector('meta[name="build-date"]').content;
 // Newest first. Every update adds an entry; it shows once after the update lands.
 const CHANGELOG = [
+ {v:'3.1', d:'Nov 18 2026', notes:['Smoother map controls: the ground stays under your finger as you drag, pinch zooms toward your fingers, and a double-tap on open ground shows the whole village again.', 'Your village has people now. Villagers walk to work and back: the smith hammers at the forge, miners dig, the priest tends the altar. More move in as your Hall grows.', 'Guards patrol inside the palisade, and your troops drill in front of the War Camp.', 'Upgrade a building and watch it go up: scaffolding, builders and the new level rising from the ground.', 'After dark, fewer folk are out, and the ones who are carry torches.']},
  {v:'3.0', d:'Nov 18 2026', notes:['Your village is rebuilt in blocks. Every building looks different at every level, so you can watch it grow from sod huts to a gold-trimmed longhouse.', 'Drag to look around, pinch to zoom, and tap any building to build or upgrade it.', 'The village follows your real clock: grey daylight, then torches and a blood moon after dark.']},
  {v:'2.2', d:'Nov 17 2026', notes:['New: Visions. Big moments now get their own painted scene, and every scene you have seen lives in the Saga Journal (the book icon) to watch again.', 'Watch the intro again from the title screen, the Journal, or Settings.']},
  {v:'2.1', d:'Nov 17 2026', notes:['A new title screen and a cinematic intro. Watch it again any time from Settings.', 'A new raven icon for your home screen.']},
@@ -2708,8 +2749,45 @@ function villageScene(){
  });
  // The Whispering: after a long absence, claw marks on the palisade (same rule as the drawn map)
  if (Whisper.claws()){ const ws = parts.filter(p => p.id === 'wall'); [.2, .5, .8].forEach(f => { const w = ws[Math.floor(f * ws.length)]; if (w && S.vil.wall) w.boxes = w.boxes.concat([[.32, .9, .18, .05, .05, .42, 22], [.46, .9, .14, .05, .05, .48, 22], [.6, .9, .2, .05, .05, .4, 22]]); }); }
+ if (vilRaise){ const p = parts.find(x => x.id === vilRaise); if (p) p.anim = true; vilRaise = null; }
  const g = villagePaths(L);
- return {w:BASE.W, h:BASE.H, ring:RM.STARTER.ring, path:g.path, busy:g.busy, parts};
+ return {w:BASE.W, h:BASE.H, ring:RM.STARTER.ring, path:g.path, busy:g.busy, parts, actors:villageActors(L)};
+}
+let vilRaise = null;
+// ---------- v3.1 the village lives: villagers, guards on patrol, troops drilling ----------
+function villagerCount(){ return Math.min(19, 4 + 3 * (S.vil.hall || 0)); }
+function isNight(){ const o = window.VIL && VIL.getHour && VIL.getHour(), h = o != null ? o : new Date().getHours(); return h >= 20 || h < 6; }
+function villageActors(L){
+ const out = [], gr = BASE.grid(L, RM.BDEFS), walk = (x, y) => gr.at(x, y) === -1, at = k => L.items.find(i => i.k === k);
+ const door = it => { const f = BASE.fpOf(RM.BDEFS, it.k); return [it.x + Math.floor(f[0] / 2), it.y + f[1]]; };
+ const fig = kind => (fr, mode, torch) => ART.figure(kind, fr, mode, torch);
+ const night = isNight(), built = Object.keys(ART.WORK).filter(k => (S.vil[k] || 0) > 0 && at(k));
+ const homes = ['hall', 'barracks', 'mead', 'infirmary'].filter(k => (S.vil[k] || 0) > 0 && at(k));
+ if (!homes.length) homes.push('hall');
+ let n = built.length ? villagerCount() : 0; if (night) n = Math.ceil(n / 2);
+ for (let i = 0; i < n; i++){
+  const wk = built[i % built.length], w = ART.WORK[wk], wIt = at(wk); let hm = homes[(i * 7 + 3) % homes.length]; if (hm === wk) hm = homes.find(h => h !== wk) || 'hall';
+  const hIt = at(hm); if (!hIt || !wIt) continue;
+  const p = BASE.path(gr, door(hIt), door(wIt), walk); if (!p) continue;
+  const route = p.map(([x, y]) => [x + .5 + (i % 3 - 1) * .18, y + .5 + ((i >> 1) % 3 - 1) * .18, 0]);
+  route.push([wIt.x + w[0] + (i % 2 ? .22 : -.22) * (i > built.length - 1 ? 1 : 0), wIt.y + w[1], .16]);
+  out.push({route, fig:fig(w[2]), speed:.75 + (i % 4) * .08, waitEnd:[2.5, 6], workEnd:[false, true], workFace:2, torch:night});
+ }
+ // guards walk the inside of the palisade
+ const lv = S.vil.wall || 0, ring = RM.STARTER.ring;
+ if (lv > 0){ const c = [[ring[0] + 1, ring[3] - 1], [ring[0] + 1, ring[1] + 1], [ring[2] - 1, ring[1] + 1], [ring[2] - 1, ring[3] - 1]];
+  const guards = Math.min(3, 1 + Math.floor(lv / 2));
+  for (let gi = 0; gi < guards; gi++){ const a = c[gi % 4], b = c[(gi + 1) % 4], p = BASE.path(gr, a, b, walk); if (!p) continue;
+   out.push({route:p.map(([x, y]) => [x + .5, y + .5, 0]), fig:fig('guard'), speed:.6, waitEnd:[3, 3], workEnd:[false, false], torch:night}); } }
+ // troops drill in front of the War Camp
+ const camp = at('camp'); if (camp && (S.vil.camp || 0) > 0){
+  const ar = S.army || {}, sk = (ar.skirmish && ar.skirmish.n) || 0, ga = (ar.garrison && ar.garrison.n) || 0, tot = Math.min(12, sk + ga);
+  const kindOf = t => ({spear:'spear', bow:'bow', axe:'axe', shield:'shield'})[t] || 'spear';
+  for (let k = 0; k < tot; k++){ const row = Math.floor(k / 6), col = k % 6, type = k < Math.min(sk, 12) ? (ar.skirmish || {}).type : (ar.garrison || {}).type;
+   const x = camp.x - .3 + col * .6, y = camp.y + 3.35 + row * .55; if (gr.at(Math.floor(x), Math.floor(y)) > -1) continue;
+   out.push({route:[[x, y, 0]], fig:fig(kindOf(type)), drill:true, faceAt:2}); }
+ }
+ return out;
 }
 // loads village-iso.js once (cached by the service worker), then mounts it in #vmap. Falls back to the drawn map.
 function reduceMotion(){ return !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) || (S.set && S.set.fx === false); }
@@ -2729,7 +2807,7 @@ function mountVillage(badges){
  const m = $('#vmap'); if (!m) return;
  const go = () => {
   if (!$('#vmap') || $('#vmap') !== m) return;
-  const ok = window.VIL && VIL.mount(m, {mats:ART.MATS, reduce:reduceMotion(), onTap:id => { if (Help.isOn()) return; sfx('tap'); buildingSheet(id); }});
+  const ok = window.VIL && VIL.mount(m, {mats:ART.MATS, reduce:reduceMotion(), figure:(k, f, md, t) => ART.figure(k, f, md, t), canAnimate:() => !$('#veil.on') && !$('#vision.on'), onTap:id => { if (Help.isOn()) return; sfx('tap'); buildingSheet(id); }});
   if (!ok) return svgVillage(badges);
   m.classList.add('iso'); VIL.update(villageScene());
  };
@@ -2789,7 +2867,7 @@ function buildingSheet(id){
   const l0 = S.vil[id] || 0, c0 = RM.buildCost(l0, id); if (!afford(c0) || l0 >= RM.bmax(id, S.vil)) return;
   if (id === 'mead' || id === 'mine' || id === 'lookout') collectAll();
   const before = S.squad.map(w => RM.makeHero(w, S.owned[w], S.vil, S.equip[w], gfx(w)));
-  pay(c0); S.vil[id] = l0 + 1; if (id === 'hall' && l0 + 1 >= 5) setTimeout(() => Vision.trigger('hall'), 400); if (!l0 && id === 'mine') S.prod.ironAt = Date.now(); if (!l0 && id === 'lookout') S.prod.runeAt = Date.now(); save(); sfx('up'); vibe([20, 30, 40]);
+  pay(c0); S.vil[id] = l0 + 1; vilRaise = id; if (id === 'hall' && l0 + 1 >= 5) setTimeout(() => Vision.trigger('hall'), 400); if (!l0 && id === 'mine') S.prod.ironAt = Date.now(); if (!l0 && id === 'lookout') S.prod.runeAt = Date.now(); save(); sfx('up'); vibe([20, 30, 40]);
   renderVillage(); renderTop(); upgradeReveal(id, before); checkDeeds();
  };
 }
