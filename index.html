@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<!-- Ravenmarrow v3.2 · Nov 18 2026 -->
+<!-- Ravenmarrow v3.3 · Nov 18 2026 -->
 <html lang="en"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-<meta name="build" content="3.2">
+<meta name="build" content="3.3">
 <meta name="build-date" content="Nov 18 2026">
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#050304">
@@ -652,6 +652,20 @@ body.help-on #vmap .vilcv{outline:1px dashed rgba(240,192,96,.75);outline-offset
 #panel.vediting .coffers,#panel.vediting .vrow,#panel.vediting .vsum{display:none}
 #vmap.shake{animation:vshake .32s}
 @keyframes vshake{20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+/* v3.3 raids on the map */
+#bhud{position:absolute;inset:0;pointer-events:none;display:flex;flex-direction:column;justify-content:space-between;padding:8px;z-index:3}
+#bhud .bh-top{display:flex;justify-content:space-between;align-items:center;background:rgba(12,5,7,.72);border:1px solid rgba(217,164,65,.35);border-radius:9px;padding:6px 10px;color:#e6cf9c;font:600 12px cinzel,serif;letter-spacing:.5px}
+#bhud .bh-top span{color:#c9b38f;font-weight:400}
+#bhud .bh-bot{display:flex;justify-content:space-between;align-items:center;pointer-events:auto}
+.bh-speed{display:flex;border:1px solid rgba(217,164,65,.45);border-radius:9px;overflow:hidden;background:rgba(12,5,7,.8)}
+.bh-speed button{background:transparent;color:#c9b38f;border:0;padding:8px 12px;font:600 12px cinzel,serif}
+.bh-speed button.on{background:#5a1018;color:#f6deb0}
+.bh-skip{background:rgba(12,5,7,.85);color:#f0c060;border:1px solid #d9a441;border-radius:9px;padding:8px 14px;font:600 12px cinzel,serif}
+#vmap.iso:has(#bhud) .vlabs{display:none}
+.repcard{border:1px solid rgba(217,164,65,.25);border-left:3px solid #6b5a44;border-radius:9px;padding:9px 10px;margin:8px 0;background:rgba(20,10,12,.6);display:flex;flex-direction:column;gap:4px}
+.repcard.won{border-left-color:#9fd8a0}.repcard.lost{border-left-color:#c0392b}
+.repcard b{font-family:cinzel,serif;color:#e6cf9c}.repcard small{color:#8a7a68}
+.repcard .btn{align-self:flex-start;margin-top:4px}
 
 </style>
 </head><body>
@@ -775,7 +789,117 @@ function validLayout(layout, defs, max, need, key){
  if (key){ const it = items.find(i => i.k === key); if (it && !reachable(layout, defs, it)) return {ok:false, why:'sealed', k:key}; }
  return {ok:true}; }
 
-return {W, H, rng, path, reachable, validLayout, fpOf, cells, grid, fits, wallShape, starterLayout, centre};
+// ---------- RAID SIM (v3.3): a raid fought on a layout, worked out tick by tick from a recipe ----------
+// The recipe holds everything the fight needs (numbers already worked out by the game), so a replay years later
+// comes out the same. Fixed 10 ticks a second, seeded random only, plain arithmetic and sqrt (same on every phone).
+// recipe: {simVer, seed, items:[{key,k,x,y,fw,fh,hp,role:'core'|'bld'|'wall'|'tower'|'trap'|'plot',range,dmg,rate}],
+//  attackers:[{look,hp,atk,def,speed,range,fly,prefer:'any'|'def',wallMult,splash}],
+//  defenders:[{look,hp,atk,def,speed,range,hero}], guard:0..1 (damage cut for defenders inside the walls)}
+const SIM_VER = 1, TICK = .1, MAXT = 900;
+function simRaid(R, opt){
+ opt = opt || {};
+ const rand = rng(R.seed >>> 0), r4 = v => Math.round(v * 10000) / 10000;
+ const items = R.items.map((it, i) => ({i, key:it.key, k:it.k, x:it.x, y:it.y, fw:it.fw, fh:it.fh, role:it.role, max:it.hp || 0, hp:it.hp || 0, range:it.range || 0, dmg:it.dmg || 0, rate:it.rate || 1, cd:0, dealt:0, hit:new Set()}));
+ const solid = items.filter(b => b.role !== 'plot' && b.role !== 'trap');
+ const scoring = items.filter(b => b.role === 'core' || b.role === 'bld' || b.role === 'tower');
+ const totalHp = scoring.reduce((s, b) => s + b.max, 0) || 1;
+ const occ = new Int16Array(W * H).fill(-1);
+ solid.forEach(b => { for (let y = b.y; y < b.y + b.fh; y++) for (let x = b.x; x < b.x + b.fw; x++) if (x >= 0 && y >= 0 && x < W && y < H) occ[y * W + x] = b.i; });
+ const core = items.find(b => b.role === 'core');
+ // spawn: one side of the map, chosen by the seed
+ const side = Math.floor(rand() * 4), units = [];
+ R.attackers.forEach((a, n) => { const t = Math.floor(rand() * 16) - 8 + W / 2, e = .3;
+  const p = side === 0 ? [t, e] : side === 1 ? [W - e, t] : side === 2 ? [t, H - e] : [e, t];
+  units.push({id:n, side:'a', look:a.look, x:r4(p[0]), y:r4(p[1]), hp:a.hp, max:a.hp, atk:a.atk, def:a.def || 0, speed:a.speed, range:a.range, fly:!!a.fly, prefer:a.prefer || 'any', wallMult:a.wallMult || 1, splash:a.splash || 0,
+   delay:Math.floor(n * 3), cd:Math.floor(rand() * 8), tgt:null, path:null, pi:0, mode:0, face:0, dealt:0, alive:true}); });
+ const posts = [];
+ const cx = core ? core.x + core.fw / 2 : W / 2, cy = core ? core.y + core.fh + .6 : H / 2;
+ R.defenders.forEach((d, n) => { const ang = n * 7 % 12, ox = ((ang % 4) - 1.5) * .7, oy = (Math.floor(ang / 4) - .5) * .7;
+  units.push({id:100 + n, side:'d', look:d.look, hero:!!d.hero, x:r4(cx + ox), y:r4(cy + oy), px:r4(cx + ox), py:r4(cy + oy), hp:d.hp, max:d.hp, atk:d.atk, def:d.def || 0, speed:d.speed, range:d.range,
+   cd:Math.floor(rand() * 8), delay:0, tgt:null, mode:2, face:2, dealt:0, alive:true}); });
+ const guard = R.guard || 0;
+ const dist2rect = (u, b) => { const dx = Math.max(b.x - u.x, 0, u.x - (b.x + b.fw)), dy = Math.max(b.y - u.y, 0, u.y - (b.y + b.fh)); return Math.sqrt(dx * dx + dy * dy); };
+ const dist = (a, b) => Math.sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
+ const hurt = (target, amount) => { const d = Math.max(1, amount * 60 / (60 + (target.def || 0))); target.hp = r4(target.hp - d); return d; };
+ // a walk from tile s to any tile within reach of building b: free tiles cost 1, standing walls cost 6 (they get broken), buildings block
+ function route(u, b){
+  const sx = Math.max(0, Math.min(W - 1, Math.floor(u.x))), sy = Math.max(0, Math.min(H - 1, Math.floor(u.y))), N = W * H;
+  const cost = new Float64Array(N).fill(1e9), prev = new Int32Array(N).fill(-1), done = new Uint8Array(N), heap = [];
+  const push = (c, k) => { heap.push([c, k]); let i = heap.length - 1; while (i){ const p = (i - 1) >> 1; if (heap[p][0] < heap[i][0] || (heap[p][0] === heap[i][0] && heap[p][1] <= heap[i][1])) break; [heap[p], heap[i]] = [heap[i], heap[p]]; i = p; } };
+  const pop = () => { const top = heap[0], last = heap.pop(); if (heap.length){ heap[0] = last; let i = 0; for (;;){ const l = 2 * i + 1, r = l + 1; let m = i;
+   if (l < heap.length && (heap[l][0] < heap[m][0] || (heap[l][0] === heap[m][0] && heap[l][1] < heap[m][1]))) m = l; if (r < heap.length && (heap[r][0] < heap[m][0] || (heap[r][0] === heap[m][0] && heap[r][1] < heap[m][1]))) m = r; if (m === i) break; [heap[m], heap[i]] = [heap[i], heap[m]]; i = m; } } return top; };
+  const reach = u.range + .5;
+  cost[sy * W + sx] = 0; push(0, sy * W + sx);
+  while (heap.length){ const [c, k] = pop(); if (done[k]) continue; done[k] = 1; const x = k % W, y = (k - x) / W;
+   if (dist2rect({x:x + .5, y:y + .5}, b) <= reach){ const out = []; let q = k; while (q !== -1){ out.push([q % W + .5, Math.floor(q / W) + .5]); q = prev[q]; } return out.reverse(); }
+   for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]){ const nx = x + dx, ny = y + dy; if (nx < 0 || ny < 0 || nx >= W || ny >= H) continue; const nk = ny * W + nx, o = occ[nk];
+    let step = 1; if (o >= 0){ const ob = items[o]; if (!(ob.hp > 0)) step = 1; else if (ob.role === 'wall') step = 6; else continue; }
+    if (c + step < cost[nk]){ cost[nk] = c + step; prev[nk] = k; push(c + step, nk); } } }
+  return null; }
+ function pickTarget(u){
+  let best = null, bd = 1e9;
+  const pool = scoring.filter(b => b.hp > 0), defs = pool.filter(b => b.role === 'tower');
+  const list = u.prefer === 'def' && defs.length ? defs : pool;
+  for (const b of list){ const d = dist2rect(u, b); if (d < bd - 1e-9){ bd = d; best = b; } }
+  return best; }
+ const frames = [], shots = [];
+ let t = 0, over = null;
+ const snap = () => { if (!opt.record) return; frames.push({u:units.map(u => [u.id, r4(u.x), r4(u.y), Math.max(0, Math.round(u.hp)), u.mode, u.face, u.alive && u.delay <= 0 ? 1 : 0]), b:items.map(b => Math.max(0, Math.round(b.hp))), s:shots.splice(0)}); };
+ const faceTo = (u, x, y) => { const dx = x - u.x, dy = y - u.y; u.face = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 1 : 3) : (dy > 0 ? 0 : 2); };
+ snap();
+ for (t = 1; t <= MAXT && !over; t++){
+  const live = units.filter(u => u.alive && u.delay <= 0);
+  const att = live.filter(u => u.side === 'a'), def = live.filter(u => u.side === 'd');
+  // towers fire at the nearest raider in range
+  for (const b of items){ if (b.role !== 'tower' || !(b.hp > 0)) continue; if (b.cd > 0){ b.cd--; continue; }
+   let tg = null, td = 1e9; for (const a of att){ const d = dist2rect(a, b); if (d <= b.range && d < td - 1e-9){ td = d; tg = a; } }
+   if (tg){ b.dealt += hurt(tg, b.dmg); b.cd = Math.round(b.rate / TICK); shots.push([b.x + b.fw / 2, b.y + b.fh / 2, tg.x, tg.y, 0]); } }
+  // traps hurt each raider once as they cross
+  for (const b of items){ if (b.role !== 'trap') continue; for (const a of att){ if (a.fly || b.hit.has(a.id)) continue; if (a.x >= b.x && a.x <= b.x + b.fw && a.y >= b.y && a.y <= b.y + b.fh){ b.hit.add(a.id); b.dealt += hurt(a, b.dmg); shots.push([a.x, a.y, a.x, a.y, 2]); } } }
+  // defenders: engage the nearest raider near the Hall, otherwise go back to post
+  for (const u of def){ let tg = null, td = 1e9; for (const a of att){ if (!(a.hp > 0)) continue; const d = dist(u, a), dp = Math.sqrt((a.x - u.px) * (a.x - u.px) + (a.y - u.py) * (a.y - u.py)); if (dp < 7 && d < td - 1e-9){ td = d; tg = a; } }
+   if (u.cd > 0) u.cd--;
+   if (tg){ faceTo(u, tg.x, tg.y);
+    if (td <= u.range + .35){ u.mode = 1; if (!u.cd){ u.dealt += hurt(tg, u.atk); u.cd = 8; if (u.range > 1.2) shots.push([u.x, u.y, tg.x, tg.y, 1]); } }
+    else { u.mode = 0; const k = Math.min(1, u.speed * TICK / td); u.x = r4(u.x + (tg.x - u.x) * k); u.y = r4(u.y + (tg.y - u.y) * k); } }
+   else { const d = Math.sqrt((u.px - u.x) * (u.px - u.x) + (u.py - u.y) * (u.py - u.y)); if (d > .05){ u.mode = 0; faceTo(u, u.px, u.py); const k = Math.min(1, u.speed * TICK / d); u.x = r4(u.x + (u.px - u.x) * k); u.y = r4(u.y + (u.py - u.y) * k); } else { u.mode = 2; u.face = 2; } } }
+  // raiders: fight a defender in their face, else walk to the target, breaking walls in the way
+  for (const u of att){ if (!(u.hp > 0)) continue; if (u.cd > 0) u.cd--;
+   let foe = null, fd = 1e9; for (const d of def){ if (!(d.hp > 0)) continue; const dd = dist(u, d); if (dd < Math.max(1.1, u.range + .3) && dd < fd - 1e-9){ fd = dd; foe = d; } }
+   if (foe){ faceTo(u, foe.x, foe.y); u.mode = 1; if (!u.cd){ u.dealt += hurt(foe, u.atk * (1 - guard)); u.cd = 8; if (u.range > 1.2) shots.push([u.x, u.y, foe.x, foe.y, 3]); } continue; }
+   if (!u.tgt || !(u.tgt.hp > 0)){ u.tgt = pickTarget(u); u.path = null; if (!u.tgt) continue; }
+   const b = u.tgt, d = dist2rect(u, b);
+   if (d <= u.range + .05){ u.mode = 1; faceTo(u, b.x + b.fw / 2, b.y + b.fh / 2); if (!u.cd){ const dmg = hurt(b, u.atk); u.dealt += dmg; u.cd = 8; if (u.range > 1.2) shots.push([u.x, u.y, b.x + b.fw / 2, b.y + b.fh / 2, 3]);
+     if (u.splash) for (const o of scoring){ if (o !== b && o.hp > 0 && dist2rect({x:b.x + b.fw / 2, y:b.y + b.fh / 2}, o) < u.splash) hurt(o, u.atk * .4); } } continue; }
+   if (u.fly){ u.mode = 0; const tx = b.x + b.fw / 2, ty = b.y + b.fh / 2, dd = Math.sqrt((tx - u.x) * (tx - u.x) + (ty - u.y) * (ty - u.y)); faceTo(u, tx, ty); const k = Math.min(1, u.speed * TICK / dd); u.x = r4(u.x + (tx - u.x) * k); u.y = r4(u.y + (ty - u.y) * k); continue; }
+   if (!u.path){ u.path = route(u, b); u.pi = 0; if (!u.path){ u.tgt = null; continue; } }
+   const n = u.path[Math.min(u.pi, u.path.length - 1)], o = occ[Math.floor(n[1]) * W + Math.floor(n[0])];
+   if (o >= 0 && items[o].hp > 0 && items[o].role === 'wall'){ const w = items[o]; u.mode = 1; faceTo(u, n[0], n[1]); if (!u.cd){ u.dealt += hurt(w, u.atk * u.wallMult); u.cd = 8; if (!(w.hp > 0)) u.path = null; } continue; }
+   const dd = Math.sqrt((n[0] - u.x) * (n[0] - u.x) + (n[1] - u.y) * (n[1] - u.y));
+   if (dd < .06){ u.pi++; if (u.pi >= u.path.length) u.path = null; continue; }
+   u.mode = 0; faceTo(u, n[0], n[1]); const k = Math.min(1, u.speed * TICK / dd); u.x = r4(u.x + (n[0] - u.x) * k); u.y = r4(u.y + (n[1] - u.y) * k); }
+  // deaths, arrivals
+  for (const u of units){ if (u.delay > 0){ u.delay--; continue; } if (u.alive && !(u.hp > 0)){ u.alive = false; u.hp = 0; } }
+  for (const b of items) if (b.hp < 0) b.hp = 0;
+  if (core && !(core.hp > 0)) over = 'core';
+  else if (!units.some(u => u.side === 'a' && (u.alive || u.delay > 0))) over = 'cleared';
+  snap();
+ }
+ const lost = scoring.reduce((s, b) => s + (b.max - Math.max(0, b.hp)), 0), pct = Math.round(100 * lost / totalHp);
+ const coreDown = !!core && !(core.hp > 0), win = !coreDown && pct < 50;
+ // the defender who did the most: a hero, a band, or a tower
+ let best = null; units.filter(u => u.side === 'd').forEach(u => { if (!best || u.dealt > best.dealt) best = {look:u.look, hero:u.hero, dealt:u.dealt}; });
+ items.filter(b => b.role === 'tower' || b.role === 'trap').forEach(b => { if (!best || b.dealt > best.dealt) best = {k:b.k, dealt:b.dealt}; });
+ const result = {simVer:SIM_VER, win, pct, coreDown, ticks:t - 1, ended:over || 'time', kills:units.filter(u => u.side === 'a' && !u.alive).length, raiders:R.attackers.length,
+  defendersLeft:units.filter(u => u.side === 'd' && u.alive).map(u => u.id - 100), defHp:units.filter(u => u.side === 'd').map(u => u.alive ? Math.round(u.hp) : 0), best:best ? {look:best.look, k:best.k, hero:best.hero, dealt:Math.round(best.dealt)} : null};
+ // a fingerprint of the whole fight, for the same-recipe-same-fight test
+ let h = 2166136261 >>> 0; const mix = v => { h = Math.imul(h ^ (Math.round(v * 1000) | 0), 16777619) >>> 0; };
+ units.forEach(u => { mix(u.x); mix(u.y); mix(u.hp); mix(u.dealt); }); items.forEach(b => mix(b.hp)); mix(t);
+ result.hash = h;
+ return {result, frames};
+}
+
+return {W, H, rng, path, reachable, validLayout, simRaid, SIM_VER, TICK, fpOf, cells, grid, fits, wallShape, starterLayout, centre};
 })();
 
 
@@ -1068,6 +1192,42 @@ function makeBand(type, n, vil, side, kit){
 function survivors(b){ return b.alive ? Math.max(0, Math.min(b.n, Math.ceil(b.hp / b.unitHp))) : 0; }
 const IDLE_CAP_H = 10;
 
+
+// ---------- v3.3 RAID RECIPE: turns the village, squad and horde into numbers the base engine fights with ----------
+// Everything the fight needs goes into the recipe, so a saved report replays the same after the game changes.
+const RAID_SHAPE = {
+ draugr:{speed:.85, range:.7, prefer:'any', wallMult:2.2, hpMul:1}, beast:{speed:1.5, range:.7, prefer:'any', wallMult:1, hpMul:.85},
+ bird:{speed:1.3, range:.7, prefer:'def', fly:true, wallMult:1, hpMul:.6}, wraith:{speed:1, range:2.4, prefer:'def', wallMult:1, hpMul:.85},
+ serpent:{speed:.75, range:.8, prefer:'any', wallMult:1.5, hpMul:1.3}, dragon:{speed:.9, range:2.6, prefer:'any', wallMult:1, hpMul:1.2, splash:1.6}};
+const RAID_TUNE = {pack:3, foeHp:1, foeAtk:1, heroAtk:2.6, heroHp:1.5, bldHp:1, towerDmg:1};
+const RANGED_LOOK = {bow:1, witch:1, raven:1, horn:1};
+// kb scales building life to the horde's hitting power, kh scales tower and trap damage to the horde's life,
+// so a raid feels the same at every realm and the village's own levels decide how well it holds
+function raidItem(it, vil, kb, kh){
+ kb = kb || 1; kh = kh || 1;
+ const f = BDEFS[it.k] ? BDEFS[it.k].fp : [1, 1], lv = vil[it.k] || 0, o = {key:it.key, k:it.k, x:it.x, y:it.y, fw:f[0], fh:f[1]};
+ if (!lv) return Object.assign(o, {role:'plot', hp:0});
+ if (it.k === 'hall') return Object.assign(o, {role:'core', hp:Math.round((1400 + 500 * lv) * kb)});
+ if (it.k === 'wall') return Object.assign(o, {role:'wall', hp:Math.round((160 + 110 * lv) * kb)});
+ if (it.k === 'tower') return Object.assign(o, {role:'tower', hp:Math.round((500 + 200 * lv) * kb), range:Math.round((4.6 + .3 * lv + .15 * (vil.lookout || 0)) * 100) / 100, dmg:Math.round((16 + 11 * lv) * kh), rate:1});
+ if (it.k === 'pits') return Object.assign(o, {role:'trap', hp:0, dmg:Math.round((30 + 12 * lv) * kh)});
+ return Object.assign(o, {role:'bld', hp:Math.round((450 + 170 * lv) * kb)});
+}
+// heroes: makeHero() objects; band: makeBand() or null; foes: makeFoe() list
+function raidRecipe(o){
+ const vil = o.vil, spd = 1.5 + .1 * (vil.lookout || 0), T = o.tune || RAID_TUNE;
+ const n = o.foes.length || 1, atkAvg = o.foes.reduce((a, f) => a + f.atk, 0) / n, hpAvg = o.foes.reduce((a, f) => a + f.max, 0) / n;
+ const pack = o.pack || T.pack, kb = atkAvg / 30 * T.bldHp, kh = hpAvg / pack / 90 * T.towerDmg; // kh: per raider life, so a trap or arrow hurts the same share at every realm
+ const items = o.layout.items.map((it, i) => raidItem(Object.assign({key:i}, it), vil, kb, kh));
+ const attackers = [];
+ o.foes.forEach(f => { const S = RAID_SHAPE[f.shape] || RAID_SHAPE.draugr, n = o.pack || T.pack;
+  for (let i = 0; i < n; i++) attackers.push({look:'r_' + (RAID_SHAPE[f.shape] ? f.shape : 'draugr'), hp:Math.round(f.max * S.hpMul * T.foeHp / n * (f.affix === 'armored' ? 1.3 : 1)), atk:Math.round(f.atk * T.foeAtk * (f.affix === 'frenzied' ? 1.2 : 1)), def:f.def,
+   speed:S.speed * (f.affix === 'frenzied' ? 1.2 : 1), range:S.range, fly:!!S.fly, prefer:S.prefer, wallMult:S.wallMult, splash:S.splash || 0, elite:!!f.affix}); });
+ const defenders = o.heroes.map(h => ({look:'h_' + h.look, id:h.id, hero:true, hp:Math.round(h.max * T.heroHp), atk:Math.round(h.atk * T.heroAtk), def:h.def, speed:spd, range:RANGED_LOOK[h.look] ? 2.6 : .9}));
+ if (o.band && o.band.n > 0){ const k = Math.min(8, o.band.n);
+  for (let i = 0; i < k; i++) defenders.push({look:'t_' + o.band.band, band:o.band.band, hp:Math.round(o.band.hp / k), atk:Math.round(o.band.atk / k * 1.4), def:o.band.def, speed:spd + .1, range:o.band.band === 'bow' ? 2.6 : .9}); }
+ return {v:1, simVer:1, seed:o.seed >>> 0, items, attackers, defenders, guard:Math.round(.06 * (vil.wall || 0) * 100) / 100, unitHp:o.band ? o.band.unitHp : 0, bandN:o.band ? o.band.n : 0};
+}
 // ---------- BATTLE ----------
 function hasBuff(u, k){ return u.buffs.some(b => b.k === k); }
 function buffVal(u, k){ return u.buffs.filter(b => b.k === k).reduce((a, b) => a + b.v, 0); }
@@ -1266,7 +1426,7 @@ function loot(r, s, raid){
  return o;
 }
 
-return {RARITY, GEAR_KINDS, GEAR_TIER, GEAR_FX, FX_CAP, makeItem, itemName, itemFx, gearFx, craftCost, upgradeCost, sellValue, MAX_PLUS, KIT_MAX, kitCost, bmax, mineRate, runeRate, campCap, TROOPS, bandStats, makeBand, survivors, PASSIVES, TRICKS, AFFIXES, makeElite, sprinkleElites, RELICS, relicFx, WARRIORS, SKILLS, REALMS, STAGES, BUILDINGS, BDEFS, UNLOCKS, unlocked, STARTER, VMAX, IDLE_CAP_H, Battle, makeHero, makeFoe, encounter, loot, levelCost, levelCap, buildCost, idleRate, power, levelMult, realmFactor, hasBuff, pick};
+return {RARITY, GEAR_KINDS, GEAR_TIER, GEAR_FX, FX_CAP, makeItem, itemName, itemFx, gearFx, craftCost, upgradeCost, sellValue, MAX_PLUS, KIT_MAX, kitCost, bmax, mineRate, runeRate, campCap, TROOPS, bandStats, makeBand, survivors, PASSIVES, TRICKS, AFFIXES, makeElite, sprinkleElites, RELICS, relicFx, WARRIORS, SKILLS, REALMS, STAGES, BUILDINGS, BDEFS, UNLOCKS, unlocked, STARTER, RAID_SHAPE, RAID_TUNE, raidItem, raidRecipe, VMAX, IDLE_CAP_H, Battle, makeHero, makeFoe, encounter, loot, levelCost, levelCap, buildCost, idleRate, power, levelMult, realmFactor, hasBuff, pick};
 })();
 
 
@@ -1768,9 +1928,13 @@ function wallBlocks(lv, shape){
 const FIG = {  // [tunic, legs, head-top, tool]
  elder:[27, 23, 16, 'staff'], smith:[29, 23, 26, 'hammer'], miner:[29, 23, 26, 'pick'], priest:[28, 28, 28, 'none'], brewer:[31, 23, 26, 'keg'],
  healer:[31, 23, 26, 'herb'], scout:[30, 23, 30, 'bow'], trainer:[30, 23, 13, 'spear'], guard:[30, 13, 13, 'spear'], villager:[27, 23, 26, 'none'],
- spear:[30, 13, 13, 'spear'], bow:[31, 23, 30, 'bow'], axe:[29, 13, 13, 'axe'], shield:[30, 13, 13, 'shield']
+ spear:[30, 13, 13, 'spear'], bow:[31, 23, 30, 'bow'], axe:[29, 13, 13, 'axe'], shield:[30, 13, 13, 'shield'],
+ // v3.3 defenders in a raid: your warriors wear crimson with a gold crown band, troops keep their kit
+ h_spear:[10, 13, 9, 'spear'], h_axe:[10, 23, 27, 'axe'], h_witch:[28, 28, 9, 'none'], h_bow:[10, 23, 9, 'bow'], h_raven:[10, 26, 9, 'none'],
+ h_horn:[10, 23, 9, 'staff'], h_hammer:[10, 13, 9, 'hammer'], h_drowned:[10, 13, 9, 'spear'], t_spear:[30, 13, 13, 'spear'], t_bow:[31, 23, 30, 'bow'], t_berserk:[29, 13, 27, 'axe']
 };
 function figure(kind, frame, mode, torch){
+ if (kind && kind.slice(0, 2) === 'r_') return raider(kind.slice(2), frame, mode);
  const f = FIG[kind] || FIG.villager, B = [], box = (x, y, z, w, d, h, m) => B.push([x, y, z, w, d, h, m]);
  const walk = mode === 'walk', sw = walk ? [0, .05, 0, -.05][frame & 3] : 0, work = mode === 'work', up = work && (frame & 2);
  const robe = kind === 'priest';
@@ -1799,10 +1963,50 @@ function figure(kind, frame, mode, torch){
  if (torch){ box(-.14, .02, .2, .025, .025, .2, 23); box(-.15, .01, .4, .045, .045, .05, 11); }
  const K = 1.35; return B.map(b => [b[0] * K, b[1] * K, b[2] * K, b[3] * K, b[4] * K, b[5] * K, b[6]]);  // a touch bigger than life so they read on a phone
 }
+// the raiding dead, as blocks: pale grave-flesh, rags, teal eye-glow
+function raider(shape, frame, mode){
+ const B = [], box = (x, y, z, w, d, h, m) => B.push([x, y, z, w, d, h, m]), walk = mode === 'walk', hit = mode === 'work' && (frame & 2);
+ const sw = walk ? [0, .05, 0, -.05][frame & 3] : 0, skin = 16, rag = 13, eye = 12;
+ if (shape === 'beast'){ // a gaunt wolf on four legs
+  box(-.07, -.17, .14, .14, .34, .13, 26); box(-.06, .14 + (hit ? .04 : 0), .2, .12, .13, .1, 26); box(-.05, .25 + (hit ? .04 : 0), .2, .1, .07, .05, 26);
+  box(-.04, .2 + (hit ? .04 : 0), .27, .03, .03, .02, eye); box(.01, .2 + (hit ? .04 : 0), .27, .03, .03, .02, eye); box(-.05, .17, .3, .03, .03, .05, 26); box(.02, .17, .3, .03, .03, .05, 26);
+  [[-.07, .1], [.03, .1], [-.07, -.15], [.03, -.15]].forEach(([x, y], i) => box(x, y + (i % 2 ? sw : -sw), 0, .04, .04, .15, 26)); box(-.02, -.24, .2, .04, .09, .03, 26);
+ } else if (shape === 'bird'){ // a corpse crow, flying high
+  const fl = [0, .06, .1, .06][frame & 3]; box(-.05, -.08, .9, .1, .18, .08, 18); box(-.03, .1, .93, .06, .06, .05, 18); box(-.01, .15, .94, .02, .05, .02, 9);
+  box(-.22, -.04, .94 + fl, .17, .1, .02, 18); box(.05, -.04, .94 + fl, .17, .1, .02, 18); box(-.02, .12, .97, .02, .02, .02, eye);
+ } else if (shape === 'wraith'){ // a floating shade
+  const bob = [0, .02, .04, .02][frame & 3]; box(-.09, -.06, .06 + bob, .18, .12, .3, 18); box(-.11, -.07, .02 + bob, .22, .14, .06, 18);
+  box(-.06, -.05, .36 + bob, .12, .1, .1, 18); box(-.035, .045, .39 + bob, .025, .01, .02, eye); box(.01, .045, .39 + bob, .025, .01, .02, eye);
+  box(.09, -.02, .2 + bob + (hit ? .08 : 0), .04, .1, .03, 18); if (hit) box(.1, .08, .3 + bob, .05, .05, .05, eye);
+ } else if (shape === 'serpent'){ // a long low worm
+  for (let i = 0; i < 6; i++){ const off = walk ? [0, .03, 0, -.03][(frame + i) & 3] : 0; box(-.06 + off, -.3 + i * .1, 0, .12, .1, .1 - i * .006, i % 2 ? 31 : 26); }
+  box(-.07, .3 + (hit ? .05 : 0), .02, .14, .12, .12, 26); box(-.05, .41 + (hit ? .05 : 0), .1, .03, .01, .02, eye); box(.02, .41 + (hit ? .05 : 0), .1, .03, .01, .02, eye);
+ } else if (shape === 'dragon'){ // a spawn of Nidhogg, wings half open
+  const fl = [0, .05, .08, .05][frame & 3]; box(-.1, -.2, .14, .2, .4, .16, 23); box(-.06, .18, .22, .12, .16, .11, 23); box(-.04, .32, .24, .08, .08, .06, 23);
+  box(-.04, .3, .3, .02, .02, .02, eye); box(.02, .3, .3, .02, .02, .02, eye); box(-.03, -.34, .18, .06, .16, .05, 23);
+  box(-.36, -.1, .3 + fl, .26, .2, .02, 28); box(.1, -.1, .3 + fl, .26, .2, .02, 28);
+  [[-.09, .1], [.05, .1], [-.09, -.15], [.05, -.15]].forEach(([x, y], i) => box(x, y + (i % 2 ? sw : -sw), 0, .05, .05, .15, 23));
+  if (hit) box(-.03, .4, .26, .06, .14, .05, 11);
+ } else { // draugr: a walking corpse in rags
+  box(-.07, -.03 + sw, 0, .055, .06, .15, rag); box(.015, -.03 - sw, 0, .055, .06, .15, rag);
+  box(-.085, -.055, .14, .17, .11, .17, rag); box(-.05, -.045, .31, .1, .09, .09, skin);
+  box(-.035, .045, .34, .025, .01, .02, eye); box(.01, .045, .34, .025, .01, .02, eye);
+  box(-.12, -.03 + (hit ? .06 : 0), .2 + (hit ? .06 : 0), .035, .14, .035, skin); box(.085, -.03 + (hit ? .06 : 0), .22, .035, .14, .035, skin);
+ }
+ const K = 1.35; return B.map(b => [b[0] * K, b[1] * K, b[2] * K, b[3] * K, b[4] * K, b[5] * K, b[6]]);
+}
+// a building torn down in a raid: scattered stone and charred beams
+function rubble(fw, fh){
+ const B = []; let s = fw * 31 + fh * 7; const r = () => { s = (s * 9301 + 49297) % 233280; return s / 233280; };
+ B.push([.15, .15, 0, fw - .3, fh - .3, .06, 8]);
+ for (let i = 0; i < 6 + fw * 3; i++) B.push([.2 + r() * (fw - .6), .2 + r() * (fh - .6), .06, .12 + r() * .25, .12 + r() * .25, .05 + r() * .18, r() < .5 ? 7 : 23]);
+ for (let i = 0; i < 3; i++) B.push([.3 + r() * (fw - .9), .3 + r() * (fh - .9), .1, .6, .07, .07, 23]);
+ return {boxes:B, lights:[], smoke:[[fw / 2, fh / 2, .3]], top:.4};
+}
 // where a worker stands at each building (local tiles) and which job they do there
 const WORK = {hall:[2, 3.35, 'elder'], forge:[2.1, 1.75, 'smith'], mine:[1.1, 2.6, 'miner'], altar:[1.5, 1.05, 'priest'], mead:[1.0, 2.75, 'brewer'],
  infirmary:[1.3, 2.7, 'healer'], lookout:[1.5, 2.65, 'scout'], barracks:[1.95, 2.75, 'trainer']};
-return {ICON, sceneSVG, heroArt, foeArt, raven, seer, band, building, villageMap, SLOTS, item, MATS, blocks, wallBlocks, figure, WORK};
+return {ICON, sceneSVG, heroArt, foeArt, raven, seer, band, building, villageMap, SLOTS, item, MATS, blocks, wallBlocks, figure, WORK, rubble};
 })();
 
 // ===== RAVENMARROW UI =====
@@ -1810,6 +2014,7 @@ const VERSION = document.querySelector('meta[name="build"]').content; // e.g. "1
 const BUILD_DATE = document.querySelector('meta[name="build-date"]').content;
 // Newest first. Every update adds an entry; it shows once after the update lands.
 const CHANGELOG = [
+ {v:'3.3', d:'Nov 18 2026', notes:['Night Raids are fought on your village now. The dead come out of the forest and go for your buildings; Archer Towers shoot, Spike Pits wound, and your squad and Garrison fight by the Hall. Where you put things matters.', 'Watch it live, or let it play out and see the result. Every raid is saved as a battle report you can watch later at 1x, 2x or 4x, or skip.', 'Losing no longer empties your coffers: they carry off a share of what is waiting to be collected, more the deeper they get.', 'Extra towers and pits from your Hall all fight now.']},
  {v:'3.2', d:'Nov 18 2026', notes:['Edit layout: drag your buildings anywhere inside the valley, draw and erase your palisade, and place extra Archer Towers and Spike Pits as your Hall unlocks them.', 'Green means a building fits, red means it does not. Done saves your layout, Cancel puts everything back.', 'Leave raiders a way in: the game will not let you wall the Hall in completely.']},
  {v:'3.1', d:'Nov 18 2026', notes:['Smoother map controls: the ground stays under your finger as you drag, pinch zooms toward your fingers, and a double-tap on open ground shows the whole village again.', 'Your village has people now. Villagers walk to work and back: the smith hammers at the forge, miners dig, the priest tends the altar. More move in as your Hall grows.', 'Guards patrol inside the palisade, and your troops drill in front of the War Camp.', 'Upgrade a building and watch it go up: scaffolding, builders and the new level rising from the ground.', 'After dark, fewer folk are out, and the ones who are carry torches.']},
  {v:'3.0', d:'Nov 18 2026', notes:['Your village is rebuilt in blocks. Every building looks different at every level, so you can watch it grow from sod huts to a gold-trimmed longhouse.', 'Drag to look around, pinch to zoom, and tap any building to build or upgrade it.', 'The village follows your real clock: grey daylight, then torches and a blood moon after dark.']},
@@ -1911,7 +2116,7 @@ const SAVE_V = 1;
 function freshSave(){
  return {v:SAVE_V, owned:{sigrun:1, bjorn:1, aslaug:1}, squad:['sigrun','bjorn','aslaug'],
   vil:{hall:1, mead:0, mine:0, lookout:0, forge:0, altar:0, barracks:0, camp:0, infirmary:0, wall:0, tower:0, pits:0}, silver:0, iron:0, runes:0, gear:{items:[], eq:{}}, kit:{spear:0, bow:0, berserk:0},
-  prod:{ironAt:Date.now(), runeAt:Date.now()}, army:{skirmish:{type:'spear', n:0}, garrison:{type:'spear', n:0}}, night:{next:0, wins:0, losses:0},
+  prod:{ironAt:Date.now(), runeAt:Date.now()}, army:{skirmish:{type:'spear', n:0}, garrison:{type:'spear', n:0}}, night:{next:0, wins:0, losses:0}, reports:[],
   wb:{day:'', used:0, best:0, total:0, wk:'', wkPts:0, wkBest:0, wkTries:0, claimed:''}, arena:{day:'', used:0, rating:1000, wins:0, losses:0}, profile:{name:'', group:''},
   cleared:RM.REALMS.map(() => 0), raid:{best:0, runs:0, clears:0}, idleAt:Date.now(),
   set:{sfx:true, music:false, auto:false, speed:1}, tut:{done:false, stage:0}, seenVer:VERSION,
@@ -2295,6 +2500,7 @@ const Help = (() => {
   ['.node', el => { const r = +el.dataset.r, s = +el.dataset.s, R = RM.REALMS[r]; const boss = el.classList.contains('boss'); return {t:boss ? R.boss.n : R.name + ', fight ' + (s + 1), b:[boss ? 'The realm\'s boss. Beat it to open the next realm and win a relic.' : 'A fight in ' + R.name + '. Win it to move along the path.', el.classList.contains('lock') ? '<b>Locked.</b> Clear the fight before it first.' : el.classList.contains('done') ? 'Cleared. Replay it any time for more loot.' : 'Tap it to see the enemies and fight.']}; }],
   ['.wcard', el => { const w = wdef(el.dataset.id), own = S.owned[w.id]; return {t:w.name + ', ' + w.title, b:[w.role ? '<b>' + w.role + '.</b> ' + (w.lore || '') : (w.lore || ''), own ? 'Level ' + own + '. Tap to see skills, level up, or give a relic.' : 'Not recruited yet. Costs ' + w.cost + ' bone runes.']}; }],
   ['#vmap .bld', el => bldCard(el.dataset.b)],
+  ['#bhud', () => ({t:'Raid replay', b:['The raid plays out exactly as it happened. <b>1x 2x 4x</b> change the speed, <b>Skip</b> jumps to the end.', 'Drag the map to look around; the camera stops following the fight once you do.']})],
   ['#vEditBtn', () => ({t:'Edit layout', b:['Move your buildings, draw your walls and place extra towers and pits. Where things stand will matter when the dead raid you.']})],
   ['#vedit .vmodes', () => ({t:'Edit tools', b:['<b>Move</b>: drag a building. Green means it fits, red means it does not.', '<b>Draw walls</b>: drag along the ground to lay palisade. <b>Erase walls</b>: drag over pieces to pull them up.', 'Two fingers always move the map.']})],
   ['#vmap .vilcv', () => window.VIL && VIL.lastPick && Help.isOn() && !vEdit ? bldCard(VIL.lastPick) : null],  // hold-to-explain stays off the map: a slow start to a drag must not pop a card
@@ -2627,7 +2833,7 @@ function go(tab){
  TAB = tab; $$('.tab').forEach(t => t.classList.toggle('on', t.dataset.tab === tab));
  setBG(tab === 'village' ? 0 : frontier(), tab === 'village', tab !== 'village'); // menus cover the sky, so no weather there
  ({saga:renderSaga, warriors:renderWarriors, village:renderVillage, raid:renderWar})[tab]();
- renderTop(); $('#panel').scrollTop = 0; Coach.emit('tab:' + tab); if (tab !== 'village' && vEdit){ vEdit = null; if (window.VIL) VIL.edit(null); }
+ renderTop(); $('#panel').scrollTop = 0; Coach.emit('tab:' + tab); if (tab !== 'village' && vBattle){ const d = vBattle.done; vBattle = null; if (window.VIL) VIL.battle(null); } if (tab !== 'village' && vEdit){ vEdit = null; if (window.VIL) VIL.edit(null); }
 }
 function renderSaga(){
  const blessed = S.daily.last === today();
@@ -2783,9 +2989,10 @@ function villageScene(){
  const L = vEdit ? vEdit.L : S.layout, parts = [];
  L.items.forEach((it, idx) => {
   const f = BASE.fpOf(RM.BDEFS, it.k), lv = S.vil[it.k] || 0;
-  const bl = it.k === 'wall' ? ART.wallBlocks(lv, BASE.wallShape(L, it.x, it.y)) : ART.blocks(it.k, lv);
+  const ruin = vBattle && vBattle.dead.has(idx);
+  const bl = ruin ? (it.k === 'wall' ? {boxes:[[.35, .35, 0, .3, .3, .1, 23]], lights:[], smoke:[], top:.2} : ART.rubble(f[0], f[1])) : it.k === 'wall' ? ART.wallBlocks(lv, BASE.wallShape(vBattle ? {items:L.items.filter((w, j) => !vBattle.dead.has(j))} : L, it.x, it.y)) : ART.blocks(it.k, lv);
   const p = {id:it.k, key:idx, x:it.x, y:it.y, fw:f[0], fh:f[1], boxes:bl.boxes, lights:bl.lights, smoke:bl.smoke, top:bl.top, tap:true};
-  if (it.k !== 'wall'){ const up = canUpgrade(it.k);
+  if (it.k !== 'wall' && !vBattle){ const up = canUpgrade(it.k);
    p.label = `<i class="lvb${up ? ' up' : ''}">${lv || '+'}</i>${up ? '<b class="upa"></b>' : ''}<span>${BNAME[it.k]}</span>`; p.labelCls = 'bld' + (lv ? '' : ' empty'); }
   parts.push(p);
  });
@@ -2793,7 +3000,7 @@ function villageScene(){
  if (Whisper.claws()){ const ws = parts.filter(p => p.id === 'wall'); [.2, .5, .8].forEach(f => { const w = ws[Math.floor(f * ws.length)]; if (w && S.vil.wall) w.boxes = w.boxes.concat([[.32, .9, .18, .05, .05, .42, 22], [.46, .9, .14, .05, .05, .48, 22], [.6, .9, .2, .05, .05, .4, 22]]); }); }
  if (vilRaise){ const p = parts.find(x => x.id === vilRaise); if (p) p.anim = true; vilRaise = null; }
  const g = villagePaths(L);
- return {w:BASE.W, h:BASE.H, ring:RM.STARTER.ring, path:g.path, busy:g.busy, parts, actors:vEdit ? [] : villageActors(L)};
+ return {w:BASE.W, h:BASE.H, ring:RM.STARTER.ring, path:g.path, busy:g.busy, parts, actors:vEdit || vBattle ? [] : villageActors(L)};
 }
 let vilRaise = null;
 // ---------- v3.2 EDIT MODE: lay out your own village ----------
@@ -2835,7 +3042,8 @@ function editDone(){
 function editCancel(){ vEdit = null; if (window.VIL) VIL.edit(null); renderVillage(); }
 function editBar(){
  const el = $('#vedit'); if (!el) return;
- if (!vEdit){ el.innerHTML = `<button class="btn small ghost" id="vEditBtn">Edit layout</button>`; $('#vEditBtn').onclick = () => { sfx('tap'); editStart(); }; return; }
+ if (vBattle){ el.innerHTML = ''; return; }
+ if (!vEdit){ el.innerHTML = `<button class="btn small ghost" id="vEditBtn">Edit layout</button>${(S.reports || []).length ? ' <button class="btn small ghost" id="vRepBtn">Battle reports</button>' : ''}`; const rb = $('#vRepBtn'); if (rb) rb.onclick = () => { sfx('tap'); reportsSheet(); }; $('#vEditBtn').onclick = () => { sfx('tap'); editStart(); }; return; }
  const c = editCounts(), max = layoutMax(), m = vEdit.mode;
  const extras = ['tower', 'pits'].filter(k => (c[k] || 0) < max[k]).map(k => `<button class="vtray" data-add="${k}">+ ${BNAME[k]} <small>${max[k] - (c[k] || 0)} left</small></button>`).join('');
  el.innerHTML = `<div class="vmodes"><button data-m="move" class="${m === 'move' ? 'on' : ''}">Move</button><button data-m="paint" class="${m === 'paint' ? 'on' : ''}">Draw walls</button><button data-m="erase" class="${m === 'erase' ? 'on' : ''}">Erase walls</button></div>
@@ -2873,7 +3081,7 @@ function villageActors(L){
  // troops drill in front of the War Camp
  const camp = at('camp'); if (camp && (S.vil.camp || 0) > 0){
   const ar = S.army || {}, sk = (ar.skirmish && ar.skirmish.n) || 0, ga = (ar.garrison && ar.garrison.n) || 0, tot = Math.min(12, sk + ga);
-  const kindOf = t => ({spear:'spear', bow:'bow', axe:'axe', shield:'shield'})[t] || 'spear';
+  const kindOf = t => ({spear:'spear', bow:'bow', berserk:'axe'})[t] || 'spear';
   for (let k = 0; k < tot; k++){ const row = Math.floor(k / 6), col = k % 6, type = k < Math.min(sk, 12) ? (ar.skirmish || {}).type : (ar.garrison || {}).type;
    const x = camp.x - .3 + col * .6, y = camp.y + 3.35 + row * .55; if (gr.at(Math.floor(x), Math.floor(y)) > -1) continue;
    out.push({route:[[x, y, 0]], fig:fig(kindOf(type)), drill:true, faceAt:2}); }
@@ -3029,10 +3237,17 @@ function nightState(){
  return {left:hh ? hh + 'h ' + mm + 'm' : mm + 'm'};
 }
 function nightRealm(){ return Math.max(0, raidRealm()); }
+// v3.3: raids are fought on the map. Three kinds of the dead, each a pack; strength per Hall level from raidsweep.js (about 70% held with a sensible layout)
+const HORDE_K = [2.5, 3.0, 3.2, 1.25, 1.45];
+function nightPack(){ return 3 + Math.floor(((S.vil.hall || 1) - 1) / 2); }
 function nightHorde(){
- const r = nightRealm(), hall = S.vil.hall || 1, n = hall >= 4 ? 4 : 3, list = [];
- for (let i = 0; i < n; i++) list.push(RM.makeFoe(r, 2, RM.REALMS[r].foes[i % 3], false, 0.85 + 0.08 * hall));
+ const r = nightRealm(), hall = Math.max(1, Math.min(5, S.vil.hall || 1)), list = [];
+ for (let i = 0; i < 3; i++) list.push(RM.makeFoe(r, 2, RM.REALMS[r].foes[i % 3], false, (0.85 + 0.08 * hall) * HORDE_K[hall - 1]));
  return RM.sprinkleElites(list, Math.max(1, r), 0.3);
+}
+function nightRecipe(){
+ const heroes = S.squad.map(id => RM.makeHero(id, S.owned[id], S.vil, S.equip[id], gfx(id)));
+ return RM.raidRecipe({vil:Object.assign({}, S.vil), layout:S.layout, heroes, band:bandFor('garrison'), foes:nightHorde(), seed:(Date.now() ^ Math.floor(Math.random() * 4294967295)) >>> 0, pack:nightPack()});
 }
 function nightSheet(){
  const st = nightState(), r = nightRealm(), L = nightLoot();
@@ -3040,17 +3255,99 @@ function nightSheet(){
  sheet(`<button class="btn small close" id="xs">Close</button><div class="bsheet"><div class="bart nightart">${ART.foeArt('draugr', RM.REALMS[r].eye, false, RM.REALMS[r].moon)}${ART.foeArt('draugr', RM.REALMS[r].eye, false, RM.REALMS[r].moon)}</div>
   <h3>Night Raid</h3><p class="bline">${st.locked ? 'Once the Barrow-King falls, the dead start coming for your village at night.' : 'The dead of ' + RM.REALMS[r].name.replace('The ', 'the ') + ' come for your village every 8 hours.'}</p>
   <div class="defgrid"><div><small>DEFENDERS</small><b>Your squad${gar.n ? ' + ' + gar.n + ' ' + RM.TROOPS.find(x => x.id === gar.type).n : ''}</b></div><div><small>WALLS AND TOWERS</small><b>${fortChips(myFort()) || 'None built'}</b></div></div>
-  <p class="lockmsg">Win: ${costHTML(L)}. Lose: they empty your coffers.</p>
-  ${st.locked ? '' : st.ready ? '<button class="btn blood wide" id="defend">Defend the village</button>' : `<button class="btn wide" disabled>Next raid in ${st.left}</button>`}</div>`);
+  <p class="lockmsg">The dead come in from the forest and go for your buildings. Towers shoot, pits wound, your squad and Garrison fight by the Hall. Win: ${costHTML(L)}. Lose: they carry off part of your uncollected coffers, more the deeper they get.</p>
+  ${st.locked ? '' : st.ready ? '<div class="row" style="gap:8px"><button class="btn blood" style="flex:1" id="defend">Watch it</button><button class="btn" style="flex:1" id="defendQ">Let it play out</button></div>' : `<button class="btn wide" disabled>Next raid in ${st.left}</button>`}
+  ${(S.reports || []).length ? '<button class="btn small ghost wide" id="reportsBtn" style="margin-top:8px">Battle reports</button>' : ''}</div>`);
  $('#xs').onclick = closeSheet;
- const d = $('#defend'); if (d) d.onclick = () => { closeSheet(); startNight(); };
+ const d = $('#defend'); if (d) d.onclick = () => { closeSheet(); startNight(true); };
+ const dq = $('#defendQ'); if (dq) dq.onclick = () => { closeSheet(); startNight(false); };
+ const rb = $('#reportsBtn'); if (rb) rb.onclick = () => { sfx('tap'); reportsSheet(); };
 }
 function nightLoot(){ const r = nightRealm(), L = RM.loot(r, 2); return {silver:Math.round(L.silver * 1.6), iron:Math.round(L.iron * 1.6), runes:4 + 2 * r}; }
-function startNight(){
- CTX = {type:'night', r:nightRealm()};
- const h = heroesFor(false); const g = bandFor('garrison'); if (g) h.push(g);
- CTX.band = g; CTX.bandKey = 'garrison';
- runFight(h, nightHorde(), {fort:myFort()});
+function startNight(watch){
+ if (!nightState().ready) return;
+ const R = nightRecipe(), out = BASE.simRaid(R).result, rep = settleNight(R, out);
+ if (watch) playReplay(rep, () => nightResult(rep, false)); else nightResult(rep, true);
+}
+// apply a raid's outcome: loot or losses, Garrison survivors, timers, the report
+function settleNight(R, out){
+ const r = nightRealm(), now = Date.now();
+ S.night.next = now + NIGHT_MS;
+ let loot = null, lost = null, bandMsg = '';
+ // Garrison: survivors from the band's life left, the Infirmary saves some of the fallen
+ const g = S.army.garrison;
+ if (R.bandN && R.unitHp){ const heroes = R.defenders.filter(d => d.hero).length, left = out.defHp.slice(heroes).reduce((a, b) => a + b, 0), alive = Math.min(g.n, Math.ceil(left / R.unitHp));
+  const fell = Math.max(0, g.n - alive), saved = Math.min(fell, Math.floor(fell * .15 * (S.vil.infirmary || 0) + (fell && S.vil.infirmary ? .5 : 0)));
+  g.n = alive + saved; if (fell) bandMsg = RM.TROOPS.find(x => x.id === g.type).n + ': ' + fell + ' fell' + (saved ? ', ' + saved + ' saved by the Infirmary' : '') + '. ' + g.n + ' left.'; }
+ if (out.win){ loot = nightLoot(); S.silver += loot.silver; S.iron += loot.iron; S.runes += loot.runes; S.night.wins++; loot.item = dropItem(Math.max(0, raidRealm()), 0.35, 1); }
+ else { // they carry off part of what is waiting to be collected: as much as the share of the village they tore down, never less than half
+  const f = out.coreDown ? 1 : Math.max(.5, out.pct / 100), before = idleAll();
+  const keep = t => now - (now - t) * (1 - f);
+  S.idleAt = keep(S.idleAt); S.prod.ironAt = keep(S.prod.ironAt); S.prod.runeAt = keep(S.prod.runeAt);
+  const after = idleAll(); lost = {silver:before.silver - after.silver, iron:before.iron - after.iron, runes:before.runes - after.runes, pct:Math.round(f * 100)}; S.night.losses++; }
+ const rep = {at:now, kind:'night', by:'The dead of ' + RM.REALMS[r].name.replace('The ', 'the '), recipe:R, result:out, loot:loot ? {silver:loot.silver, iron:loot.iron, runes:loot.runes} : null, lost, band:bandMsg, item:loot && loot.item ? loot.item : null};
+ S.reports = [rep].concat(S.reports || []).slice(0, 10);
+ save(); checkDeeds();
+ return rep;
+}
+function bestLine(b){
+ if (!b) return '';
+ if (b.k) return (BNAME[b.k] || b.k) + ', ' + fmt(b.dealt) + ' damage';
+ const w = RM.WARRIORS.find(x => 'h_' + x.look === b.look);
+ return (w && b.hero ? w.name : b.look && b.look.startsWith('t_') ? RM.TROOPS.find(t => 't_' + t.id === b.look).n : 'Your defenders') + ', ' + fmt(b.dealt) + ' damage';
+}
+function nightResult(rep, offerWatch){
+ const o = rep.result, win = o.win;
+ sfx(win ? 'win' : 'lose'); setTimeout(() => Vision.trigger(win ? 'hold' : 'fall'), 300);
+ sheet(`<div class="result"><div class="lockmsg">${win ? 'The gates held' : 'The dead got through'}</div><div class="big" ${win ? '' : 'style="color:#a99"'}>${win ? 'Village Held' : 'Overrun'}</div>
+  <p>${win ? 'The night is quiet again.' : o.coreDown ? 'They tore down the Hall and took everything waiting to be collected.' : 'They tore down ' + o.pct + '% of the village and carried off ' + rep.lost.pct + '% of your uncollected coffers.'}</p>
+  <div class="defgrid"><div><small>DAMAGE</small><b>${o.pct}%</b></div><div><small>DEAD SLAIN</small><b>${o.kills} / ${o.raiders}</b></div></div>
+  ${o.best ? `<p class="lockmsg">Best defender: <b style="color:#f0c060">${bestLine(o.best)}</b></p>` : ''}
+  ${rep.loot ? `<div class="loot">${lootHTML(Object.assign({}, rep.loot, rep.item ? {item:rep.item} : {}))}</div>` : rep.lost && (rep.lost.silver || rep.lost.iron || rep.lost.runes) ? `<p class="lockmsg">Lost: ${costHTML(rep.lost)}</p>` : ''}
+  ${rep.band ? `<p class="lockmsg">${rep.band}</p>` : ''}
+  <div class="row" style="justify-content:center;gap:8px">${offerWatch ? '<button class="btn" id="rWatch">Watch the raid</button>' : ''}<button class="btn blood" id="rDone">Back to the village</button></div></div>`);
+ $('#veil')._lock = true;
+ const w = $('#rWatch'); if (w) w.onclick = () => { closeSheet(); playReplay(rep, () => toHub('village')); };
+ $('#rDone').onclick = () => { closeSheet(); toHub('village'); };
+}
+// ---------- BATTLE REPORTS + REPLAY (v3.3) ----------
+function reportsSheet(){
+ const R = S.reports || [];
+ const rows = R.map((rp, i) => { const o = rp.result, old = rp.recipe.simVer !== BASE.SIM_VER, d = new Date(rp.at);
+  return `<div class="repcard ${o.win ? 'won' : 'lost'}"><div class="row" style="justify-content:space-between"><b>${o.win ? 'Held' : 'Overrun'}</b><small>${d.toLocaleDateString(undefined, {month:'short', day:'numeric'})} ${d.toLocaleTimeString(undefined, {hour:'numeric', minute:'2-digit'})}</small></div>
+   <div class="lockmsg">${escH(rp.by)} · ${o.raiders} raiders · ${o.pct}% damage${rp.lost ? ' · lost ' + costHTML(rp.lost) : ''}</div>
+   ${o.best ? `<div class="lockmsg">Best: ${bestLine(o.best)}</div>` : ''}
+   ${old ? '<div class="lockmsg"><i>This raid was fought under older rules.</i></div>' : `<button class="btn small" data-watch="${i}">Watch</button>`}</div>`; }).join('');
+ sheet(`<button class="btn small close" id="xs">Close</button><h3>Battle reports</h3><p class="lockmsg">Your last ${R.length} raid${R.length === 1 ? '' : 's'}. Watch one to see how your layout held.</p>${rows || '<p class="lockmsg">No raids yet.</p>'}`);
+ $('#xs').onclick = closeSheet;
+ $$('[data-watch]').forEach(b => b.onclick = () => { const rp = R[+b.dataset.watch]; closeSheet(); playReplay(rp, () => { toHub('village'); reportsSheet(); }); });
+}
+let vBattle = null;  // {rep, dead:Set of item keys torn down so far}
+function playReplay(rep, done){
+ if (!rep || rep.recipe.simVer !== BASE.SIM_VER){ toast('This raid was fought under older rules.'); if (done) done(); return; }
+ const R = rep.recipe, rec = BASE.simRaid(R, {record:true}), heroes = R.defenders;
+ vBattle = {rep, dead:new Set(), done, frames:rec.frames};
+ if (TAB !== 'village' || !$('#hub').classList.contains('on')) toHub('village'); else renderVillage();
+ loadVIL().then(ok => {
+  if (!ok || !window.VIL || !$('#vmap.iso')){ vBattle = null; if (done) done(); return; }
+  const units = {}; R.attackers.forEach((a, i) => units[i] = {look:a.look, max:a.hp, side:'a', fly:a.fly}); heroes.forEach((d, i) => units[100 + i] = {look:d.look, max:d.hp, side:'d'});
+  const items = R.items.map(it => { const top = it.role === 'wall' ? 1 : it.role === 'core' ? 2.3 : 1.4; return {key:it.key, x:it.x, y:it.y, fw:it.fw, fh:it.fh, top, max:it.role === 'trap' || it.role === 'plot' || it.role === 'wall' ? 0 : it.hp}; });
+  battleHud(); VIL.fit();
+  VIL.battle({frames:rec.frames, tick:BASE.TICK, units, items, speed:vBattle.speed || 1,
+   onTick:i => { const f = rec.frames[i]; let changed = false; R.items.forEach((it, j) => { if (it.hp > 0 && f.b[j] <= 0 && !vBattle.dead.has(it.key)){ vBattle.dead.add(it.key); changed = true; } });
+    if (changed){ VIL.update(villageScene()); sfx('hit'); }
+    const left = f.u.filter(u => u[0] < 100 && u[6]).length, el = $('#bhudInfo'); if (el) el.textContent = Math.floor(i / 10) + 's · ' + left + ' of the dead left'; },
+   onEnd:() => endReplay()});
+ });
+}
+function endReplay(){ if (!vBattle) return; const d = vBattle.done; vBattle = null; const h = $('#bhud'); if (h) h.remove(); if (window.VIL){ VIL.battle(null); VIL.update(villageScene()); } if (d) d(); }
+function battleHud(){
+ const m = $('#vmap'); if (!m || $('#bhud')) return;
+ const h = document.createElement('div'); h.id = 'bhud';
+ h.innerHTML = `<div class="bh-top"><b>Night Raid</b><span id="bhudInfo">0s</span></div><div class="bh-bot"><div class="bh-speed">${[1, 2, 4].map(x => `<button data-sp="${x}" class="${x === 1 ? 'on' : ''}">${x}x</button>`).join('')}</div><button class="bh-skip" id="bhSkip">Skip</button></div>`;
+ m.appendChild(h);
+ $$('#bhud [data-sp]').forEach(b => b.onclick = () => { $$('#bhud [data-sp]').forEach(x => x.classList.toggle('on', x === b)); vBattle.speed = +b.dataset.sp; VIL.battleSpeed(+b.dataset.sp); sfx('tap'); });
+ $('#bhSkip').onclick = () => { sfx('tap'); VIL.battleSkip(); };
 }
 
 // ---------- WARBAND BOSS + ARENA ----------

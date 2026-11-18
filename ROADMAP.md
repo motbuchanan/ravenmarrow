@@ -1,6 +1,6 @@
 # Ravenmarrow: Roadmap
 
-**Current version:** 3.2 · Nov 18 2026
+**Current version:** 3.3 · Nov 18 2026
 **Live URL:** https://motbuchanan.github.io/ravenmarrow/ (repo: ravenmarrow, files at the root)
 **What it is:** A gothic Norse boss-battle game drawn entirely in code. A gift build inspired by a mobile Viking strategy RPG, built around boss fights, a warrior roster, and a light village. No money, no accounts, no data leaves the phone.
 
@@ -51,6 +51,16 @@ Her weekend feedback: had a blast, got far, played between Vikingard raids. Comb
 - Attack styles per warrior look (HSTYLE) and per enemy shape (FSTYLE) in ui.js: body moves (release), projectiles (orb, arrow, ravens, sound ring, embers), impact variants (stab, cleave, claw marks, bite, slam rings), random variant + timing jitter on every strike.
 - Engine: PASSIVES (one per warrior), TRICKS per enemy shape (poison, bleed, blind, all-hit), AFFIXES elites (Armored, Frenzied, Vampiric, Hulking) from realm 2 on, DoT/miss/endure events. Tutorial fight has no tricks. Foe stats raised ~12% to offset passives (sim curve unchanged).
 - Village clarity: Now/Next numbers on every building, before/after squad stats on upgrade, bonus chips at the top of every fight, stat annotations on warrior pages.
+
+## Shipped in 3.3 (Nov 18 2026)
+Living Village, Phase 4 of 5: Night Raids fought on the map, with battle reports.
+- base.js: simRaid(recipe, {record}) returns {result, frames}. SIM_VER 1, TICK 0.1 s, at most 900 ticks (90 s). Seeded random only, plain arithmetic and sqrt, positions rounded every tick, so a recipe always gives the same fight. Raiders spawn on one map side, path with Dijkstra (free tile 1, standing wall 6, buildings block), break walls in the way, fight defenders in reach, prefer towers if their shape says so, fly over walls (birds). Towers shoot the nearest raider in range, traps hurt each raider once. Defenders hold a post south of the Hall and engage within 7 tiles. Win = Hall standing and under 50% of building life destroyed. Result: win, pct, coreDown, kills, raiders, defHp, best defender, hash. Frames hold every unit, building life and shot for the replay.
+- engine.js: raidRecipe() turns the village, layout, squad (makeHero), Garrison (makeBand) and horde (makeFoe) into a self-contained recipe. RAID_SHAPE gives each shape its speed, reach, wall-breaking, flight and target choice. Building life scales to the horde's hitting power and tower and trap damage to one raider's life, so the village's own levels decide how well it holds at every realm. RAID_TUNE {pack 3, heroAtk 2.6, heroHp 1.5}. Each foe becomes a pack (3 to 5 by Hall level).
+- ui.js: nightHorde() is three kinds of the dead with HORDE_K [2.5, 3.0, 3.2, 1.25, 1.45] per Hall level. nightRecipe(), startNight(watch), settleNight() (loot, Garrison survivors from the band's life left plus the Infirmary, losses), nightResult(). Losing takes the share of uncollected coffers matching the damage (at least half, all of it if the Hall falls). S.reports keeps the last 10 {at, kind, by, recipe, result, loot, lost, band}. reportsSheet() opens from the Night Raid card and from the Battle reports button under the map. playReplay() re-runs the recipe with frames and plays it on the map with a HUD (1x, 2x, 4x, Skip). Torn-down buildings turn to rubble as they fall and come back after. A report from older rules shows the summary and hides Watch.
+- village-iso.js: VIL.battle(), battleSpeed, battleSkip, battleInfo. Draws raiders, defenders, life bars, arrows, spells and trap flashes, and fire and smoke on badly hurt buildings. The camera follows the fighting until you touch the map.
+- art.js: raider shapes as blocks (draugr, wolf, crow, wraith, serpent, dragon spawn), crimson-and-gold defender kits for your warriors, troop kits, rubble().
+- Tuning: raidsweep.js (Node). A typical player with the starter layout holds 100 / 79 / 75 / 68 / 73% at Hall 1 to 5. Fights run 23 to 69 seconds at 1x.
+- Tests: raidsweep.js (repeatable fights, 200 random recipes all end in time) and vil4.py (watch at 4x to the end, replay hash matches the report, Let it play out offers Watch, Skip, 10-report cap, old-rules report, villagers back after).
 
 ## Shipped in 3.2 (Nov 18 2026)
 Living Village, Phase 3 of 5: lay it out yourself.

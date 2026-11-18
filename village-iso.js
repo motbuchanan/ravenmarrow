@@ -1,4 +1,4 @@
-// Ravenmarrow · village-iso.js · v3.2 · Nov 18 2026
+// Ravenmarrow · village-iso.js · v3.3 · Nov 18 2026
 // The village seen the way The Keep's Isometric mode sees its world: an orthographic camera at a fixed slant, every
 // building made of lit blocks, a real shadow map from the sun or the blood moon, warm torch light pooling on the ground,
 // and fog closing in at the edges. It only draws what it is handed (parts made of boxes), so another game can reuse it.
@@ -75,7 +75,7 @@ precision mediump float; out vec4 o; void main(){ o = vec4(1.0); }`;
 let canvas = null, gl = null, host = null, labelLayer = null, P = null, PD = null, shTex = null, shFb = null;
 let geo = null, dyn = null, lastScene = null, lost = false;
 const cam = {tx:14, ty:14, zoom:9.5, minZ:4.5, maxZ:22, fitted:false};
-const st = {dirty:true, raf:0, last:0, t0:performance.now(), frames:0, fpsT:0, fps:0, verts:0, hour:null, mounted:false, onTap:null, reduce:false, labels:[], parts:[], lights:[], smokeSrc:[], puffs:[], cost:8, visible:true, actors:[], anim:null, canAnim:null};
+const st = {dirty:true, raf:0, last:0, t0:performance.now(), frames:0, fpsT:0, fps:0, verts:0, hour:null, mounted:false, onTap:null, reduce:false, labels:[], parts:[], lights:[], smokeSrc:[], puffs:[], cost:8, visible:true, actors:[], anim:null, canAnim:null, battle:null};
 
 function compile(type, src){ const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s)); return s; }
 function program(vs, fs, names){ const p = gl.createProgram(); gl.attachShader(p, compile(gl.VERTEX_SHADER, vs)); gl.attachShader(p, compile(gl.FRAGMENT_SHADER, fs)); gl.linkProgram(p);
@@ -267,6 +267,43 @@ function stepAnim(dt){
  if (A.t > .3 && Math.random() < dt * 6 && st.puffs.length < 70) st.puffs.push({x:A.part.x + Math.random() * A.part.fw, y:A.part.y + A.part.fh, z:.05, age:1.2, sz:.05 + Math.random() * .04});
  if (A.t >= A.dur){ A.part.anim = false; st.anim = null; if (lastScene) build(lastScene); }
 }
+// ---------- battle replay: a recorded raid played back on the map ----------
+// opts: {frames, tick, units:{id:{look, max}}, items:[{key,x,y,fw,fh,top,max}], speed, onTick(i), onEnd()}
+function battleStep(dt){
+ const Bt = st.battle; if (!Bt || Bt.done) return;
+ if (st.canAnim && !st.canAnim()) return;
+ const prev = Math.floor(Bt.t / Bt.tick); Bt.t += dt * Bt.speed;
+ let i = Math.floor(Bt.t / Bt.tick);
+ if (i >= Bt.frames.length - 1){ i = Bt.frames.length - 1; Bt.t = i * Bt.tick; }
+ for (let k = prev + 1; k <= i; k++){ const f = Bt.frames[k]; if (f && f.s) f.s.forEach(s => Bt.shots.push({s, age:0})); }
+ Bt.shots.forEach(x => x.age += dt * Bt.speed); Bt.shots = Bt.shots.filter(x => x.age < .35);
+ // fire and smoke on badly hurt buildings
+ const f = Bt.frames[i]; Bt.items.forEach((it, j) => { const hp = f.b[j]; if (it.max && hp > 0 && hp < it.max * .5 && Math.random() < dt * Bt.speed * 3 && st.puffs.length < 90) st.puffs.push({x:it.x + it.fw * (.3 + Math.random() * .4), y:it.y + it.fh * (.3 + Math.random() * .4), z:it.top * .7, age:0, sz:.12 + Math.random() * .06}); });
+ // the camera drifts after the fighting until you take over with a finger
+ if (Bt.follow){ let sx = 0, sy = 0, n = 0; f.u.forEach(u => { if (u[6] && u[0] < 100){ sx += u[1]; sy += u[2]; n++; } });
+  if (n){ const tx = (sx / n) * .7 + 14 * .3, ty = (sy / n) * .7 + 14 * .3, k = Math.min(1, dt * 1.2); cam.tx += (tx - cam.tx) * k; cam.ty += (ty - cam.ty) * k; cam.zoom += (Bt.zoom - cam.zoom) * k; clampCam(); st.dirty = true; } }
+ if (i !== Bt.last){ Bt.last = i; Bt.onTick && Bt.onTick(i); }
+ if (i >= Bt.frames.length - 1 && !Bt.done){ Bt.done = true; Bt.endT = setTimeout(() => { if (st.battle === Bt){ st.battle = null; Bt.onEnd && Bt.onEnd(); } }, 900); }
+}
+function battleBoxes(V, I){
+ const Bt = st.battle; if (!Bt) return;
+ const i = Math.min(Bt.frames.length - 1, Math.floor(Bt.t / Bt.tick)), j = Math.min(Bt.frames.length - 1, i + 1), a = Bt.frames[i], b = Bt.frames[j], k = Bt.t / Bt.tick - i;
+ const nb = {}; b.u.forEach(u => nb[u[0]] = u);
+ for (const u of a.u){ if (!u[6]) continue; const n = nb[u[0]] || u, x = u[1] + (n[1] - u[1]) * k, y = u[2] + (n[2] - u[2]) * k, meta = Bt.units[u[0]] || {};
+  const mode = u[4] === 0 ? 'walk' : u[4] === 1 ? 'work' : 'idle', fr = Math.floor(Bt.t * (mode === 'walk' ? 7 : 4));
+  rot(st.fig(meta.look, fr, mode, false), u[5]).forEach(q => pushBox(V, I, [q[0] + x, q[1] + y, q[2], q[3], q[4], q[5], q[6]], 0, 0));
+  if (meta.max && u[3] < meta.max){ const w = .44, fr2 = Math.max(0, u[3] / meta.max), z = meta.fly ? 1.32 : .72;   // a life bar over the head
+   pushBox(V, I, [x - w / 2, y, z, w, .05, .05, 13], 0, 0); pushBox(V, I, [x - w / 2, y - .005, z + .002, w * fr2, .06, .05, meta.side === 'a' ? 33 : 32], 0, 0); }
+ }
+ Bt.items.forEach((it, n) => { if (!it.max) return; const hp = a.b[n]; if (hp >= it.max || hp <= 0) return; const w = Math.min(1.6, it.fw * .7), z = it.top + .25, cx = it.x + it.fw / 2 - w / 2, cy = it.y + it.fh / 2;
+  pushBox(V, I, [cx, cy, z, w, .07, .06, 13], 0, 0); pushBox(V, I, [cx, cy - .005, z + .002, w * hp / it.max, .08, .06, 9], 0, 0); });
+ for (const sh of Bt.shots){ const [x0, y0, x1, y1, kd] = sh.s, p = Math.min(1, sh.age / .3);
+  if (kd === 2){ for (let q = 0; q < 4; q++) pushBox(V, I, [x0 - .2 + q * .12, y0 - .05, 0, .05, .05, .2 * (1 - p), 33], 0, 0); continue; }
+  const x = x0 + (x1 - x0) * p, y = y0 + (y1 - y0) * p, z = .9 * (1 - p) + .35 + Math.sqrt(Math.max(0, p * (1 - p))) * .8;
+  pushBox(V, I, [x - .04, y - .04, z, .08, .08, .08, kd === 3 ? 12 : kd === 1 ? 9 : 23], 0, 0); }
+}
+function battleLights(){ const Bt = st.battle; if (!Bt) return []; return Bt.shots.filter(s => s.s[4] === 3).slice(0, 6).map(s => { const p = Math.min(1, s.age / .3); return [s.s[0] + (s.s[2] - s.s[0]) * p, s.s[1] + (s.s[3] - s.s[1]) * p, .6, 1.2]; }); }
+
 function dynGeo(){
  const V = [], I = [];
  st.puffs.forEach(p => { const s = p.sz * (1 + Math.min(p.age, 1.2) * .6) * Math.max(.2, 1 - Math.max(0, p.age - 1.2) / 2.4); pushBox(V, I, [p.x - s / 2, p.y - s / 2, p.z, s, s, s, 24], 0, 0); });
@@ -277,6 +314,7 @@ function dynGeo(){
   for (const b of bs) pushBox(V, I, [b[0] + a.pos[0], b[1] + a.pos[1], b[2] + a.pos[2], b[3], b[4], b[5], b[6]], 0, 0);
   if (a.torch) st.dynLights.push([a.pos[0], a.pos[1], a.pos[2] + .5, 1.6]); }
  animBoxes().forEach(b => pushBox(V, I, b, 0, 0));
+ battleBoxes(V, I); st.dynLights = st.dynLights.concat(battleLights());
  const D = st.drag; if (D && D.part){ const p = D.part, lift = .14, m = D.ok ? 32 : 33;
   p.boxes.forEach(b => pushBox(V, I, [b[0] + D.x, b[1] + D.y, b[2] + lift, b[3], b[4], b[5], b[6]], 0, 0));
   const fw = p.fw, fh = p.fh, t = .08, z = .03;
@@ -320,9 +358,9 @@ function loop(now){
  // nothing to draw when the app is in the background, the tab is hidden, or the village is scrolled out of sight
  if (document.hidden || !canvas.offsetWidth || !st.visible) return;
  // idle animation (torch flicker, smoke) runs at about 24 fps, slower if frames are expensive on this phone
- const dt = Math.min(.1, (now - (st.last || now)) / 1000), animate = !st.reduce, idleGap = Math.max(42, st.cost * 4), due = st.dirty || (animate && now - st.last >= idleGap);
+ const dt = Math.min(.1, (now - (st.last || now)) / 1000), animate = !st.reduce, idleGap = Math.max(st.battle ? 30 : 42, st.cost * 4), due = st.dirty || (animate && now - st.last >= idleGap);
  if (!due) return;
- stepSmoke(dt); if (!st.reduce) stepActors(dt); else st.actors.forEach(a => { if (!a.pos){ const R = a.route, e = R[R.length - 1]; a.pos = e; a.mode = 'idle'; a.face = a.workFace || 0; } }); stepAnim(dt); st.last = now;
+ stepSmoke(dt); if (!st.reduce) stepActors(dt); else st.actors.forEach(a => { if (!a.pos){ const R = a.route, e = R[R.length - 1]; a.pos = e; a.mode = 'idle'; a.face = a.workFace || 0; } }); stepAnim(dt); battleStep(dt); st.last = now;
  if (st.dirty) placeLabels();
  st.dirty = false; const t0 = performance.now(); draw(now); st.cost = st.cost * .8 + (performance.now() - t0) * .2;
  st.frames++; if (now - st.fpsT > 1000){ st.fps = Math.round(st.frames * 1000 / (now - st.fpsT)); st.frames = 0; st.fpsT = now; }
@@ -337,6 +375,7 @@ function local(e){ const r = canvas.getBoundingClientRect(); return [e[0] - r.le
 let lastPaint = null;
 function tileAt(cx, cy){ const g = groundAt(...local([cx, cy])); return [Math.floor(g[0]), Math.floor(g[1]), g]; }
 function onDown(e){ canvas.setPointerCapture && canvas.setPointerCapture(e.pointerId); ptr.set(e.pointerId, [e.clientX, e.clientY]);
+ if (st.battle) st.battle.follow = false;
  if (st.edit && ptr.size === 1){
   const E = st.edit, r = canvas.getBoundingClientRect();
   if (E.mode === 'move'){ const p = pickPart(e.clientX - r.left, e.clientY - r.top);
@@ -400,6 +439,10 @@ function unmount(){ st.mounted = false; cancelAnimationFrame(st.raf); if (canvas
 window.VIL = {mount, update, unmount, project,
  setHour(h){ st.hour = h; st.dirty = true; },
  getHour(){ return st.hour; },
+ battle(o){ if (st.battle && st.battle.endT) clearTimeout(st.battle.endT); st.battle = o ? Object.assign({t:0, last:-1, shots:[], speed:1, done:false, follow:true, zoom:7.5}, o) : null; st.dirty = true; },
+ battleSpeed(s){ if (st.battle) st.battle.speed = s; },
+ battleSkip(){ const Bt = st.battle; if (!Bt) return; clearTimeout(Bt.endT); st.battle = null; Bt.onEnd && Bt.onEnd(); },
+ battleInfo(){ const Bt = st.battle; return Bt ? {i:Math.floor(Bt.t / Bt.tick), n:Bt.frames.length, speed:Bt.speed, done:Bt.done} : null; },
  edit(mode, handlers){ st.edit = mode ? {mode, h:handlers || (st.edit && st.edit.h)} : null; st.drag = null; if (host) host.classList.toggle('editing', !!mode); st.dirty = true; },
  dragState(){ return st.drag ? {key:st.drag.key, x:st.drag.x, y:st.drag.y, ok:st.drag.ok} : null; },
  stats(){ return {fps:st.fps, verts:st.verts, lights:st.lights.length, lost, zoom:cam.zoom, actors:st.actors.length, moving:st.actors.filter(a => a.mode === 'walk').length, working:st.actors.filter(a => a.mode === 'work').length, building:st.anim ? +(st.anim.t / st.anim.dur).toFixed(2) : null}; },
