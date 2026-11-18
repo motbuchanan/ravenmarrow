@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<!-- Ravenmarrow v3.1 · Nov 18 2026 -->
+<!-- Ravenmarrow v3.2 · Nov 18 2026 -->
 <html lang="en"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-<meta name="build" content="3.1">
+<meta name="build" content="3.2">
 <meta name="build-date" content="Nov 18 2026">
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#050304">
@@ -637,6 +637,21 @@ body.help-on.help-battle #app::after{bottom:auto;top:56px}
 .vlab .upa{position:absolute;top:-13px;width:0;height:0;border:5px solid transparent;border-bottom:7px solid #f0c060;animation:pulse 1.2s infinite}
 .vlab span{margin-top:2px;font:600 8.5px cinzel,serif;letter-spacing:.8px;color:#d8c7a4;text-shadow:0 1px 2px #000,0 0 6px #000;white-space:nowrap}
 body.help-on #vmap .vilcv{outline:1px dashed rgba(240,192,96,.75);outline-offset:-3px}
+/* v3.2 edit layout */
+.vedit{display:flex;flex-direction:column;align-items:center;gap:8px;margin:8px 0 4px}
+.vedit .btn.ghost{background:transparent;border:1px solid rgba(217,164,65,.45);color:#e6cf9c}
+.vmodes{display:flex;border:1px solid rgba(217,164,65,.4);border-radius:10px;overflow:hidden}
+.vmodes button{background:#140a0c;color:#c9b38f;border:0;padding:9px 12px;font:600 12px cinzel,serif;letter-spacing:.5px}
+.vmodes button+button{border-left:1px solid rgba(217,164,65,.25)}
+.vmodes button.on{background:#5a1018;color:#f6deb0}
+.vcount{font-size:12px;color:#b8a589}.vcount b{color:#f0c060}
+.vtrays{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.vtray{background:#1a0f10;border:1px dashed #d9a441;color:#f0c060;border-radius:9px;padding:7px 10px;font:600 12px cinzel,serif}.vtray small{color:#a8987c;font-family:inherit}
+#vmap.editing .vlabs{display:none}
+#vmap.editing{box-shadow:inset 0 0 0 2px rgba(240,192,96,.55)}
+#panel.vediting .coffers,#panel.vediting .vrow,#panel.vediting .vsum{display:none}
+#vmap.shake{animation:vshake .32s}
+@keyframes vshake{20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
 
 </style>
 </head><body>
@@ -737,7 +752,30 @@ function path(gr, from, to, passable){
   for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]){ const nx = x + dx, ny = y + dy; if (!ok(nx, ny) || seen[key(nx, ny)]) continue; seen[key(nx, ny)] = 1; prev[key(nx, ny)] = key(x, y); q.push([nx, ny]); } }
  return null; }
 
-return {W, H, rng, path, fpOf, cells, grid, fits, wallShape, starterLayout, centre};
+// can anything walk in from the edge of the map to touch this item? (raiders and villagers need a way in)
+function reachable(layout, defs, it){
+ const gr = grid(layout, defs), w = gr.w, h = gr.h, seen = new Uint8Array(w * h), q = [];
+ for (let x = 0; x < w; x++) for (const y of [0, h - 1]) if (gr.at(x, y) === -1 && !seen[y * w + x]){ seen[y * w + x] = 1; q.push([x, y]); }
+ for (let y = 0; y < h; y++) for (const x of [0, w - 1]) if (gr.at(x, y) === -1 && !seen[y * w + x]){ seen[y * w + x] = 1; q.push([x, y]); }
+ const touch = new Set(); const f = fpOf(defs, it.k);
+ for (let x = it.x - 1; x <= it.x + f[0]; x++) for (let y = it.y - 1; y <= it.y + f[1]; y++){ const inX = x >= it.x && x < it.x + f[0], inY = y >= it.y && y < it.y + f[1]; if ((inX && !inY) || (inY && !inX)) touch.add(x + ',' + y); }
+ for (let i = 0; i < q.length; i++){ const [x, y] = q[i]; if (touch.has(x + ',' + y)) return true;
+  for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]){ const nx = x + dx, ny = y + dy; if (gr.at(nx, ny) !== -1 || seen[ny * w + nx]) continue; seen[ny * w + nx] = 1; q.push([nx, ny]); } }
+ return false; }
+// a layout the game can accept: on the grid, nothing overlapping, counts within max, every required kind present, the key building reachable
+// max: {kind: n}; need: [kinds]; key: the kind that must be reachable. Returns {ok, why, k}
+function validLayout(layout, defs, max, need, key){
+ const items = layout.items || [], seen = new Set(), count = {};
+ for (const it of items){ const f = fpOf(defs, it.k);
+  if (!Number.isInteger(it.x) || !Number.isInteger(it.y) || it.x < 0 || it.y < 0 || it.x + f[0] > W || it.y + f[1] > H) return {ok:false, why:'bounds', k:it.k};
+  for (const [x, y] of cells(defs, it)){ const c = x + ',' + y; if (seen.has(c)) return {ok:false, why:'overlap', k:it.k}; seen.add(c); }
+  count[it.k] = (count[it.k] || 0) + 1; }
+ for (const k in count) if (max[k] != null && count[k] > max[k]) return {ok:false, why:'count', k};
+ for (const k of need || []) if (!count[k]) return {ok:false, why:'missing', k};
+ if (key){ const it = items.find(i => i.k === key); if (it && !reachable(layout, defs, it)) return {ok:false, why:'sealed', k:key}; }
+ return {ok:true}; }
+
+return {W, H, rng, path, reachable, validLayout, fpOf, cells, grid, fits, wallShape, starterLayout, centre};
 })();
 
 
@@ -1562,7 +1600,8 @@ const MATS = [ // [r, g, b, glow 0..1]
  [222, 210, 182, 0], [58, 52, 58, 0], [10, 8, 10, 0], [150, 120, 90, 0],    // 16 bone, 17 slate shingle, 18 void, 19 ore
  [58, 92, 46, 0], [150, 130, 104, 0], [140, 34, 30, .9], [44, 30, 22, 0],   // 20 herb, 21 tent canvas, 22 ember coal, 23 dark wood
  [128, 124, 130, 0], [176, 132, 104, 0], [40, 28, 22, 0], [118, 98, 78, 0],    // 24 smoke, 25 skin, 26 hair, 27 fur
- [96, 22, 32, 0], [86, 60, 42, 0], [58, 68, 88, 0], [54, 72, 50, 0]       // 28 dark red robe, 29 leather apron, 30 blue-grey tunic, 31 green tunic
+ [96, 22, 32, 0], [86, 60, 42, 0], [58, 68, 88, 0], [54, 72, 50, 0],      // 28 dark red robe, 29 leather apron, 30 blue-grey tunic, 31 green tunic
+ [80, 230, 120, .85], [240, 64, 52, .85]                                  // 32 fits (green), 33 blocked (red)
 ];
 function blocks(id, l){
  const B = [], L = [], S = [];
@@ -1771,6 +1810,7 @@ const VERSION = document.querySelector('meta[name="build"]').content; // e.g. "1
 const BUILD_DATE = document.querySelector('meta[name="build-date"]').content;
 // Newest first. Every update adds an entry; it shows once after the update lands.
 const CHANGELOG = [
+ {v:'3.2', d:'Nov 18 2026', notes:['Edit layout: drag your buildings anywhere inside the valley, draw and erase your palisade, and place extra Archer Towers and Spike Pits as your Hall unlocks them.', 'Green means a building fits, red means it does not. Done saves your layout, Cancel puts everything back.', 'Leave raiders a way in: the game will not let you wall the Hall in completely.']},
  {v:'3.1', d:'Nov 18 2026', notes:['Smoother map controls: the ground stays under your finger as you drag, pinch zooms toward your fingers, and a double-tap on open ground shows the whole village again.', 'Your village has people now. Villagers walk to work and back: the smith hammers at the forge, miners dig, the priest tends the altar. More move in as your Hall grows.', 'Guards patrol inside the palisade, and your troops drill in front of the War Camp.', 'Upgrade a building and watch it go up: scaffolding, builders and the new level rising from the ground.', 'After dark, fewer folk are out, and the ones who are carry torches.']},
  {v:'3.0', d:'Nov 18 2026', notes:['Your village is rebuilt in blocks. Every building looks different at every level, so you can watch it grow from sod huts to a gold-trimmed longhouse.', 'Drag to look around, pinch to zoom, and tap any building to build or upgrade it.', 'The village follows your real clock: grey daylight, then torches and a blood moon after dark.']},
  {v:'2.2', d:'Nov 17 2026', notes:['New: Visions. Big moments now get their own painted scene, and every scene you have seen lives in the Saga Journal (the book icon) to watch again.', 'Watch the intro again from the title screen, the Journal, or Settings.']},
@@ -2255,7 +2295,9 @@ const Help = (() => {
   ['.node', el => { const r = +el.dataset.r, s = +el.dataset.s, R = RM.REALMS[r]; const boss = el.classList.contains('boss'); return {t:boss ? R.boss.n : R.name + ', fight ' + (s + 1), b:[boss ? 'The realm\'s boss. Beat it to open the next realm and win a relic.' : 'A fight in ' + R.name + '. Win it to move along the path.', el.classList.contains('lock') ? '<b>Locked.</b> Clear the fight before it first.' : el.classList.contains('done') ? 'Cleared. Replay it any time for more loot.' : 'Tap it to see the enemies and fight.']}; }],
   ['.wcard', el => { const w = wdef(el.dataset.id), own = S.owned[w.id]; return {t:w.name + ', ' + w.title, b:[w.role ? '<b>' + w.role + '.</b> ' + (w.lore || '') : (w.lore || ''), own ? 'Level ' + own + '. Tap to see skills, level up, or give a relic.' : 'Not recruited yet. Costs ' + w.cost + ' bone runes.']}; }],
   ['#vmap .bld', el => bldCard(el.dataset.b)],
-  ['#vmap .vilcv', () => window.VIL && VIL.lastPick ? bldCard(VIL.lastPick) : null],
+  ['#vEditBtn', () => ({t:'Edit layout', b:['Move your buildings, draw your walls and place extra towers and pits. Where things stand will matter when the dead raid you.']})],
+  ['#vedit .vmodes', () => ({t:'Edit tools', b:['<b>Move</b>: drag a building. Green means it fits, red means it does not.', '<b>Draw walls</b>: drag along the ground to lay palisade. <b>Erase walls</b>: drag over pieces to pull them up.', 'Two fingers always move the map.']})],
+  ['#vmap .vilcv', () => window.VIL && VIL.lastPick && Help.isOn() && !vEdit ? bldCard(VIL.lastPick) : null],  // hold-to-explain stays off the map: a slow start to a drag must not pop a card
   ['#coffers', () => ({t:'Coffers', b:['What your village has earned while you were away. Tap <b>Collect</b> to take it.', 'Silver comes from the Mead Hall, iron from the Mine, runes from the Lookout. Upgrade them to earn faster.']})],
   ['#nightCard', () => ({t:'Night Raid', b:['Every 8 hours the dead come for your village. Tap Defend to fight them off.', 'Your squad, Garrison, walls, towers and pits all fight. Lose and they empty your coffers.']})],
   ['#armyCard', () => ({t:'Troops', b:['Train Spearmen, Bowmen and Berserkers at the War Camp.', 'Your <b>Skirmish Band</b> fights beside your squad. Your <b>Garrison</b> stays home and defends.', 'Troops who die are gone, but the Infirmary saves some.']})],
@@ -2585,7 +2627,7 @@ function go(tab){
  TAB = tab; $$('.tab').forEach(t => t.classList.toggle('on', t.dataset.tab === tab));
  setBG(tab === 'village' ? 0 : frontier(), tab === 'village', tab !== 'village'); // menus cover the sky, so no weather there
  ({saga:renderSaga, warriors:renderWarriors, village:renderVillage, raid:renderWar})[tab]();
- renderTop(); $('#panel').scrollTop = 0; Coach.emit('tab:' + tab);
+ renderTop(); $('#panel').scrollTop = 0; Coach.emit('tab:' + tab); if (tab !== 'village' && vEdit){ vEdit = null; if (window.VIL) VIL.edit(null); }
 }
 function renderSaga(){
  const blessed = S.daily.last === today();
@@ -2738,11 +2780,11 @@ function villagePaths(L){
  return {path, busy};
 }
 function villageScene(){
- const L = S.layout, parts = [];
- L.items.forEach(it => {
+ const L = vEdit ? vEdit.L : S.layout, parts = [];
+ L.items.forEach((it, idx) => {
   const f = BASE.fpOf(RM.BDEFS, it.k), lv = S.vil[it.k] || 0;
   const bl = it.k === 'wall' ? ART.wallBlocks(lv, BASE.wallShape(L, it.x, it.y)) : ART.blocks(it.k, lv);
-  const p = {id:it.k, x:it.x, y:it.y, fw:f[0], fh:f[1], boxes:bl.boxes, lights:bl.lights, smoke:bl.smoke, top:bl.top, tap:true};
+  const p = {id:it.k, key:idx, x:it.x, y:it.y, fw:f[0], fh:f[1], boxes:bl.boxes, lights:bl.lights, smoke:bl.smoke, top:bl.top, tap:true};
   if (it.k !== 'wall'){ const up = canUpgrade(it.k);
    p.label = `<i class="lvb${up ? ' up' : ''}">${lv || '+'}</i>${up ? '<b class="upa"></b>' : ''}<span>${BNAME[it.k]}</span>`; p.labelCls = 'bld' + (lv ? '' : ' empty'); }
   parts.push(p);
@@ -2751,9 +2793,58 @@ function villageScene(){
  if (Whisper.claws()){ const ws = parts.filter(p => p.id === 'wall'); [.2, .5, .8].forEach(f => { const w = ws[Math.floor(f * ws.length)]; if (w && S.vil.wall) w.boxes = w.boxes.concat([[.32, .9, .18, .05, .05, .42, 22], [.46, .9, .14, .05, .05, .48, 22], [.6, .9, .2, .05, .05, .4, 22]]); }); }
  if (vilRaise){ const p = parts.find(x => x.id === vilRaise); if (p) p.anim = true; vilRaise = null; }
  const g = villagePaths(L);
- return {w:BASE.W, h:BASE.H, ring:RM.STARTER.ring, path:g.path, busy:g.busy, parts, actors:villageActors(L)};
+ return {w:BASE.W, h:BASE.H, ring:RM.STARTER.ring, path:g.path, busy:g.busy, parts, actors:vEdit ? [] : villageActors(L)};
 }
 let vilRaise = null;
+// ---------- v3.2 EDIT MODE: lay out your own village ----------
+// vEdit {L, mode}: a working copy of the layout. Done checks it and saves; Cancel throws it away.
+let vEdit = null;
+function layoutMax(){ const h = S.vil.hall || 1, m = {wall:RM.unlocked('wall', h)};
+ m.tower = (S.vil.tower || 0) > 0 ? RM.unlocked('tower', h) : 1; m.pits = (S.vil.pits || 0) > 0 ? RM.unlocked('pits', h) : 1;
+ RM.BUILDINGS.forEach(b => { if (m[b.id] == null) m[b.id] = 1; }); return m; }
+function layoutNeed(){ return RM.BUILDINGS.filter(b => b.id !== 'wall').map(b => b.id); }
+function editCounts(){ const c = {}; vEdit.L.items.forEach(i => c[i.k] = (c[i.k] || 0) + 1); return c; }
+function freeSpot(k){ const f = BASE.fpOf(RM.BDEFS, k), cx = 14 - Math.floor(f[0] / 2), cy = 14 - Math.floor(f[1] / 2);
+ for (let r = 0; r < 28; r++) for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++){ if (Math.max(Math.abs(dx), Math.abs(dy)) !== r) continue;
+  const c = {k, x:cx + dx, y:cy + dy}; if (c.x >= 0 && c.y >= 0 && c.x + f[0] <= BASE.W && c.y + f[1] <= BASE.H && BASE.fits(vEdit.L, c, RM.BDEFS)) return c; }
+ return null; }
+function editRefresh(){ if (window.VIL) VIL.update(villageScene()); editBar(); }
+const editHandlers = {
+ movable:key => { const it = vEdit.L.items[key]; return !!it && it.k !== 'wall'; },
+ canPlace:(key, x, y) => { const it = vEdit.L.items[key], f = BASE.fpOf(RM.BDEFS, it.k); return x >= 0 && y >= 0 && x + f[0] <= BASE.W && y + f[1] <= BASE.H && BASE.fits(vEdit.L, {k:it.k, x, y}, RM.BDEFS, key); },
+ place:(key, x, y) => { const it = vEdit.L.items[key]; it.x = x; it.y = y; sfx('tap'); vibe(10); editRefresh(); },
+ reject:() => { vibe([30, 40, 30]); const m = $('#vmap'); if (m){ m.classList.remove('shake'); void m.offsetWidth; m.classList.add('shake'); } },
+ paint:(x, y) => { const c = editCounts(), max = layoutMax(); if (x < 0 || y < 0 || x >= BASE.W || y >= BASE.H) return;
+  if ((c.wall || 0) >= max.wall){ if (!vEdit.warned){ vEdit.warned = 1; toast('No wall pieces left. A bigger Hall gives you more.'); } return; }
+  const w = {k:'wall', x, y}; if (!BASE.fits(vEdit.L, w, RM.BDEFS)) return; vEdit.L.items.push(w); editRefresh(); },
+ erase:(x, y) => { const i = vEdit.L.items.findIndex(it => it.k === 'wall' && it.x === x && it.y === y); if (i < 0) return; vEdit.L.items.splice(i, 1); vEdit.warned = 0; editRefresh(); }
+};
+function editStart(){
+ vEdit = {L:{v:1, items:S.layout.items.map(i => ({k:i.k, x:i.x, y:i.y}))}, mode:'move'};
+ if (!S.flags) S.flags = {}; if (!S.flags.editTip){ S.flags.editTip = 1; save(); toast('Drag a building to move it. Use Walls to draw or erase the palisade. Two fingers move the map.', 5200); }
+ renderVillage();
+}
+function editMode(m){ vEdit.mode = m; if (window.VIL) VIL.edit(m, editHandlers); editBar(); }
+function editAdd(k){ const c = freeSpot(k); if (!c){ toast('No room. Move something first.'); return; } vEdit.L.items.push(c); sfx('tap'); editRefresh(); }
+function editDone(){
+ const v = BASE.validLayout(vEdit.L, RM.BDEFS, layoutMax(), layoutNeed(), 'hall');
+ if (!v.ok){ const why = {sealed:'Raiders need a way in. Leave a gap in the wall.', overlap:'Two things overlap. Move one of them.', bounds:'Something is off the edge.', count:'Too many ' + (BNAME[v.k] || v.k) + ' pieces.', missing:(BNAME[v.k] || v.k) + ' is missing.'}[v.why];
+  toast(why, 3600); editHandlers.reject(); return; }
+ S.layout = vEdit.L; vEdit = null; save(); sfx('up'); toast('Layout saved.'); if (window.VIL) VIL.edit(null); renderVillage();
+}
+function editCancel(){ vEdit = null; if (window.VIL) VIL.edit(null); renderVillage(); }
+function editBar(){
+ const el = $('#vedit'); if (!el) return;
+ if (!vEdit){ el.innerHTML = `<button class="btn small ghost" id="vEditBtn">Edit layout</button>`; $('#vEditBtn').onclick = () => { sfx('tap'); editStart(); }; return; }
+ const c = editCounts(), max = layoutMax(), m = vEdit.mode;
+ const extras = ['tower', 'pits'].filter(k => (c[k] || 0) < max[k]).map(k => `<button class="vtray" data-add="${k}">+ ${BNAME[k]} <small>${max[k] - (c[k] || 0)} left</small></button>`).join('');
+ el.innerHTML = `<div class="vmodes"><button data-m="move" class="${m === 'move' ? 'on' : ''}">Move</button><button data-m="paint" class="${m === 'paint' ? 'on' : ''}">Draw walls</button><button data-m="erase" class="${m === 'erase' ? 'on' : ''}">Erase walls</button></div>
+  <div class="vcount">Wall pieces <b>${c.wall || 0}</b> / ${max.wall}</div>${extras ? `<div class="vtrays">${extras}</div>` : ''}
+  <div class="row" style="gap:8px;justify-content:center"><button class="btn small ghost" id="vCancel">Cancel</button><button class="btn small blood" id="vDone">Done</button></div>`;
+ $$('#vedit .vmodes button').forEach(b => b.onclick = () => { sfx('tap'); editMode(b.dataset.m); });
+ $$('#vedit .vtray').forEach(b => b.onclick = () => editAdd(b.dataset.add));
+ $('#vCancel').onclick = () => { sfx('tap'); editCancel(); }; $('#vDone').onclick = editDone;
+}
 // ---------- v3.1 the village lives: villagers, guards on patrol, troops drilling ----------
 function villagerCount(){ return Math.min(19, 4 + 3 * (S.vil.hall || 0)); }
 function isNight(){ const o = window.VIL && VIL.getHour && VIL.getHour(), h = o != null ? o : new Date().getHours(); return h >= 20 || h < 6; }
@@ -2800,7 +2891,7 @@ function loadVIL(){
  return vilLoading;
 }
 function svgVillage(badges){
- const m = $('#vmap'); if (!m) return; m.classList.remove('iso'); m.innerHTML = ART.villageMap(S.vil, badges, Whisper.claws());
+ const m = $('#vmap'); if (!m) return; const eb = $('#vedit'); if (eb) eb.remove(); m.classList.remove('iso'); m.innerHTML = ART.villageMap(S.vil, badges, Whisper.claws());
  $$('#vmap .bld').forEach(el => el.addEventListener('click', () => { sfx('tap'); buildingSheet(el.dataset.b); }));
 }
 function mountVillage(badges){
@@ -2809,7 +2900,7 @@ function mountVillage(badges){
   if (!$('#vmap') || $('#vmap') !== m) return;
   const ok = window.VIL && VIL.mount(m, {mats:ART.MATS, reduce:reduceMotion(), figure:(k, f, md, t) => ART.figure(k, f, md, t), canAnimate:() => !$('#veil.on') && !$('#vision.on'), onTap:id => { if (Help.isOn()) return; sfx('tap'); buildingSheet(id); }});
   if (!ok) return svgVillage(badges);
-  m.classList.add('iso'); VIL.update(villageScene());
+  m.classList.add('iso'); VIL.edit(vEdit ? vEdit.mode : null, editHandlers); VIL.update(villageScene());
  };
  if (window.VIL) go(); else loadVIL().then(ok => ok ? go() : svgVillage(badges));
 }
@@ -2820,6 +2911,7 @@ function renderVillage(){
  const nr = nightState();
  let h = `<div class="vhead"><h2>The Village</h2><span class="hallb">Hall ${toRoman(S.vil.hall)}</span></div>
   <div id="vmap" class="iso"></div>
+  <div id="vedit" class="vedit"></div>
   <div class="box coffers" id="coffers"><div class="cof">${['silver','iron','runes'].map(k => `<span>${ART.ICON[k]}<b>${fmt(g[k])}</b></span>`).join('')}</div><button class="btn blood small" id="collect" ${g.silver || g.iron || g.runes ? '' : 'disabled'}>Collect</button></div>
   <div class="vrow">
    <button class="box vcard ${nr.ready ? 'alarm' : ''}" id="nightCard"><div class="vic">&#5835;</div><b>Night Raid</b><small>${nr.locked ? 'After the first boss' : nr.ready ? 'The dead are here!' : 'Next in ' + nr.left}</small></button>
@@ -2827,7 +2919,8 @@ function renderVillage(){
   </div>
   ${villageChips() ? `<div class="vsum"><div class="row" style="gap:6px;justify-content:center">${villageChips()}</div></div>` : ''}`;
  $('#panel').innerHTML = h;
- mountVillage(badges);
+ if (vEdit) $('#panel').classList.add('vediting'); else $('#panel').classList.remove('vediting');
+ mountVillage(badges); editBar();
  $$('.vsum .vchip').forEach(c => c.onclick = () => { if (c.dataset.tip) toast(c.dataset.tip, 3000); });
  $('#collect').onclick = () => { const r = collectAll(); if (!r) return; sfx('coin'); toast('Collected ' + ['silver','iron','runes'].filter(k => r[k]).map(k => fmt(r[k]) + ' ' + (k === 'runes' ? 'runes' : k)).join(', ') + '.'); Coach.emit('collect'); renderVillage(); renderTop(); checkDeeds(); };
  $('#nightCard').onclick = () => { sfx('tap'); nightSheet(); };

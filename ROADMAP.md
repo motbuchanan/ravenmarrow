@@ -1,6 +1,6 @@
 # Ravenmarrow: Roadmap
 
-**Current version:** 3.1 · Nov 18 2026
+**Current version:** 3.2 · Nov 18 2026
 **Live URL:** https://motbuchanan.github.io/ravenmarrow/ (repo: ravenmarrow, files at the root)
 **What it is:** A gothic Norse boss-battle game drawn entirely in code. A gift build inspired by a mobile Viking strategy RPG, built around boss fights, a warrior roster, and a light village. No money, no accounts, no data leaves the phone.
 
@@ -51,6 +51,14 @@ Her weekend feedback: had a blast, got far, played between Vikingard raids. Comb
 - Attack styles per warrior look (HSTYLE) and per enemy shape (FSTYLE) in ui.js: body moves (release), projectiles (orb, arrow, ravens, sound ring, embers), impact variants (stab, cleave, claw marks, bite, slam rings), random variant + timing jitter on every strike.
 - Engine: PASSIVES (one per warrior), TRICKS per enemy shape (poison, bleed, blind, all-hit), AFFIXES elites (Armored, Frenzied, Vampiric, Hulking) from realm 2 on, DoT/miss/endure events. Tutorial fight has no tricks. Foe stats raised ~12% to offset passives (sim curve unchanged).
 - Village clarity: Now/Next numbers on every building, before/after squad stats on upgrade, bonus chips at the top of every fight, stat annotations on warrior pages.
+
+## Shipped in 3.2 (Nov 18 2026)
+Living Village, Phase 3 of 5: lay it out yourself.
+- base.js: reachable(layout, defs, item) (can anything walk in from the map edge to touch it) and validLayout(layout, defs, max, need, key) returning {ok, why:'bounds'|'overlap'|'count'|'missing'|'sealed', k}.
+- village-iso.js: VIL.edit(mode, handlers) with modes 'move', 'paint' and 'erase'. In move mode a drag that starts on a movable building lifts it and shows a green (fits) or red (blocked) footprint; letting go calls place() or reject(). A drag on empty ground pans. Paint and erase call the handler once per new tile under the finger. Two fingers always pan and zoom. Faint tile lines on the ground while editing. Taps and drags now pick by each building's real blocks, not its bounding box, so a tall Hall no longer steals taps from the buildings behind it. VIL.dragState() for tests. MATS 32 (green) and 33 (red); the shader takes 40 materials.
+- ui.js: vEdit {L, mode}, a working copy of the layout. The Edit layout button sits under the map. The bar holds Move / Draw walls / Erase walls, a wall counter (pieces / unlock), tray chips for extra Archer Towers and Spike Pits (only once that building is built, up to the Hall unlock), then Cancel and Done. Done runs validLayout: sealed, overlap, off-edge, too many and missing each get a plain message and a shake. Leaving the tab drops an unsaved edit. A one-time tip toast (S.flags.editTip). Help mode explains the edit button and tools. Hold-to-explain no longer fires on the map itself, so a slow start to a drag can't pop a card.
+- Extra towers and pits are placed and saved now. Until Phase 4 the raid math still counts one tower and one pit.
+- Tests: basecheck.js; vil3.py (drag to a free spot saves and survives reload, drop on the Hall is refused and snaps back, pan outside edit leaves the layout alone, tray adds a tower, walling the gate is refused at Done, erasing a piece makes it valid, Cancel discards, leaving the tab drops the edit).
 
 ## Shipped in 3.1 (Nov 18 2026)
 Living Village, Phase 2 of 5.
