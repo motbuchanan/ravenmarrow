@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<!-- Ravenmarrow v2.2 · Nov 17 2026 -->
+<!-- Ravenmarrow v3.0 · Nov 18 2026 -->
 <html lang="en"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-<meta name="build" content="2.2">
-<meta name="build-date" content="Nov 17 2026">
+<meta name="build" content="3.0">
+<meta name="build-date" content="Nov 18 2026">
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#050304">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -625,6 +625,18 @@ body.help-on.help-battle #app::after{bottom:auto;top:56px}
 .vtile small{font-size:11.5px;color:#a99;line-height:1.25}
 .vtile.locked{opacity:.6;border-style:dashed}
 .vtile.locked b{color:#8a7a68}
+/* v3.0 living village */
+#vmap.iso{position:relative;margin:0 -10px;aspect-ratio:1/.86;max-height:60vh;overflow:hidden;background:#0b0708;touch-action:none;border-top:1px solid rgba(217,164,65,.18);border-bottom:1px solid rgba(217,164,65,.18)}
+#vmap.iso::after{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 50%,transparent 55%,rgba(0,0,0,.55) 100%)}
+.vilcv{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+.vlabs{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.vlab{position:absolute;left:0;top:0;display:flex;flex-direction:column;align-items:center;margin:-14px 0 0 -40px;width:80px;pointer-events:none;will-change:transform}
+.vlab .lvb{font-style:normal;display:grid;place-items:center;width:18px;height:18px;border-radius:50%;background:#120608;border:1px solid #6b5a44;color:#c9b38f;font:600 10px cinzel,serif;box-shadow:0 1px 4px #000}
+.vlab .lvb.up{border-color:#f0c060;color:#f0c060;box-shadow:0 0 8px rgba(240,192,96,.6)}
+.vlab.empty .lvb{border-style:dashed;border-color:#d9a441;color:#f0c060}
+.vlab .upa{position:absolute;top:-13px;width:0;height:0;border:5px solid transparent;border-bottom:7px solid #f0c060;animation:pulse 1.2s infinite}
+.vlab span{margin-top:2px;font:600 8.5px cinzel,serif;letter-spacing:.8px;color:#d8c7a4;text-shadow:0 1px 2px #000,0 0 6px #000;white-space:nowrap}
+body.help-on #vmap .vilcv{outline:1px dashed rgba(240,192,96,.75);outline-offset:-3px}
 
 </style>
 </head><body>
@@ -673,6 +685,62 @@ body.help-on.help-battle #app::after{bottom:auto;top:56px}
  <div class="toast" id="toast"></div>
 </div>
 <script>
+// base.js · the reusable base-building engine (grid, footprints, placement, wall joins, paths, seeded random).
+// No game names live here: every game hands in its own building defs, unlock table and starter template.
+// Ravenmarrow 3.0 · Nov 18 2026
+const BASE = (() => {
+'use strict';
+const W = 28, H = 28;   // grid size in tiles
+
+// seeded random: mulberry32. Every sim and every replay draws from this, never Math.random
+function rng(seed){ let a = seed >>> 0; return function(){ a = (a + 0x6D2B79F5) >>> 0; let t = a; t = Math.imul(t ^ t >>> 15, t | 1); t ^= t + Math.imul(t ^ t >>> 7, t | 61); return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+
+// defs: {kind: {fp:[w,h]}}; an item is {k, x, y}
+function fpOf(defs, k){ const d = defs[k]; return d && d.fp ? d.fp : [1, 1]; }
+function cells(defs, it){ const f = fpOf(defs, it.k), o = []; for (let y = 0; y < f[1]; y++) for (let x = 0; x < f[0]; x++) o.push([it.x + x, it.y + y]); return o; }
+// the grid as an array of item indexes (-1 empty)
+function grid(layout, defs, w, h){ w = w || W; h = h || H; const g = new Int16Array(w * h).fill(-1);
+ (layout.items || []).forEach((it, i) => cells(defs, it).forEach(([x, y]) => { if (x >= 0 && y >= 0 && x < w && y < h) g[y * w + x] = i; }));
+ return {w, h, g, at(x, y){ return x < 0 || y < 0 || x >= w || y >= h ? -2 : g[y * w + x]; }}; }
+// can this item sit here? (ignoring the item at index skip, the one being moved)
+function fits(layout, it, defs, skip){ const gr = grid(layout, defs);
+ return cells(defs, it).every(([x, y]) => { const v = gr.at(x, y); return v === -1 || (skip !== undefined && v === skip); }); }
+
+// walls join to wall neighbours: bit 1 north, 2 east, 4 south, 8 west
+function wallShape(layout, x, y){ const set = new Set((layout.items || []).filter(i => i.k === 'wall').map(i => i.x + ',' + i.y));
+ return (set.has(x + ',' + (y - 1)) ? 1 : 0) | (set.has((x + 1) + ',' + y) ? 2 : 0) | (set.has(x + ',' + (y + 1)) ? 4 : 0) | (set.has((x - 1) + ',' + y) ? 8 : 0); }
+
+// starter layout from a template the game supplies: {items:[{k,x,y}], ring:[x0,y0,x1,y1], gate:[[x,y],...]}
+// counts: how many walls the unlock table allows. Anything that would overlap is dropped, never stacked
+function starterLayout(defs, tpl, wallCount){
+ const L = {v:1, items:[]};
+ tpl.items.forEach(it => { const c = {k:it.k, x:it.x, y:it.y}; if (fits(L, c, defs)) L.items.push(c); });
+ const [x0, y0, x1, y1] = tpl.ring, gate = new Set((tpl.gate || []).map(p => p[0] + ',' + p[1])), ring = [];
+ for (let x = x0; x <= x1; x++){ ring.push([x, y0]); }
+ for (let y = y0 + 1; y <= y1; y++){ ring.push([x1, y]); }
+ for (let x = x1 - 1; x >= x0; x--){ ring.push([x, y1]); }
+ for (let y = y1 - 1; y > y0; y--){ ring.push([x0, y]); }
+ let n = 0; for (const [x, y] of ring){ if (n >= wallCount) break; if (gate.has(x + ',' + y)) continue; const c = {k:'wall', x, y}; if (fits(L, c, defs)){ L.items.push(c); n++; } }
+ return L; }
+
+// tile-centre of an item's footprint
+function centre(defs, it){ const f = fpOf(defs, it.k); return [it.x + f[0] / 2, it.y + f[1] / 2]; }
+
+// shortest walk on the tile grid (4 ways), passable(x, y) decides; the start and goal tiles are always allowed. Returns [[x,y],...] or null
+function path(gr, from, to, passable){
+ const w = gr.w, h = gr.h, key = (x, y) => y * w + x, prev = new Int32Array(w * h).fill(-1), seen = new Uint8Array(w * h);
+ const ok = (x, y) => x >= 0 && y >= 0 && x < w && y < h && ((x === to[0] && y === to[1]) || passable(x, y));
+ if (from[0] < 0 || from[1] < 0 || from[0] >= w || from[1] >= h) return null;
+ const q = [from]; seen[key(from[0], from[1])] = 1;
+ for (let qi = 0; qi < q.length; qi++){ const [x, y] = q[qi];
+  if (x === to[0] && y === to[1]){ const out = []; let k = key(x, y); while (k !== -1){ out.push([k % w, Math.floor(k / w)]); k = prev[k]; } return out.reverse(); }
+  for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]){ const nx = x + dx, ny = y + dy; if (!ok(nx, ny) || seen[key(nx, ny)]) continue; seen[key(nx, ny)] = 1; prev[key(nx, ny)] = key(x, y); q.push([nx, ny]); } }
+ return null; }
+
+return {W, H, rng, path, fpOf, cells, grid, fits, wallShape, starterLayout, centre};
+})();
+
+
 // ===== RAVENMARROW ENGINE =====
 const RM = (() => {
 const rnd = Math.random;
@@ -926,6 +994,15 @@ const BUILDINGS = [
  {id:'tower', grp:'def', name:'Archer Tower', rune:'ᛊ', f:1, desc:'Shoots attackers every round of a defense.'},
  {id:'pits', grp:'def', name:'Spike Pits', rune:'ᚾ', f:.7, desc:'Every attacker is wounded before the fight starts.'},
 ];
+// v3.0 base layout: footprints in tiles (default 3x3), what each Hall level unlocks, and the starter village
+const FP = {hall:[4, 4], tower:[2, 2], pits:[2, 2], wall:[1, 1]};
+const BDEFS = {}; BUILDINGS.forEach(b => { BDEFS[b.id] = {fp:FP[b.id] || [3, 3]}; });
+const UNLOCKS = {tower:[1, 1, 2, 2, 3], pits:[1, 1, 2, 2, 3], wall:[80, 92, 104, 116, 128]}; // index = Hall level - 1
+function unlocked(k, hall){ const t = UNLOCKS[k]; return t ? t[Math.max(1, Math.min(5, hall || 1)) - 1] : 1; }
+const STARTER = {ring:[4, 4, 23, 23], gate:[[13, 23], [14, 23]], items:[
+ {k:'hall', x:12, y:12}, {k:'lookout', x:13, y:7}, {k:'mead', x:8, y:8}, {k:'forge', x:18, y:8},
+ {k:'barracks', x:7, y:13}, {k:'altar', x:19, y:13}, {k:'infirmary', x:8, y:18}, {k:'camp', x:13, y:18}, {k:'mine', x:18, y:18},
+ {k:'tower', x:5, y:5}, {k:'pits', x:21, y:5}]};
 const VMAX = 5;
 function bmax(id, vil){ return id === 'hall' ? VMAX : Math.min(VMAX, (vil && vil.hall) || 1); }
 function buildCost(l, id){ const b = BUILDINGS.find(x => x.id === id), f = b ? b.f : 1; return {silver:Math.round(140 * f * Math.pow(l + 1, 2.1)), iron:Math.round(25 * f * Math.pow(l + 1, 2))}; }
@@ -1151,7 +1228,7 @@ function loot(r, s, raid){
  return o;
 }
 
-return {RARITY, GEAR_KINDS, GEAR_TIER, GEAR_FX, FX_CAP, makeItem, itemName, itemFx, gearFx, craftCost, upgradeCost, sellValue, MAX_PLUS, KIT_MAX, kitCost, bmax, mineRate, runeRate, campCap, TROOPS, bandStats, makeBand, survivors, PASSIVES, TRICKS, AFFIXES, makeElite, sprinkleElites, RELICS, relicFx, WARRIORS, SKILLS, REALMS, STAGES, BUILDINGS, VMAX, IDLE_CAP_H, Battle, makeHero, makeFoe, encounter, loot, levelCost, levelCap, buildCost, idleRate, power, levelMult, realmFactor, hasBuff, pick};
+return {RARITY, GEAR_KINDS, GEAR_TIER, GEAR_FX, FX_CAP, makeItem, itemName, itemFx, gearFx, craftCost, upgradeCost, sellValue, MAX_PLUS, KIT_MAX, kitCost, bmax, mineRate, runeRate, campCap, TROOPS, bandStats, makeBand, survivors, PASSIVES, TRICKS, AFFIXES, makeElite, sprinkleElites, RELICS, relicFx, WARRIORS, SKILLS, REALMS, STAGES, BUILDINGS, BDEFS, UNLOCKS, unlocked, STARTER, VMAX, IDLE_CAP_H, Battle, makeHero, makeFoe, encounter, loot, levelCost, levelCap, buildCost, idleRate, power, levelMult, realmFactor, hasBuff, pick};
 })();
 
 
@@ -1474,7 +1551,179 @@ function villageMap(vil, badges, claws){
  ${b}</svg>`;
 }
 
-return {ICON, sceneSVG, heroArt, foeArt, raven, seer, band, building, villageMap, SLOTS, item};
+// ---------- v3.0 BLOCKS: every village building built from boxes, 5 visible steps per building ----------
+// A box is [x, y, z, w, d, h, mat] in tiles, x/y across the footprint (0..fw, 0..fh), z up. Lights are [x, y, z, radius]; smoke is [x, y, z].
+// Steps: 1 sod, wattle and thatch. 2 torches and a fence. 3 stone footing, plank roofs. 4 banners and carved posts. 5 gold trim and dragon-head gables.
+const MATS = [ // [r, g, b, glow 0..1]
+ [46, 56, 34, 0], [38, 48, 30, 0], [70, 54, 38, 0], [92, 72, 50, 0],        // 0 grass, 1 grass dark, 2 dirt, 3 path
+ [74, 50, 34, 0], [104, 74, 48, 0], [128, 106, 62, 0], [104, 104, 112, 0],  // 4 wood, 5 light wood, 6 thatch, 7 stone
+ [64, 64, 74, 0], [214, 164, 64, .3], [132, 18, 30, 0], [255, 150, 50, 1], // 8 dark stone, 9 gold, 10 crimson cloth, 11 fire
+ [70, 220, 200, 1], [52, 50, 56, 0], [34, 58, 40, 0], [22, 40, 30, 0],      // 12 rune teal, 13 iron, 14 pine, 15 pine dark
+ [222, 210, 182, 0], [58, 52, 58, 0], [10, 8, 10, 0], [150, 120, 90, 0],    // 16 bone, 17 slate shingle, 18 void, 19 ore
+ [58, 92, 46, 0], [150, 130, 104, 0], [140, 34, 30, .9], [44, 30, 22, 0],   // 20 herb, 21 tent canvas, 22 ember coal, 23 dark wood
+ [92, 88, 94, 0]                                                            // 24 smoke
+];
+function blocks(id, l){
+ const B = [], L = [], S = [];
+ const box = (x, y, z, w, d, h, m) => { B.push([x, y, z, w, d, h, m]); };
+ const lv = Math.max(0, Math.min(5, l || 0));
+ const roofM = lv >= 3 ? 17 : 6, wallM = lv >= 3 ? 4 : 5;
+ // a stepped gable roof, ridge along x (ax 0) or y (ax 1)
+ function gable(x, y, z, w, d, rise, ax, m, gold){
+  const n = Math.max(3, Math.round(rise / .12)), dh = rise / n;
+  for (let i = 0; i < n; i++){
+   const t = i / n;
+   if (ax === 0){ const half = d / 2 * (1 - t); box(x - .1, y + d / 2 - half - .1 * (1 - t), z + i * dh, w + .2, half * 2 + .2 * (1 - t), dh, m); }
+   else { const half = w / 2 * (1 - t); box(x + w / 2 - half - .1 * (1 - t), y - .1, z + i * dh, half * 2 + .2 * (1 - t), d + .2, dh, m); }
+  }
+  if (gold){ if (ax === 0) box(x - .1, y + d / 2 - .05, z + rise, w + .2, .1, .06, 9); else box(x + w / 2 - .05, y - .1, z + rise, .1, d + .2, .06, 9); }
+ }
+ // a house: walls, door, roof. Door faces +y (south) unless ax says otherwise
+ function house(x, y, z, w, d, h, rise, ax, opt){
+  opt = opt || {};
+  box(x, y, z, w, d, h, opt.wall || wallM);
+  if (lv >= 4) [[x - .04, y - .04], [x + w - .08, y - .04], [x - .04, y + d - .08], [x + w - .08, y + d - .08]].forEach(([px, py]) => box(px, py, z, .12, .12, h + .05, 23)); // carved corner posts
+  box(x + w / 2 - .14, y + d - .02, z, .28, .06, h * .62, 23);   // door
+  gable(x, y, z + h, w, d, rise, ax, opt.roof || roofM, lv >= 5);
+  if (lv >= 5){ // dragon heads on the gable ends
+   if (ax === 0){ box(x - .3, y + d / 2 - .06, z + h + rise - .1, .26, .12, .12, 9); box(x + w + .04, y + d / 2 - .06, z + h + rise - .1, .26, .12, .12, 9); box(x - .36, y + d / 2 - .04, z + h + rise + .02, .1, .08, .14, 9); box(x + w + .26, y + d / 2 - .04, z + h + rise + .02, .1, .08, .14, 9); }
+   else { box(x + w / 2 - .06, y - .3, z + h + rise - .1, .12, .26, .12, 9); box(x + w / 2 - .06, y + d + .04, z + h + rise - .1, .12, .26, .12, 9); }
+  }
+ }
+ function torch(x, y, z){ box(x - .03, y - .03, z, .06, .06, .42, 23); box(x - .05, y - .05, z + .42, .1, .1, .1, 11); L.push([x, y, z + .5, 2.7]); }
+ function banner(x, y, z, h){ box(x - .02, y - .02, z, .04, .04, h, 23); box(x + .02, y - .015, z + h - .42, .22, .03, .36, 10); box(x + .02, y - .016, z + h - .2, .22, .032, .04, 9); }
+ function pad(fw, fh){ box(.1, .1, 0, fw - .2, fh - .2, lv >= 3 ? .16 : .05, lv >= 3 ? 8 : 2); return lv >= 3 ? .16 : .05; }
+ function fence(fw, fh, z){ if (lv < 2) return; for (let i = .2; i < fw - .1; i += .45){ box(i, .12, z, .07, .07, .26, 5); box(i, fh - .2, z, .07, .07, .26, 5); }
+  box(.2, .14, z + .16, fw - .4, .03, .04, 5); }
+ function barrel(x, y, z){ box(x, y, z, .22, .22, .28, 4); box(x - .01, y - .01, z + .08, .24, .24, .03, 13); box(x - .01, y - .01, z + .2, .24, .24, .03, 13); }
+ function plot(fw, fh){ // not built: a staked-out plot
+  box(.15, .15, 0, fw - .3, fh - .3, .03, 2);
+  for (let i = 0; i < 4; i++){ const px = i % 2 ? fw - .3 : .2, py = i > 1 ? fh - .3 : .2; box(px, py, 0, .08, .08, .3, 5); }
+  return {boxes:B, lights:L, smoke:S, top:.4};
+ }
+ if (lv === 0 && id !== 'wall') return plot(id === 'hall' ? 4 : (id === 'tower' || id === 'pits') ? 2 : 3, id === 'hall' ? 4 : (id === 'tower' || id === 'pits') ? 2 : 3);
+ let top = 1;
+ if (id === 'hall'){ // the longhouse grows longer and taller
+  const z = pad(4, 4), len = 2.2 + .35 * lv, x = 2 - len / 2, h = .62 + .07 * lv;
+  house(x, 1.05, z, len, 1.7, h, .95 + .08 * lv, 0);
+  if (lv >= 2){ torch(x - .2, 2.95, z); torch(x + len + .2, 2.95, z); }
+  if (lv >= 3){ box(x + len * .25, 2.75, z, len * .5, .12, .12, 7); } // stone step
+  if (lv >= 4){ banner(x + .2, 3.2, z, 1.2); banner(x + len - .2, 3.2, z, 1.2); }
+  S.push([x + len * .7, 1.9, z + h + .9]);
+  top = z + h + 1.1 + .08 * lv;
+ } else if (id === 'mead'){
+  const z = pad(3, 3);
+  house(.45, .6, z, 2.1, 1.3, .6 + .05 * lv, .7 + .05 * lv, 0);
+  barrel(.3, 2.25, z); if (lv >= 2){ barrel(.6, 2.35, z); torch(2.6, 2.4, z); }
+  if (lv >= 3){ house(2.1, 1.95, z, .7, .7, .4, .35, 1); }
+  if (lv >= 4) banner(.3, 1.9, z, 1.1);
+  if (lv >= 5){ barrel(1.0, 2.4, z); box(1.35, 2.42, z, .2, .2, .2, 9); }
+  S.push([2.2, 1.2, z + 1.4]); top = z + 1.5;
+ } else if (id === 'mine'){
+  const z = .05, hh = .7 + .14 * lv;
+  box(.2, .2, 0, 2.6, 1.8, hh * .55, 8); box(.45, .3, hh * .55, 2.1, 1.4, hh * .3, 7); box(.8, .45, hh * .85, 1.3, 1, hh * .2, 8);
+  box(1.15, 1.95, 0, .7, .08, .55, 18);                         // the dark cave mouth
+  if (lv >= 2){ box(1.05, 1.98, 0, .1, .12, .65, 23); box(1.85, 1.98, 0, .1, .12, .65, 23); box(1.05, 1.98, .6, .9, .12, .1, 23); torch(.85, 2.3, z); }
+  box(1.3, 2.35, z, .45, .3, .2, 4); box(1.35, 2.4, z + .2, .35, .2, .1, 19);   // ore cart
+  if (lv >= 3){ box(1.42, 2.1, 0, .04, .8, .03, 13); box(1.62, 2.1, 0, .04, .8, .03, 13); }
+  if (lv >= 4) banner(2.5, 2.4, z, 1.1);
+  if (lv >= 5){ box(1.4, 2.42, z + .3, .1, .1, .08, 9); box(.6, .5, hh * .55, .12, .12, .1, 9); box(2.3, .9, hh * .5, .12, .12, .1, 9); }
+  top = hh + .3;
+ } else if (id === 'lookout'){
+  const z = pad(3, 3), ht = 1.3 + .38 * lv;
+  [[.9, .9], [1.9, .9], [.9, 1.9], [1.9, 1.9]].forEach(([x, y]) => box(x, y, z, .14, .14, ht, lv >= 3 ? 23 : 4));
+  for (let k = .5; k < ht - .2; k += .55) box(.9, .95, z + k, 1.14, .04, .05, 5);
+  box(.7, .7, z + ht, 1.6, 1.6, .12, 5);                           // platform
+  box(.7, .7, z + ht + .12, 1.6, .05, .3, 5); box(.7, 2.25, z + ht + .12, 1.6, .05, .3, 5); box(.7, .7, z + ht + .12, .05, 1.6, .3, 5); box(2.25, .7, z + ht + .12, .05, 1.6, .3, 5);
+  gable(.65, .65, z + ht + .55, 1.7, 1.7, .45, 1, roofM, lv >= 5);
+  [[.75, .75], [2.15, .75], [.75, 2.15], [2.15, 2.15]].forEach(([x, y]) => box(x, y, z + ht + .12, .08, .08, .45, 4));
+  if (lv >= 2) torch(1.5, 2.5, z);
+  if (lv >= 4) banner(2.2, 2.2, z + ht + .12, .9);
+  if (lv >= 5){ box(1.4, 1.4, z + ht + .12, .2, .2, .12, 9); box(1.43, 1.43, z + ht + .24, .14, .14, .14, 11); L.push([1.5, 1.5, z + ht + .5, 3]); }
+  top = z + ht + 1.1;
+ } else if (id === 'forge'){
+  const z = pad(3, 3), h = .7 + .05 * lv;
+  [[.4, .5], [2.45, .5], [.4, 1.9], [2.45, 1.9]].forEach(([x, y]) => box(x, y, z, .12, .12, h, 23));
+  gable(.3, .4, z + h, 2.4, 1.7, .55, 0, roofM, lv >= 5);
+  box(.6, .6, z, .8, .7, .45 + .04 * lv, 7); box(.72, .7, z + .4 + .04 * lv, .56, .5, .06, 22); L.push([1, .95, z + .7, 2.6]);  // hearth
+  box(1.7, 1.2, z, .18, .18, .25, 23); box(1.6, 1.18, z + .25, .4, .22, .1, 13); box(1.95, 1.22, z + .27, .12, .14, .06, 13); // anvil
+  if (lv >= 2){ box(2.0, .6, z, .5, .06, .55, 4); for (let i = 0; i < 3; i++) box(2.05 + i * .15, .66, z + .1, .04, .04, .4, 13); }
+  if (lv >= 3){ box(.7, .65, z + .5, .35, .35, h + .6, 8); S.push([.87, .82, z + h + 1.2]); } else S.push([1, .95, z + h + .5]);
+  if (lv >= 2) torch(2.6, 2.45, z);
+  if (lv >= 4) banner(.35, 2.45, z, 1.1);
+  if (lv >= 5) box(1.62, 1.2, z + .35, .36, .02, .02, 9);
+  top = z + h + .9;
+ } else if (id === 'altar'){
+  const z = pad(3, 3), n = 2 + lv, r = 1.05, sh = .55 + .1 * lv;
+  for (let i = 0; i < n; i++){ const a = i / n * Math.PI * 2 - Math.PI / 2, x = 1.5 + Math.cos(a) * r - .11, y = 1.5 + Math.sin(a) * r - .11;
+   box(x, y, z, .22, .22, sh, 7); box(x + .04, y - .005, z + sh * .5, .14, .01, .16, 12); if (lv >= 5) box(x, y, z + sh, .22, .22, .06, 9); }
+  box(1.2, 1.25, z, .6, .5, .32, 8); box(1.25, 1.3, z + .32, .5, .4, .03, 12); L.push([1.5, 1.5, z + .6, 1.6 + .25 * lv]);
+  if (lv >= 2){ box(1.15, 1.2, z + .35, .06, .06, .1, 16); box(1.75, 1.2, z + .35, .06, .06, .1, 16); }
+  if (lv >= 4) banner(.3, 2.6, z, 1.1);
+  top = z + sh + .3;
+ } else if (id === 'barracks'){
+  const z = pad(3, 3);
+  house(.35, .4, z, 2.3, 1.05, .5 + .04 * lv, .6, 0);
+  box(.35, 1.75, z, .9, .06, .5, 4); for (let i = 0; i < 4; i++) box(.42 + i * .2, 1.8, z + .08, .04, .04, .62, 13); // spear rack
+  if (lv >= 2) torch(2.6, 2.6, z);
+  if (lv >= 3) [[1.7, 2.2], [2.2, 2.2]].forEach(([x, y]) => { box(x, y, z, .07, .07, .5, 4); box(x - .12, y, z + .32, .31, .07, .06, 4); box(x - .05, y - .03, z + .45, .17, .13, .14, 6); });
+  if (lv >= 4){ banner(.4, 2.5, z, 1.2); banner(1.2, 2.5, z, 1.2); }
+  if (lv >= 5) box(.35, 1.74, z + .5, .9, .07, .04, 9);
+  top = z + 1.3;
+ } else if (id === 'camp'){
+  const z = pad(3, 3), spots = [[.25, .3], [1.6, .3], [.25, 1.55], [1.6, 1.55], [.95, .9]];
+  for (let i = 0; i < Math.min(5, lv); i++){ const [x, y] = spots[i];
+   for (let k = 0; k < 5; k++){ const s = .12 * k; box(x + s, y + s * .2, z + k * .14, 1.1 - 2 * s, .95 - s * .4, .14, 21); }
+   box(x + .5, y + .9, z, .1, .04, .3, 23); }
+  box(2.55, 2.55, z, .3, .3, .06, 7); box(2.62, 2.62, z + .06, .16, .16, .1, 11); L.push([2.7, 2.7, z + .3, 2]);
+  if (lv >= 4) banner(.15, 2.75, z, 1.1);
+  if (lv >= 5) box(.95, 2.75, z, .24, .2, .3, 9);
+  top = z + .9;
+ } else if (id === 'infirmary'){
+  const z = pad(3, 3);
+  house(.5, .5, z, 1.9, 1.3, .55 + .04 * lv, .55, 0, {roof:lv >= 3 ? 17 : 6});
+  for (let i = 0; i < 1 + lv; i++) box(.4 + i * .3, 2.2, z, .16, .16, .18 + .03 * (i % 2), 20);   // herb beds
+  if (lv >= 2) torch(2.6, 2.4, z);
+  if (lv >= 3){ box(2.45, 1.4, z, .05, .05, .7, 23); box(2.42, 1.37, z + .6, .11, .11, .1, 11); L.push([2.47, 1.42, z + .65, 1.6]); }
+  if (lv >= 4) banner(.35, 2.65, z, 1.1);
+  if (lv >= 5) box(1.35, 1.82, z + .62, .2, .04, .2, 9);
+  top = z + 1.3;
+ } else if (id === 'tower'){
+  const z = .05, ht = 1.1 + .3 * lv;
+  [[.3, .3], [1.55, .3], [.3, 1.55], [1.55, 1.55]].forEach(([x, y]) => box(x, y, z, .15, .15, ht, lv >= 3 ? 23 : 4));
+  if (lv >= 3) box(.25, .25, 0, 1.5, 1.5, .25, 8);
+  box(.15, .15, z + ht, 1.7, 1.7, .1, 5);
+  [[.15, .15, 1.7, .05], [.15, 1.8, 1.7, .05], [.15, .15, .05, 1.7], [1.8, .15, .05, 1.7]].forEach(([x, y, w, d]) => box(x, y, z + ht + .1, w, d, .28, 5));
+  gable(.1, .1, z + ht + .65, 1.8, 1.8, .4, 1, roofM, lv >= 5);
+  [[.18, .18], [1.72, .18], [.18, 1.72], [1.72, 1.72]].forEach(([x, y]) => box(x, y, z + ht + .1, .08, .08, .55, 4));
+  if (lv >= 2) torch(1, 1.95, z);
+  if (lv >= 4) banner(1.75, 1.75, z + ht + .1, .9);
+  top = z + ht + 1.1;
+ } else if (id === 'pits'){
+  box(.25, .25, 0, 1.5, 1.5, .02, 18);
+  const n = 2 + lv;
+  for (let i = 0; i < n; i++) for (let j = 0; j < n; j++){ const x = .32 + i * (1.3 / n), y = .32 + j * (1.3 / n); box(x, y, 0, .06, .06, .16 + .03 * lv, lv >= 5 ? 9 : lv >= 3 ? 13 : 16); }
+  if (lv >= 2) [[.15, .15], [1.75, .15], [.15, 1.75], [1.75, 1.75]].forEach(([x, y]) => box(x, y, 0, .1, .1, .22, 5));
+  if (lv >= 4) banner(.12, 1.85, 0, .9);
+  top = .5;
+ } else if (id === 'wall'){
+  // one wall tile; shape bits (1 N, 2 E, 4 S, 8 W) are joined by the caller through wallBlocks
+ }
+ return {boxes:B, lights:L, smoke:S, top};
+}
+// a palisade tile joined to its neighbours. lv 0 = not built (marker stones only)
+function wallBlocks(lv, shape){
+ const B = [], L = [], box = (x, y, z, w, d, h, m) => B.push([x, y, z, w, d, h, m]);
+ if (!lv){ box(.42, .42, 0, .16, .16, .06, 8); return {boxes:B, lights:L, smoke:[], top:.1}; }
+ const h = .55 + .14 * lv, m = lv >= 3 ? 23 : 4, tip = lv >= 5 ? 9 : m;
+ if (lv >= 3){ box(.3, .3, 0, .4, .4, .18, 8); if (shape & 1) box(.3, 0, 0, .4, .3, .18, 8); if (shape & 4) box(.3, .7, 0, .4, .3, .18, 8); if (shape & 2) box(.7, .3, 0, .3, .4, .18, 8); if (shape & 8) box(0, .3, 0, .3, .4, .18, 8); }
+ const stake = (x, y) => { box(x - .07, y - .07, 0, .14, .14, h, m); box(x - .04, y - .04, h, .08, .08, .1, tip); };
+ stake(.5, .5);
+ if (shape & 1){ stake(.5, .17); } if (shape & 4){ stake(.5, .83); } if (shape & 2){ stake(.83, .5); } if (shape & 8){ stake(.17, .5); }
+ if (lv >= 2){ if (shape & 5) box(.46, (shape & 1) ? 0 : .5, h * .55, .08, (shape & 1) && (shape & 4) ? 1 : .5, .05, 23); if (shape & 10) box((shape & 8) ? 0 : .5, .46, h * .7, (shape & 8) && (shape & 2) ? 1 : .5, .08, .05, 23); }
+ return {boxes:B, lights:L, smoke:[], top:h + .1};
+}
+return {ICON, sceneSVG, heroArt, foeArt, raven, seer, band, building, villageMap, SLOTS, item, MATS, blocks, wallBlocks};
 })();
 
 // ===== RAVENMARROW UI =====
@@ -1482,6 +1731,7 @@ const VERSION = document.querySelector('meta[name="build"]').content; // e.g. "1
 const BUILD_DATE = document.querySelector('meta[name="build-date"]').content;
 // Newest first. Every update adds an entry; it shows once after the update lands.
 const CHANGELOG = [
+ {v:'3.0', d:'Nov 18 2026', notes:['Your village is rebuilt in blocks. Every building looks different at every level, so you can watch it grow from sod huts to a gold-trimmed longhouse.', 'Drag to look around, pinch to zoom, and tap any building to build or upgrade it.', 'The village follows your real clock: grey daylight, then torches and a blood moon after dark.']},
  {v:'2.2', d:'Nov 17 2026', notes:['New: Visions. Big moments now get their own painted scene, and every scene you have seen lives in the Saga Journal (the book icon) to watch again.', 'Watch the intro again from the title screen, the Journal, or Settings.']},
  {v:'2.1', d:'Nov 17 2026', notes:['A new title screen and a cinematic intro. Watch it again any time from Settings.', 'A new raven icon for your home screen.']},
  {v:'2.0.1', d:'Nov 17 2026', notes:['Equip best is smarter: it gives each piece to whoever gains the most and never leaves your squad weaker.', 'Raid clears in the last realm can drop tier 6 Drowned Gold gear.']},
@@ -1630,6 +1880,7 @@ function migrate(s){
 }
 let S;
 try { S = migrate(JSON.parse(store.get(SAVE_KEY) || 'null')); } catch (e) { S = freshSave(); }
+ensureLayout(S);
 function save(){ store.set(SAVE_KEY, JSON.stringify(S)); }
 save();
 
@@ -1962,7 +2213,8 @@ const Help = (() => {
   ['.bless', () => ({t:'Daily Blessing', b:['Your first win each day pays extra silver, iron and runes. Missing a day costs nothing.']})],
   ['.node', el => { const r = +el.dataset.r, s = +el.dataset.s, R = RM.REALMS[r]; const boss = el.classList.contains('boss'); return {t:boss ? R.boss.n : R.name + ', fight ' + (s + 1), b:[boss ? 'The realm\'s boss. Beat it to open the next realm and win a relic.' : 'A fight in ' + R.name + '. Win it to move along the path.', el.classList.contains('lock') ? '<b>Locked.</b> Clear the fight before it first.' : el.classList.contains('done') ? 'Cleared. Replay it any time for more loot.' : 'Tap it to see the enemies and fight.']}; }],
   ['.wcard', el => { const w = wdef(el.dataset.id), own = S.owned[w.id]; return {t:w.name + ', ' + w.title, b:[w.role ? '<b>' + w.role + '.</b> ' + (w.lore || '') : (w.lore || ''), own ? 'Level ' + own + '. Tap to see skills, level up, or give a relic.' : 'Not recruited yet. Costs ' + w.cost + ' bone runes.']}; }],
-  ['#vmap .bld', el => { const id = el.dataset.b, b = RM.BUILDINGS.find(x => x.id === id), l = S.vil[id] || 0, fx = bEffect(id, Math.max(1, l)); return {t:b.name + (l ? ', level ' + l : ', not built'), b:[b.desc, fx ? '<b>' + fx.big + '</b> ' + fx.what + (l ? '' : ' (at level 1)') : '', 'Tap it to build or upgrade.']}; }],
+  ['#vmap .bld', el => bldCard(el.dataset.b)],
+  ['#vmap .vilcv', () => window.VIL && VIL.lastPick ? bldCard(VIL.lastPick) : null],
   ['#coffers', () => ({t:'Coffers', b:['What your village has earned while you were away. Tap <b>Collect</b> to take it.', 'Silver comes from the Mead Hall, iron from the Mine, runes from the Lookout. Upgrade them to earn faster.']})],
   ['#nightCard', () => ({t:'Night Raid', b:['Every 8 hours the dead come for your village. Tap Defend to fight them off.', 'Your squad, Garrison, walls, towers and pits all fight. Lose and they empty your coffers.']})],
   ['#armyCard', () => ({t:'Troops', b:['Train Spearmen, Bowmen and Berserkers at the War Camp.', 'Your <b>Skirmish Band</b> fights beside your squad. Your <b>Garrison</b> stays home and defends.', 'Troops who die are gone, but the Infirmary saves some.']})],
@@ -2414,13 +2666,82 @@ function collectAll(){
  save(); return g;
 }
 function canUpgrade(id){ const l = S.vil[id] || 0; return l < RM.bmax(id, S.vil) && afford(RM.buildCost(l, id)); }
+function bldCard(id){ const b = RM.BUILDINGS.find(x => x.id === id); if (!b) return null; const l = S.vil[id] || 0, fx = bEffect(id, Math.max(1, l)); return {t:b.name + (l ? ', level ' + l : ', not built'), b:[b.desc, fx ? '<b>' + fx.big + '</b> ' + fx.what + (l ? '' : ' (at level 1)') : '', 'Tap it to build or upgrade.']}; }
+// ---------- v3.0 LIVING VILLAGE: the layout and the iso view ----------
+// S.layout {v:1, items:[{k, x, y}]}: every building has one spot, plus wall pieces. Built from the starter template the first time.
+function ensureLayout(s){
+ const ok = s.layout && s.layout.v === 1 && Array.isArray(s.layout.items);
+ const known = new Set(RM.BUILDINGS.map(b => b.id));
+ let L = ok ? {v:1, items:s.layout.items.filter(i => i && known.has(i.k) && Number.isInteger(i.x) && Number.isInteger(i.y))} : null;
+ if (!L){ s.layout = BASE.starterLayout(RM.BDEFS, RM.STARTER, RM.unlocked('wall', s.vil.hall)); return; }
+ // drop anything that overlaps or sits off the grid, then make sure every building has a spot
+ const clean = {v:1, items:[]};
+ L.items.forEach(it => { const f = BASE.fpOf(RM.BDEFS, it.k); if (it.x >= 0 && it.y >= 0 && it.x + f[0] <= BASE.W && it.y + f[1] <= BASE.H && BASE.fits(clean, it, RM.BDEFS)) clean.items.push({k:it.k, x:it.x, y:it.y}); });
+ RM.BUILDINGS.forEach(b => { if (b.id === 'wall' || clean.items.some(i => i.k === b.id)) return;
+  const t = RM.STARTER.items.find(i => i.k === b.id), f = BASE.fpOf(RM.BDEFS, b.id);
+  let spot = t && BASE.fits(clean, t, RM.BDEFS) ? {k:b.id, x:t.x, y:t.y} : null;
+  for (let y = 0; !spot && y <= BASE.H - f[1]; y++) for (let x = 0; !spot && x <= BASE.W - f[0]; x++){ const c = {k:b.id, x, y}; if (BASE.fits(clean, c, RM.BDEFS)) spot = c; }
+  if (spot) clean.items.push(spot); });
+ s.layout = clean;
+}
+// the ground: paths from every door to the Hall and out of the gate, tiles taken by buildings
+function villagePaths(L){
+ const gr = BASE.grid(L, RM.BDEFS), hall = L.items.find(i => i.k === 'hall'), path = new Set(), busy = new Set();
+ for (let i = 0; i < gr.g.length; i++) if (gr.g[i] >= 0) busy.add((i % gr.w) + ',' + Math.floor(i / gr.w));
+ if (!hall) return {path, busy};
+ const goal = [hall.x + 2, hall.y + 4], walk = (x, y) => gr.at(x, y) === -1;
+ const doors = L.items.filter(i => i.k !== 'wall' && i.k !== 'hall').map(i => { const f = BASE.fpOf(RM.BDEFS, i.k); return [i.x + Math.floor(f[0] / 2), i.y + f[1]]; });
+ const gate = RM.STARTER.gate; doors.push([gate[0][0], gate[0][1]]);
+ doors.forEach(d => (BASE.path(gr, d, goal, walk) || []).forEach(([x, y]) => path.add(x + ',' + y)));
+ gate.forEach(([gx, gy]) => { for (let y = gy; y < BASE.H; y++) path.add(gx + ',' + y); });
+ return {path, busy};
+}
+function villageScene(){
+ const L = S.layout, parts = [];
+ L.items.forEach(it => {
+  const f = BASE.fpOf(RM.BDEFS, it.k), lv = S.vil[it.k] || 0;
+  const bl = it.k === 'wall' ? ART.wallBlocks(lv, BASE.wallShape(L, it.x, it.y)) : ART.blocks(it.k, lv);
+  const p = {id:it.k, x:it.x, y:it.y, fw:f[0], fh:f[1], boxes:bl.boxes, lights:bl.lights, smoke:bl.smoke, top:bl.top, tap:true};
+  if (it.k !== 'wall'){ const up = canUpgrade(it.k);
+   p.label = `<i class="lvb${up ? ' up' : ''}">${lv || '+'}</i>${up ? '<b class="upa"></b>' : ''}<span>${BNAME[it.k]}</span>`; p.labelCls = 'bld' + (lv ? '' : ' empty'); }
+  parts.push(p);
+ });
+ // The Whispering: after a long absence, claw marks on the palisade (same rule as the drawn map)
+ if (Whisper.claws()){ const ws = parts.filter(p => p.id === 'wall'); [.2, .5, .8].forEach(f => { const w = ws[Math.floor(f * ws.length)]; if (w && S.vil.wall) w.boxes = w.boxes.concat([[.32, .9, .18, .05, .05, .42, 22], [.46, .9, .14, .05, .05, .48, 22], [.6, .9, .2, .05, .05, .4, 22]]); }); }
+ const g = villagePaths(L);
+ return {w:BASE.W, h:BASE.H, ring:RM.STARTER.ring, path:g.path, busy:g.busy, parts};
+}
+// loads village-iso.js once (cached by the service worker), then mounts it in #vmap. Falls back to the drawn map.
+function reduceMotion(){ return !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) || (S.set && S.set.fx === false); }
+let vilLoading = null;
+function loadVIL(){
+ if (window.VIL) return Promise.resolve(true);
+ if (vilLoading) return vilLoading;
+ const ver = (document.querySelector('meta[name="build"]') || {}).content || '0';
+ vilLoading = new Promise(res => { const sc = document.createElement('script'); sc.src = 'village-iso.js?v=' + ver; sc.onload = () => res(!!window.VIL); sc.onerror = () => { vilLoading = null; res(false); }; document.head.appendChild(sc); });
+ return vilLoading;
+}
+function svgVillage(badges){
+ const m = $('#vmap'); if (!m) return; m.classList.remove('iso'); m.innerHTML = ART.villageMap(S.vil, badges, Whisper.claws());
+ $$('#vmap .bld').forEach(el => el.addEventListener('click', () => { sfx('tap'); buildingSheet(el.dataset.b); }));
+}
+function mountVillage(badges){
+ const m = $('#vmap'); if (!m) return;
+ const go = () => {
+  if (!$('#vmap') || $('#vmap') !== m) return;
+  const ok = window.VIL && VIL.mount(m, {mats:ART.MATS, reduce:reduceMotion(), onTap:id => { if (Help.isOn()) return; sfx('tap'); buildingSheet(id); }});
+  if (!ok) return svgVillage(badges);
+  m.classList.add('iso'); VIL.update(villageScene());
+ };
+ if (window.VIL) go(); else loadVIL().then(ok => ok ? go() : svgVillage(badges));
+}
 function renderVillage(){
  const g = idleAll(), badges = {};
  RM.BUILDINGS.forEach(b => { badges[b.id] = {up:canUpgrade(b.id), name:BNAME[b.id]}; });
  const cap = RM.campCap(S.vil.camp), used = S.army.skirmish.n + S.army.garrison.n;
  const nr = nightState();
  let h = `<div class="vhead"><h2>The Village</h2><span class="hallb">Hall ${toRoman(S.vil.hall)}</span></div>
-  <div id="vmap">${ART.villageMap(S.vil, badges, Whisper.claws())}</div>
+  <div id="vmap" class="iso"></div>
   <div class="box coffers" id="coffers"><div class="cof">${['silver','iron','runes'].map(k => `<span>${ART.ICON[k]}<b>${fmt(g[k])}</b></span>`).join('')}</div><button class="btn blood small" id="collect" ${g.silver || g.iron || g.runes ? '' : 'disabled'}>Collect</button></div>
   <div class="vrow">
    <button class="box vcard ${nr.ready ? 'alarm' : ''}" id="nightCard"><div class="vic">&#5835;</div><b>Night Raid</b><small>${nr.locked ? 'After the first boss' : nr.ready ? 'The dead are here!' : 'Next in ' + nr.left}</small></button>
@@ -2428,7 +2749,7 @@ function renderVillage(){
   </div>
   ${villageChips() ? `<div class="vsum"><div class="row" style="gap:6px;justify-content:center">${villageChips()}</div></div>` : ''}`;
  $('#panel').innerHTML = h;
- $$('#vmap .bld').forEach(el => el.addEventListener('click', () => { sfx('tap'); buildingSheet(el.dataset.b); }));
+ mountVillage(badges);
  $$('.vsum .vchip').forEach(c => c.onclick = () => { if (c.dataset.tip) toast(c.dataset.tip, 3000); });
  $('#collect').onclick = () => { const r = collectAll(); if (!r) return; sfx('coin'); toast('Collected ' + ['silver','iron','runes'].filter(k => r[k]).map(k => fmt(r[k]) + ' ' + (k === 'runes' ? 'runes' : k)).join(', ') + '.'); Coach.emit('collect'); renderVillage(); renderTop(); checkDeeds(); };
  $('#nightCard').onclick = () => { sfx('tap'); nightSheet(); };
@@ -3540,7 +3861,7 @@ function restoreSheet(){
  sheet(`<button class="btn small close" id="xs">Close</button><h3>Restore</h3><p>Paste a backup code. This replaces your current progress.</p><textarea id="rsTxt" placeholder="RVM1..."></textarea><button class="btn blood wide" id="rsGo" style="margin-top:10px">Restore</button>`);
  $('#xs').onclick = closeSheet;
  $('#rsGo').onclick = () => {
-  try { const t = $('#rsTxt').value.trim(); if (!t.startsWith('RVM1.')) throw 0; const o = JSON.parse(decodeURIComponent(escape(atob(t.slice(5))))); S = migrate(o); save(); closeSheet(); toast('Saga restored.'); toHub('saga'); }
+  try { const t = $('#rsTxt').value.trim(); if (!t.startsWith('RVM1.')) throw 0; const o = JSON.parse(decodeURIComponent(escape(atob(t.slice(5))))); S = migrate(o); ensureLayout(S); save(); closeSheet(); toast('Saga restored.'); toHub('saga'); }
   catch (e) { toast('That code did not work. Check that all of it was pasted.'); }
  };
 }

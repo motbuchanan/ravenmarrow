@@ -1,6 +1,6 @@
 # Ravenmarrow: Roadmap
 
-**Current version:** 2.2 · Nov 17 2026
+**Current version:** 3.0 · Nov 18 2026
 **Live URL:** https://motbuchanan.github.io/ravenmarrow/ (repo: ravenmarrow, files at the root)
 **What it is:** A gothic Norse boss-battle game drawn entirely in code. A gift build inspired by a mobile Viking strategy RPG, built around boss fights, a warrior roster, and a light village. No money, no accounts, no data leaves the phone.
 
@@ -9,6 +9,7 @@
 - sw.js: offline cache + update detection. Cache name = `ravenmarrow-v<version>`
 - manifest.json, icon-192.png, icon-512.png, apple-touch-icon.png: install
 - .nojekyll: keeps GitHub Pages from processing files
+- village-iso.js: the WebGL2 village renderer, loaded only on the Village tab (precached by sw.js as village-iso.js?v=<version>)
 - ROADMAP.md: this file
 
 ## How updates reach her phone
@@ -50,6 +51,15 @@ Her weekend feedback: had a blast, got far, played between Vikingard raids. Comb
 - Attack styles per warrior look (HSTYLE) and per enemy shape (FSTYLE) in ui.js: body moves (release), projectiles (orb, arrow, ravens, sound ring, embers), impact variants (stab, cleave, claw marks, bite, slam rings), random variant + timing jitter on every strike.
 - Engine: PASSIVES (one per warrior), TRICKS per enemy shape (poison, bleed, blind, all-hit), AFFIXES elites (Armored, Frenzied, Vampiric, Hulking) from realm 2 on, DoT/miss/endure events. Tutorial fight has no tricks. Foe stats raised ~12% to offset passives (sim curve unchanged).
 - Village clarity: Now/Next numbers on every building, before/after squad stats on upgrade, bonus chips at the top of every fight, stat annotations on warrior pages.
+
+## Shipped in 3.0 (Nov 18 2026)
+Living Village, Phase 1 of 5 (plan: ravenmarrow-village-plan.md). Caleb's idea: draw the village with The Keep's iso block engine.
+- base.js (new source, inlined): the reusable base engine with no Ravenmarrow names. BASE.W/H 28x28, rng (mulberry32), fpOf, cells, grid, fits, wallShape (bits 1 N, 2 E, 4 S, 8 W), starterLayout, path (BFS), centre. Exported for Node (basecheck.js).
+- engine.js: BDEFS footprints (hall 4x4, tower and pits 2x2, wall 1x1, others 3x3), UNLOCKS per Hall level (towers 1/1/2/2/3, pits 1/1/2/2/3, walls 80/92/104/116/128), unlocked(k, hall), STARTER template (ring 4..23, gate at 13 and 14 on row 23).
+- art.js: MATS (25 block materials), blocks(id, level) and wallBlocks(level, shape). Five visible steps per building: sod and thatch, torches and fences, stone footing and slate roofs, banners and carved posts, gold trim and dragon heads. Level 0 is a staked plot.
+- village-iso.js (new flat file): orthographic camera at The Keep's slant, lit blocks, 1536 shadow map from the sun or the blood moon, up to 16 flickering torch lights, chimney smoke, fog at the forest edge, pan, pinch and wheel zoom, tap picking by footprint box, HTML labels (level badge, upgrade arrow, name). Fits the whole walled village on open. Rebuilds after a lost WebGL context. Stops when the Village tab is left.
+- ui.js: S.layout {v:1, items:[{k,x,y}]} made by ensureLayout() on load and restore (keeps all levels, troops and coffers). villageScene() turns the layout into parts, villagePaths() lays dirt paths from every door to the Hall and out of the gate. mountVillage() loads village-iso.js on demand and falls back to the old drawn map (svgVillage) if WebGL2 is missing. Help: canvas taps and holds explain the building under the finger (VIL.lastPick). Whispering claw marks show on the palisade. FX off or reduced motion stops flicker and smoke.
+- Tests: basecheck.js (Node) and vil1.py (browser). v15check.py now opens building sheets with buildingSheet(id), since the map is a canvas.
 
 ## Shipped in 2.2 (Nov 17 2026)
 Visions: event cinematics + a gallery (Saga Journal > Visions). Vision module in ui.js; VISIONS list holds id, title, unlock hint, image file, caption, camera move and effect.
@@ -121,11 +131,11 @@ Mot: villages need to be defended (walls, lookouts, archer towers), spend to rec
 - War tab: Raid, Warband Boss (weekly rotating boss x40 life, 3 attempts/day, damage = rewards), Arena (fight a defense lineup: squad + garrison + fort; practice vs own shadow, 5/day). FIREBASE_CONFIG = null in ui.js keeps online parts dormant.
 - Review pass: Arena uses Battle opt pvp:3 (hero armor is tuned for monsters, so hero vs hero otherwise times out); practice spars have no fort and count in arena.sparW/sparL, not rating. Troops cost 2.5x and band attack scales n^0.7 and drops as men fall. Boss and Spar locked until the first boss. Map slots re-spaced so every tap opens its own building.
 
-## Multiplayer (next)
-Options under discussion with Mot: async co-op World Boss (shared HP over a weekend, damage leaderboard), async Arena PvP (fight a friend's saved squad run by the AI), live co-op raid, live PvP. Needs Firebase (accounts or friend codes) and a change to the "nothing leaves your phone" stance.
+## Multiplayer
+Shipped in 1.6 as async warbands on Firebase (anonymous auth + Firestore, band code join, shared weekly boss, rivals, feed). Solo play needs no connection. Live co-op and live PvP are not built.
 
 ## Locked decisions
-- Art is drawn in code (approved Sample A look). No image files except the app icons.
+- Game art is drawn in code (approved Sample A look). Image files are limited to the icons, the title and intro shots (2.1) and the event scenes (2.2), all generated by Mot.
 - No real money, loot boxes or timers that push paying.
 - Version shows in Settings only (gift build, no badge on game screens).
 - Nothing suggestive.
