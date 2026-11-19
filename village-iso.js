@@ -160,9 +160,9 @@ function build(sc){
   else p.boxes.forEach(b => pushBox(V, I, b, p.x, p.y));
   (p.lights || []).forEach(L => st.lights.push([L[0] + p.x, L[1] + p.y, L[2], L[3]]));
   (p.smoke || []).forEach(s => st.smokeSrc.push([s[0] + p.x, s[1] + p.y, s[2]]));
-  if (p.tap) st.parts.push({id:p.id, key:p.key, x0:p.x, y0:p.y, x1:p.x + p.fw, y1:p.y + p.fh, top:p.top || 1, boxes:p.boxes.concat([[0, 0, 0, p.fw, p.fh, .12, 0]])});
+  if (p.tap) st.parts.push({id:p.id, key:p.key, x0:p.x, y0:p.y, x1:p.x + p.fw, y1:p.y + p.fh, top:p.top || 1, boxes:p.boxes.concat([[-.12, -.12, 0, p.fw + .24, p.fh + .24, .14, 0]])});
   if (p.label){ const el = document.createElement('div'); el.className = 'vlab' + (p.labelCls ? ' ' + p.labelCls : ''); el.innerHTML = p.label; el.dataset.b = p.id; labelLayer.appendChild(el);
-   st.labels.push({el, x:p.x + p.fw / 2, y:p.y + p.fh / 2, z:(p.top || 1) + .2}); }
+   st.labels.push({el, key:p.key, empty:/empty/.test(p.labelCls || ''), x:p.x + p.fw / 2, y:p.y + p.fh / 2, z:(p.top || 1) + .2}); }
  });
  if (!hasAnim) st.anim = null;
  geo = upload(geo, V, I); st.verts = V.length / 8; st.dirty = true;
@@ -203,18 +203,32 @@ function clampCam(){ cam.zoom = Math.max(cam.minZ, Math.min(cam.maxZ, cam.zoom))
 // a tap: the nearest tappable footprint box the ray passes through
 function pick(px, py){ const p = pickPart(px, py); return p ? p.id : null; }
 function pickPart(px, py){
+ // v3.4.1: the round badge and name over a building are what a thumb aims for (on an empty plot they are most of what you see).
+ // A tap right on a label (16 px) picks that building; otherwise the ray decides, and a label within 34 px catches taps the ray misses.
+ let lb = null, ld = 1e9;  // the wide 34 px catch is only for unbuilt plots, so open ground elsewhere still double-taps to fit
+ if (!st.edit && !st.battle && st.labels.length){ const m0 = camMats(), r0 = canvas.getBoundingClientRect();
+  for (const l of st.labels){ const q = xform(m0.VP, [l.x, l.y, l.z]), sx = (q[0] * .5 + .5) * r0.width, sy = (1 - (q[1] * .5 + .5)) * r0.height - 4, d = Math.hypot(sx - px, sy - py); if (d < ld){ ld = d; lb = l; } } }
+ const byLabel = lb ? st.parts.find(q => q.key === lb.key) : null;
+ if (byLabel && ld < 16) return byLabel;
+ const ray = pickRay(px, py); if (ray) return ray;
+ return byLabel && ld < 34 && lb.empty ? byLabel : null;
+}
+function pickRay(px, py){
  const r = canvas.getBoundingClientRect(), m = camMats(), iv = inv(m.VP);
  const nx = (px / r.width) * 2 - 1, ny = 1 - (py / r.height) * 2;
  const a = xform(iv, [nx, ny, -1]), b = xform(iv, [nx, ny, 1]), d = [b[0] - a[0], b[1] - a[1], b[2] - a[2]];
  // ray against a box: entry t or Infinity
  const hit = (lo, hi) => { let t0 = 0, t1 = 1; for (let k = 0; k < 3; k++){ if (Math.abs(d[k]) < 1e-9){ if (a[k] < lo[k] || a[k] > hi[k]) return Infinity; continue; }
   let u = (lo[k] - a[k]) / d[k], v = (hi[k] - a[k]) / d[k]; if (u > v){ const s = u; u = v; v = s; } t0 = Math.max(t0, u); t1 = Math.min(t1, v); if (t0 > t1) return Infinity; } return t0; };
- let best = null, bt = Infinity;
+ let best = null, bt = Infinity, padBest = null, padT = Infinity;
  for (const p of st.parts){
   if (hit([p.x0 - .4, p.y0 - .4, 0], [p.x1 + .4, p.y1 + .4, p.top + .3]) === Infinity) continue;   // quick reject
+  const pad = p.boxes[p.boxes.length - 1];
   for (const q of p.boxes){ const lo = [q[0] + p.x0 - .04, q[1] + p.y0 - .04, q[2]], hi = [lo[0] + q[3] + .08, lo[1] + q[4] + .08, q[2] + q[5] + .04], t = hit(lo, hi);
+   if (q === pad){ if (t < padT){ padT = t; padBest = p; } continue; }   // the ground pad only counts when no real box was hit, so it never steals from a neighbour
    if (t < bt){ bt = t; best = p; } }
  }
+ if (!best) best = padBest;
  return best;
 }
 // ---------- smoke: a few grey blocks drifting up from chimneys ----------
@@ -401,7 +415,7 @@ function groundAt(px, py){ const r = canvas.getBoundingClientRect(), iv = inv(ca
 function local(e){ const r = canvas.getBoundingClientRect(); return [e[0] - r.left, e[1] - r.top]; }
 let lastPaint = null;
 function tileAt(cx, cy){ const g = groundAt(...local([cx, cy])); return [Math.floor(g[0]), Math.floor(g[1]), g]; }
-function onDown(e){ canvas.setPointerCapture && canvas.setPointerCapture(e.pointerId); ptr.set(e.pointerId, [e.clientX, e.clientY]);
+function onDown(e){ try { canvas.setPointerCapture && canvas.setPointerCapture(e.pointerId); } catch (err){} ptr.set(e.pointerId, [e.clientX, e.clientY]);
  if (st.battle) st.battle.follow = false;
  if (st.edit && ptr.size === 1){
   const E = st.edit, r = canvas.getBoundingClientRect();
@@ -412,12 +426,15 @@ function onDown(e){ canvas.setPointerCapture && canvas.setPointerCapture(e.point
  if (st.drag && ptr.size === 2){ const D = st.drag; st.drag = null; if (st.edit && st.edit.h.select) st.edit.h.select(D.key, D.x0, D.y0); if (lastScene) build(lastScene); }
  if (ptr.size === 1){ downAt = performance.now(); moved = 0; downXY = [e.clientX, e.clientY]; const r = canvas.getBoundingClientRect(); window.VIL.lastPick = pick(e.clientX - r.left, e.clientY - r.top); }
  if (ptr.size === 2){ const [a, b] = [...ptr.values()]; pinch0 = Math.hypot(a[0] - b[0], a[1] - b[1]); zoom0 = cam.zoom; mid0 = groundAt(...local([(a[0] + b[0]) / 2, (a[1] + b[1]) / 2])); moved = 99; } }
-function onMove(e){ if (!ptr.has(e.pointerId)) return; const prev = ptr.get(e.pointerId), cur = [e.clientX, e.clientY];
+function onMove(e){ if (!ptr.has(e.pointerId)) return; let prev = ptr.get(e.pointerId), cur = [e.clientX, e.clientY];
  if (st.drag && ptr.size === 1){ ptr.set(e.pointerId, cur); const [, , g] = tileAt(cur[0], cur[1]), D = st.drag, x = Math.round(g[0] - D.ox), y = Math.round(g[1] - D.oy);
   if (x !== D.x || y !== D.y){ D.x = x; D.y = y; D.ok = st.edit.h.canPlace(D.key, x, y); st.dirty = true; if (st.edit.h.hover) st.edit.h.hover(D.key, x, y, D.ok); } return; }
  if (st.edit && (st.edit.mode === 'paint' || st.edit.mode === 'erase') && ptr.size === 1){ ptr.set(e.pointerId, cur); const [x, y] = tileAt(cur[0], cur[1]), k = x + ',' + y; if (k !== lastPaint){ lastPaint = k; st.edit.h[st.edit.mode](x, y); } return; }
  if (ptr.size === 1){
   // grab the ground: whatever was under the finger stays under the finger
+  const far = downXY ? Math.hypot(cur[0] - downXY[0], cur[1] - downXY[1]) : 99;
+  if (moved < 10 && far < 12){ ptr.set(e.pointerId, cur); return; }       // v3.4.1 tap slop: under 12 px from the press, stay put
+  if (moved < 10 && downXY){ moved = 10; prev = downXY.slice(); }                     // first real move: pan from the press point so nothing jumps
   const g0 = groundAt(...local(prev)), g1 = groundAt(...local(cur)); ptr.set(e.pointerId, cur);
   moved += Math.abs(cur[0] - prev[0]) + Math.abs(cur[1] - prev[1]);
   cam.tx += g0[0] - g1[0]; cam.ty += g0[1] - g1[1]; clampCam(); st.dirty = true; return; }
@@ -433,7 +450,7 @@ function onUp(e){ const was = ptr.size; ptr.delete(e.pointerId);
  lastPaint = null;
  if (ptr.size < 2){ pinch0 = 0; zoom0 = cam.zoom; }
  if (ptr.size === 1){ const [k, v] = [...ptr.entries()][0]; ptr.set(k, v); }  // the finger left behind keeps panning from where it is
- if (was === 1 && moved < 10 && performance.now() - downAt < 600){
+ if (was === 1 && moved < 10 && performance.now() - downAt < 700){
   const now = performance.now(), r = canvas.getBoundingClientRect(), id = pick(e.clientX - r.left, e.clientY - r.top);
   if (st.edit && st.edit.mode === 'move'){ const p = pickPart(e.clientX - r.left, e.clientY - r.top); st.sel = p ? p.key : null; st.dirty = true; if (st.edit.h.select) st.edit.h.select(st.sel, p ? p.x0 : 0, p ? p.y0 : 0); if (p) return; }
   if (!id && now - lastTapAt < 350){ fit(); lastTapAt = 0; return; }           // double-tap empty ground: back to the whole village

@@ -1,6 +1,6 @@
 # Ravenmarrow: Roadmap
 
-**Current version:** 3.4 · Nov 19 2026
+**Current version:** 3.5 · Nov 19 2026
 **Live URL:** https://motbuchanan.github.io/ravenmarrow/ (repo: ravenmarrow, files at the root)
 **What it is:** A gothic Norse boss-battle game drawn entirely in code. A gift build inspired by a mobile Viking strategy RPG, built around boss fights, a warrior roster, and a light village. No money, no accounts, no data leaves the phone.
 
@@ -51,6 +51,21 @@ Her weekend feedback: had a blast, got far, played between Vikingard raids. Comb
 - Attack styles per warrior look (HSTYLE) and per enemy shape (FSTYLE) in ui.js: body moves (release), projectiles (orb, arrow, ravens, sound ring, embers), impact variants (stab, cleave, claw marks, bite, slam rings), random variant + timing jitter on every strike.
 - Engine: PASSIVES (one per warrior), TRICKS per enemy shape (poison, bleed, blind, all-hit), AFFIXES elites (Armored, Frenzied, Vampiric, Hulking) from realm 2 on, DoT/miss/endure events. Tutorial fight has no tricks. Foe stats raised ~12% to offset passives (sim curve unchanged).
 - Village clarity: Now/Next numbers on every building, before/after squad stats on upgrade, bonus chips at the top of every fight, stat annotations on warrior pages.
+
+## Shipped in 3.5 (Nov 19 2026) - Living Village Phase 5
+- Arena on real villages. Raid a rival: your squad and Skirmish band attack their published layout (their levels, their squad and Garrison defend). Watch it or let it play out. Win by tearing down half the village or the Hall. Rating +20/-10, loot and Skirmish losses (Infirmary saves some) as before. Practice spar attacks your own layout, no rating.
+- engine.js: arenaRecipe() and ARENA_TUNE (attackers 2.4x life, 3.4x attack, buildings 0.7x, hallK per defender Hall [.8, .97, 1.03, 1.17, 1.25]). Attackers wear 'x_' looks (slate and iron, black cloaks). Tuned with arenasweep.js: a mirror match is won by the attacker 43 to 49% at every Hall; punching up a Hall is hard (5 to 35%), down is easier (61 to 83%).
+- base.js: simRaid result gains attHp (attacker life left; fights unchanged, SIM_VER still 1).
+- ui.js: packLayout/unpackLayout (short tokens, about 6 characters a building), cleanLayout(raw, vil) next to cleanLineup (counts clamped to the Hall's unlocks, overlaps and strays dropped, invalid layouts fall back to a starter village), cleanVil, cleanUnit, packRecipe/unpackRecipe (6 KB cap; buildings rebuilt from layout + levels + kb/kh through raidItem). The player doc gains layout (published on connect and on Done in edit mode). A raid writes a feed entry with rec. ingestArena() turns entries aimed at you into red 'arena' reports, fought again on the receiving phone, deduped by uid:at (S.flags.arenaSeen, last 40). Replays draw the recipe's own village and levels, so old night reports also show the layout as it stood.
+- Reports: kinds night, arena (raid on you, red card), attack and spar (yours: Victory or Repelled). HUD title per kind.
+- Friend raids never cost coffers.
+- Tests: arenasweep.js (Node) and v35check.py (two phones and a cheater on a mock store).
+
+## Base engine (for the Clash-style game)
+Reusable, no Ravenmarrow names: base.js (28x28 grid, footprints, fits, validLayout, starterLayout from a template, path, wallShape, the deterministic simRaid with SIM_VER and recorded frames) and village-iso.js (WebGL2 block renderer: camera, ground-grab pan and pinch, picking on real boxes, labels, edit mode with drag, paint and erase, placement rings, actors, battle playback). Ravenmarrow content: engine.js (BDEFS, UNLOCKS, STARTER, RAID_SHAPE, raidItem, raidRecipe, arenaRecipe and their tunes), art.js (blocks, figures, MATS), and ui.js (edit bar, placement facts, reports, Firebase).
+
+## Shipped in 3.4.1 (Nov 19 2026)
+- Easier village taps (Mot: the + on an empty plot was very hard to hit). A tap on a building's badge or name (16 px) picks it, and an empty plot's + catches taps within 34 px (labels float above the footprint, so the ground ray used to miss); footprint pads grow 0.12 tiles each side but only count when no real box is hit, so they never steal a neighbour's tap; 12 px tap slop before a drag starts panning, with the pan starting from the press point.
 
 ## Shipped in 3.4 (Nov 19 2026)
 - Placement info in Edit layout: tap a building (or start dragging it) and a strip above the edit buttons gives its name, level, raid role, which Archer Towers reach it, how many extra steps the wall costs raiders to reach it, and what a tower covers. Updates live while dragging. Facts come from the raid rules (tower reach from raidItem, wall cost 6 like simRaid's router, unbuilt buildings ignored). Taps on walls and open ground in Move mode explain or clear instead of opening sheets.
@@ -174,7 +189,7 @@ Shipped in 1.6 as async warbands on Firebase (anonymous auth + Firestore, band c
 - Nothing suggestive.
 
 ## Open queue (expansion ideas, in rough priority)
-1. Phase 5 of the Living Village: Arena attacks on real layouts through Firebase (cleanLayout, layout in the player doc, red Arena reports), then break-it
+1. Feedback from the warband on Arena raids (balance knobs: ARENA_TUNE in engine.js)
 2. Open question for Mot: real proximity bonuses (for example a building next to the Forge or under a tower gaining something). Not in the rules yet; would bump SIM_VER
 3. Her feedback after play
 4. Realm VI and beyond (each realm = 1 entry in REALMS + 1 foe shape if new)
