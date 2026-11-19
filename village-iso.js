@@ -74,8 +74,8 @@ precision mediump float; out vec4 o; void main(){ o = vec4(1.0); }`;
 // ---------- state ----------
 let canvas = null, gl = null, host = null, labelLayer = null, P = null, PD = null, shTex = null, shFb = null;
 let geo = null, dyn = null, lastScene = null, lost = false;
-const cam = {tx:14, ty:14, zoom:9.5, minZ:4.5, maxZ:22, fitted:false};
-const st = {dirty:true, raf:0, last:0, t0:performance.now(), frames:0, fpsT:0, fps:0, verts:0, hour:null, mounted:false, onTap:null, reduce:false, labels:[], parts:[], lights:[], smokeSrc:[], puffs:[], cost:8, visible:true, actors:[], anim:null, canAnim:null, battle:null};
+const cam = {tx:14, ty:14, zoom:9.5, minZ:2.4, maxZ:22, fitted:false};  // v3.4: minZ 2.4 lets a finger get close enough to read faces and kit
+const st = {dirty:true, raf:0, last:0, t0:performance.now(), frames:0, fpsT:0, fps:0, verts:0, hour:null, mounted:false, onTap:null, reduce:false, labels:[], parts:[], lights:[], smokeSrc:[], puffs:[], cost:8, visible:true, actors:[], anim:null, canAnim:null, battle:null, sel:null};
 
 function compile(type, src){ const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s)); return s; }
 function program(vs, fs, names){ const p = gl.createProgram(); gl.attachShader(p, compile(gl.VERTEX_SHADER, vs)); gl.attachShader(p, compile(gl.FRAGMENT_SHADER, fs)); gl.linkProgram(p);
@@ -291,7 +291,7 @@ function battleBoxes(V, I){
  const nb = {}; b.u.forEach(u => nb[u[0]] = u);
  for (const u of a.u){ if (!u[6]) continue; const n = nb[u[0]] || u, x = u[1] + (n[1] - u[1]) * k, y = u[2] + (n[2] - u[2]) * k, meta = Bt.units[u[0]] || {};
   const mode = u[4] === 0 ? 'walk' : u[4] === 1 ? 'work' : 'idle', fr = Math.floor(Bt.t * (mode === 'walk' ? 7 : 4));
-  rot(st.fig(meta.look, fr, mode, false), u[5]).forEach(q => pushBox(V, I, [q[0] + x, q[1] + y, q[2], q[3], q[4], q[5], q[6]], 0, 0));
+  lod(rot(st.fig(meta.look, fr, mode, false), u[5])).forEach(q => pushBox(V, I, [q[0] + x, q[1] + y, q[2], q[3], q[4], q[5], q[6]], 0, 0));
   if (meta.max && u[3] < meta.max){ const w = .44, fr2 = Math.max(0, u[3] / meta.max), z = meta.fly ? 1.32 : .72;   // a life bar over the head
    pushBox(V, I, [x - w / 2, y, z, w, .05, .05, 13], 0, 0); pushBox(V, I, [x - w / 2, y - .005, z + .002, w * fr2, .06, .05, meta.side === 'a' ? 33 : 32], 0, 0); }
  }
@@ -304,13 +304,15 @@ function battleBoxes(V, I){
 }
 function battleLights(){ const Bt = st.battle; if (!Bt) return []; return Bt.shots.filter(s => s.s[4] === 3).slice(0, 6).map(s => { const p = Math.min(1, s.age / .3); return [s.s[0] + (s.s[2] - s.s[0]) * p, s.s[1] + (s.s[3] - s.s[1]) * p, .6, 1.2]; }); }
 
+// v3.4 figures carry fine detail (eyes, teeth, buckles); zoomed out it is too small to see, so it is skipped to save the phone some work
+function lod(bs){ if (cam.zoom < 6.5) return bs; return bs.filter(b => b[3] > .03 || b[4] > .03 || b[5] > .045); }
 function dynGeo(){
  const V = [], I = [];
  st.puffs.forEach(p => { const s = p.sz * (1 + Math.min(p.age, 1.2) * .6) * Math.max(.2, 1 - Math.max(0, p.age - 1.2) / 2.4); pushBox(V, I, [p.x - s / 2, p.y - s / 2, p.z, s, s, s, 24], 0, 0); });
  st.dynLights = [];
  for (const a of st.actors){ if (!a.pos) continue;
   const fr = a.mode === 'walk' ? Math.floor(a.anim * 7) : a.mode === 'work' ? Math.floor(a.anim * (a.drill ? 2.5 : 3.2)) : 0;
-  const bs = rot(a.fig(fr, a.mode, a.torch), a.face);
+  const bs = lod(rot(a.fig(fr, a.mode, a.torch), a.face));
   for (const b of bs) pushBox(V, I, [b[0] + a.pos[0], b[1] + a.pos[1], b[2] + a.pos[2], b[3], b[4], b[5], b[6]], 0, 0);
   if (a.torch) st.dynLights.push([a.pos[0], a.pos[1], a.pos[2] + .5, 1.6]); }
  animBoxes().forEach(b => pushBox(V, I, b, 0, 0));
@@ -320,7 +322,32 @@ function dynGeo(){
   const fw = p.fw, fh = p.fh, t = .08, z = .03;
   [[0, 0, fw, t], [0, fh - t, fw, t], [0, 0, t, fh], [fw - t, 0, t, fh]].forEach(([x, y, w, d]) => pushBox(V, I, [D.x + x, D.y + y, z, w, d, .03, m], 0, 0));
   pushBox(V, I, [D.x + .1, D.y + .1, .01, fw - .2, fh - .2, .015, m], 0, 0); }
+ editMarks(V, I);
  dyn = upload(dyn, V, I);
+}
+
+// v3.4 placement marks: while a building is picked or dragged, every tower's reach is drawn on the ground
+// (bright for the picked tower, dim gold for the rest) and the picked footprint gets a teal outline
+function ringDashes(V, I, x0, y0, fw, fh, r, m){
+ const seg = [], L = (fw + fh) * 2 + 2 * Math.PI * r, n = Math.max(24, Math.round(L / .42));
+ for (let i = 0; i < n; i++){ let d = (i + .5) / n * L, px, py;
+  const e = [[fw, 0], [r * Math.PI / 2, 1], [fh, 2], [r * Math.PI / 2, 3], [fw, 4], [r * Math.PI / 2, 5], [fh, 6], [r * Math.PI / 2, 7]];
+  for (const [len, k] of e){ if (d > len){ d -= len; continue; }
+   const a = d / r;
+   if (k === 0){ px = x0 + d; py = y0 - r; } else if (k === 1){ px = x0 + fw + Math.sin(a) * r; py = y0 - Math.cos(a) * r; }
+   else if (k === 2){ px = x0 + fw + r; py = y0 + d; } else if (k === 3){ px = x0 + fw + Math.cos(a) * r; py = y0 + fh + Math.sin(a) * r; }
+   else if (k === 4){ px = x0 + fw - d; py = y0 + fh + r; } else if (k === 5){ px = x0 - Math.sin(a) * r; py = y0 + fh + Math.cos(a) * r; }
+   else if (k === 6){ px = x0 - r; py = y0 + fh - d; } else { px = x0 - Math.cos(a) * r; py = y0 - Math.sin(a) * r; }
+   break; }
+  if (px == null) continue; pushBox(V, I, [px - .07, py - .07, .03, .14, .14, .03, m], 0, 0); } }
+function editMarks(V, I){
+ const E = st.edit; if (!E || !E.h || E.mode !== 'move') return;
+ const D = st.drag, act = D ? D.key : st.sel; if (act == null) return;
+ for (const p of st.parts){ const r = E.h.ring ? E.h.ring(p.key) : 0; if (!(r > 0)) continue;
+  const fw = p.x1 - p.x0, fh = p.y1 - p.y0, here = D && D.key === p.key, x0 = here ? D.x : p.x0, y0 = here ? D.y : p.y0;
+  ringDashes(V, I, x0, y0, fw, fh, r, p.key === act ? 12 : 9); }
+ if (!D){ const p = st.parts.find(q => q.key === act); if (p){ const fw = p.x1 - p.x0, fh = p.y1 - p.y0, t = .07, z = .14;
+  [[0, 0, fw, t], [0, fh - t, fw, t], [0, 0, t, fh], [fw - t, 0, t, fh]].forEach(([x, y, w, d]) => pushBox(V, I, [p.x0 + x - .04, p.y0 + y - .04, z, w + .08, d + .08, .04, 12], 0, 0)); } }
 }
 
 // ---------- draw ----------
@@ -379,15 +406,15 @@ function onDown(e){ canvas.setPointerCapture && canvas.setPointerCapture(e.point
  if (st.edit && ptr.size === 1){
   const E = st.edit, r = canvas.getBoundingClientRect();
   if (E.mode === 'move'){ const p = pickPart(e.clientX - r.left, e.clientY - r.top);
-   if (p && E.h.movable(p.key)){ const [, , g] = tileAt(e.clientX, e.clientY); st.drag = {key:p.key, ox:g[0] - p.x0, oy:g[1] - p.y0, x:p.x0, y:p.y0, x0:p.x0, y0:p.y0, ok:true}; if (lastScene) build(lastScene); moved = 99; return; } }
+   if (p && E.h.movable(p.key)){ const [, , g] = tileAt(e.clientX, e.clientY); st.drag = {key:p.key, ox:g[0] - p.x0, oy:g[1] - p.y0, x:p.x0, y:p.y0, x0:p.x0, y0:p.y0, ok:true}; st.sel = p.key; if (E.h.select) E.h.select(p.key, p.x0, p.y0); if (lastScene) build(lastScene); moved = 99; return; } }
   else if (E.mode === 'paint' || E.mode === 'erase'){ const [x, y] = tileAt(e.clientX, e.clientY); lastPaint = x + ',' + y; E.h[E.mode](x, y); moved = 99; return; }
  }
- if (st.drag && ptr.size === 2){ st.drag = null; if (lastScene) build(lastScene); }
+ if (st.drag && ptr.size === 2){ const D = st.drag; st.drag = null; if (st.edit && st.edit.h.select) st.edit.h.select(D.key, D.x0, D.y0); if (lastScene) build(lastScene); }
  if (ptr.size === 1){ downAt = performance.now(); moved = 0; downXY = [e.clientX, e.clientY]; const r = canvas.getBoundingClientRect(); window.VIL.lastPick = pick(e.clientX - r.left, e.clientY - r.top); }
  if (ptr.size === 2){ const [a, b] = [...ptr.values()]; pinch0 = Math.hypot(a[0] - b[0], a[1] - b[1]); zoom0 = cam.zoom; mid0 = groundAt(...local([(a[0] + b[0]) / 2, (a[1] + b[1]) / 2])); moved = 99; } }
 function onMove(e){ if (!ptr.has(e.pointerId)) return; const prev = ptr.get(e.pointerId), cur = [e.clientX, e.clientY];
  if (st.drag && ptr.size === 1){ ptr.set(e.pointerId, cur); const [, , g] = tileAt(cur[0], cur[1]), D = st.drag, x = Math.round(g[0] - D.ox), y = Math.round(g[1] - D.oy);
-  if (x !== D.x || y !== D.y){ D.x = x; D.y = y; D.ok = st.edit.h.canPlace(D.key, x, y); st.dirty = true; } return; }
+  if (x !== D.x || y !== D.y){ D.x = x; D.y = y; D.ok = st.edit.h.canPlace(D.key, x, y); st.dirty = true; if (st.edit.h.hover) st.edit.h.hover(D.key, x, y, D.ok); } return; }
  if (st.edit && (st.edit.mode === 'paint' || st.edit.mode === 'erase') && ptr.size === 1){ ptr.set(e.pointerId, cur); const [x, y] = tileAt(cur[0], cur[1]), k = x + ',' + y; if (k !== lastPaint){ lastPaint = k; st.edit.h[st.edit.mode](x, y); } return; }
  if (ptr.size === 1){
   // grab the ground: whatever was under the finger stays under the finger
@@ -401,12 +428,14 @@ function onMove(e){ if (!ptr.has(e.pointerId)) return; const prev = ptr.get(e.po
   cam.tx += mid0[0] - after[0]; cam.ty += mid0[1] - after[1]; clampCam(); st.dirty = true; } }
 function onUp(e){ const was = ptr.size; ptr.delete(e.pointerId);
  if (st.drag && was === 1){ const D = st.drag; st.drag = null; lastPaint = null;
-  if (D.ok && (D.x !== D.x0 || D.y !== D.y0)) st.edit.h.place(D.key, D.x, D.y); else { if (!D.ok) st.edit.h.reject(D.key); if (lastScene) build(lastScene); } return; }
+  if (D.ok && (D.x !== D.x0 || D.y !== D.y0)){ st.edit.h.place(D.key, D.x, D.y); if (st.edit && st.edit.h.select) st.edit.h.select(D.key, D.x, D.y); }
+  else { if (!D.ok) st.edit.h.reject(D.key); if (st.edit.h.select) st.edit.h.select(D.key, D.x0, D.y0); if (lastScene) build(lastScene); } return; }
  lastPaint = null;
  if (ptr.size < 2){ pinch0 = 0; zoom0 = cam.zoom; }
  if (ptr.size === 1){ const [k, v] = [...ptr.entries()][0]; ptr.set(k, v); }  // the finger left behind keeps panning from where it is
  if (was === 1 && moved < 10 && performance.now() - downAt < 600){
   const now = performance.now(), r = canvas.getBoundingClientRect(), id = pick(e.clientX - r.left, e.clientY - r.top);
+  if (st.edit && st.edit.mode === 'move'){ const p = pickPart(e.clientX - r.left, e.clientY - r.top); st.sel = p ? p.key : null; st.dirty = true; if (st.edit.h.select) st.edit.h.select(st.sel, p ? p.x0 : 0, p ? p.y0 : 0); if (p) return; }
   if (!id && now - lastTapAt < 350){ fit(); lastTapAt = 0; return; }           // double-tap empty ground: back to the whole village
   lastTapAt = now; if (id && st.onTap) st.onTap(id); } }
 function onWheel(e){ e.preventDefault(); const p = local([e.clientX, e.clientY]), g0 = groundAt(...p); cam.zoom *= Math.exp(e.deltaY * .0012); clampCam(); const g1 = groundAt(...p); cam.tx += g0[0] - g1[0]; cam.ty += g0[1] - g1[1]; clampCam(); st.dirty = true; }
@@ -443,7 +472,8 @@ window.VIL = {mount, update, unmount, project,
  battleSpeed(s){ if (st.battle) st.battle.speed = s; },
  battleSkip(){ const Bt = st.battle; if (!Bt) return; clearTimeout(Bt.endT); st.battle = null; Bt.onEnd && Bt.onEnd(); },
  battleInfo(){ const Bt = st.battle; return Bt ? {i:Math.floor(Bt.t / Bt.tick), n:Bt.frames.length, speed:Bt.speed, done:Bt.done} : null; },
- edit(mode, handlers){ st.edit = mode ? {mode, h:handlers || (st.edit && st.edit.h)} : null; st.drag = null; if (host) host.classList.toggle('editing', !!mode); st.dirty = true; },
+ edit(mode, handlers){ st.edit = mode ? {mode, h:handlers || (st.edit && st.edit.h)} : null; st.drag = null; st.sel = null; if (host) host.classList.toggle('editing', !!mode); st.dirty = true; },
+ select(key){ st.sel = key == null ? null : key; st.dirty = true; },
  dragState(){ return st.drag ? {key:st.drag.key, x:st.drag.x, y:st.drag.y, ok:st.drag.ok} : null; },
  stats(){ return {fps:st.fps, verts:st.verts, lights:st.lights.length, lost, zoom:cam.zoom, actors:st.actors.length, moving:st.actors.filter(a => a.mode === 'walk').length, working:st.actors.filter(a => a.mode === 'work').length, building:st.anim ? +(st.anim.t / st.anim.dur).toFixed(2) : null}; },
  view(v){ if (v){ Object.assign(cam, v); clampCam(); st.dirty = true; } return {tx:cam.tx, ty:cam.ty, zoom:cam.zoom}; },

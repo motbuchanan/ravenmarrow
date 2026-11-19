@@ -1,6 +1,6 @@
 # Ravenmarrow: Roadmap
 
-**Current version:** 3.3 · Nov 18 2026
+**Current version:** 3.4 · Nov 19 2026
 **Live URL:** https://motbuchanan.github.io/ravenmarrow/ (repo: ravenmarrow, files at the root)
 **What it is:** A gothic Norse boss-battle game drawn entirely in code. A gift build inspired by a mobile Viking strategy RPG, built around boss fights, a warrior roster, and a light village. No money, no accounts, no data leaves the phone.
 
@@ -51,6 +51,13 @@ Her weekend feedback: had a blast, got far, played between Vikingard raids. Comb
 - Attack styles per warrior look (HSTYLE) and per enemy shape (FSTYLE) in ui.js: body moves (release), projectiles (orb, arrow, ravens, sound ring, embers), impact variants (stab, cleave, claw marks, bite, slam rings), random variant + timing jitter on every strike.
 - Engine: PASSIVES (one per warrior), TRICKS per enemy shape (poison, bleed, blind, all-hit), AFFIXES elites (Armored, Frenzied, Vampiric, Hulking) from realm 2 on, DoT/miss/endure events. Tutorial fight has no tricks. Foe stats raised ~12% to offset passives (sim curve unchanged).
 - Village clarity: Now/Next numbers on every building, before/after squad stats on upgrade, bonus chips at the top of every fight, stat annotations on warrior pages.
+
+## Shipped in 3.4 (Nov 19 2026)
+- Placement info in Edit layout: tap a building (or start dragging it) and a strip above the edit buttons gives its name, level, raid role, which Archer Towers reach it, how many extra steps the wall costs raiders to reach it, and what a tower covers. Updates live while dragging. Facts come from the raid rules (tower reach from raidItem, wall cost 6 like simRaid's router, unbuilt buildings ignored). Taps on walls and open ground in Move mode explain or clear instead of opening sheets.
+- Tower reach rings drawn on the ground while anything is picked (bright for the picked tower, dim gold for the rest).
+- Figures have more detail: boots, belts, hands, eyes, beards, helmet rims, crowns and crimson cloaks on your warriors, quivers, shield bosses; the dead get ribs, jaws, rusted helms and blades, fangs, horns, wing ribs. Fine detail is skipped when zoomed out (lod in village-iso.js).
+- Zoom goes closer (cam.minZ 4.5 to 2.4).
+- Raid sim unchanged (SIM_VER still 1, old reports still play).
 
 ## Shipped in 3.3 (Nov 18 2026)
 Living Village, Phase 4 of 5: Night Raids fought on the map, with battle reports.
@@ -167,9 +174,11 @@ Shipped in 1.6 as async warbands on Firebase (anonymous auth + Firestore, band c
 - Nothing suggestive.
 
 ## Open queue (expansion ideas, in rough priority)
-1. Her feedback after first play
-2. Realm VI and beyond (each realm = 1 entry in REALMS + 1 foe shape if new)
-3. Warrior stars / ascension past the level cap
-4. Weekly hunt: one rotating boss with a modifier
-5. More warriors (each = 1 WARRIORS entry + 3 SKILLS + a portrait case)
-6. Haptics on hits (Android only; iPhone Safari has no vibration)
+1. Phase 5 of the Living Village: Arena attacks on real layouts through Firebase (cleanLayout, layout in the player doc, red Arena reports), then break-it
+2. Open question for Mot: real proximity bonuses (for example a building next to the Forge or under a tower gaining something). Not in the rules yet; would bump SIM_VER
+3. Her feedback after play
+4. Realm VI and beyond (each realm = 1 entry in REALMS + 1 foe shape if new)
+5. Warrior stars / ascension past the level cap
+6. Weekly hunt: one rotating boss with a modifier
+7. More warriors (each = 1 WARRIORS entry + 3 SKILLS + a portrait case)
+8. Haptics on hits (Android only; iPhone Safari has no vibration)

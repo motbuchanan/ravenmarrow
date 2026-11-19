@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<!-- Ravenmarrow v3.3 · Nov 18 2026 -->
+<!-- Ravenmarrow v3.4 · Nov 19 2026 -->
 <html lang="en"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-<meta name="build" content="3.3">
-<meta name="build-date" content="Nov 18 2026">
+<meta name="build" content="3.4">
+<meta name="build-date" content="Nov 19 2026">
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#050304">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -644,6 +644,12 @@ body.help-on #vmap .vilcv{outline:1px dashed rgba(240,192,96,.75);outline-offset
 .vmodes button{background:#140a0c;color:#c9b38f;border:0;padding:9px 12px;font:600 12px cinzel,serif;letter-spacing:.5px}
 .vmodes button+button{border-left:1px solid rgba(217,164,65,.25)}
 .vmodes button.on{background:#5a1018;color:#f6deb0}
+.vinfo{width:min(100%,460px);box-sizing:border-box;max-height:104px;overflow-y:auto;background:rgba(14,8,10,.82);border:1px solid rgba(70,220,200,.35);border-radius:10px;padding:8px 12px;min-height:44px;text-align:left}
+.vinfo .vih{display:block;font:700 13px cinzel,serif;color:#f6deb0;letter-spacing:.4px;margin-bottom:3px}
+.vinfo p{margin:2px 0;font:15px/1.3 fell,Georgia,serif;color:#d8c6a6}
+.vinfo .vhint{color:#9f8d72;text-align:center}
+.vinfo .vf.good{color:#8fe0b4}.vinfo .vf.good::before{content:'\2713  '}
+.vinfo .vf.warn{color:#f0a070}.vinfo .vf.warn::before{content:'!  ';font-weight:700}
 .vcount{font-size:12px;color:#b8a589}.vcount b{color:#f0c060}
 .vtrays{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
 .vtray{background:#1a0f10;border:1px dashed #d9a441;color:#f0c060;border-radius:9px;padding:7px 10px;font:600 12px cinzel,serif}.vtray small{color:#a8987c;font-family:inherit}
@@ -1937,61 +1943,98 @@ function figure(kind, frame, mode, torch){
  if (kind && kind.slice(0, 2) === 'r_') return raider(kind.slice(2), frame, mode);
  const f = FIG[kind] || FIG.villager, B = [], box = (x, y, z, w, d, h, m) => B.push([x, y, z, w, d, h, m]);
  const walk = mode === 'walk', sw = walk ? [0, .05, 0, -.05][frame & 3] : 0, work = mode === 'work', up = work && (frame & 2);
- const robe = kind === 'priest';
- // legs (a robe hides them)
- if (robe) box(-.08, -.05, 0, .16, .1, .2, f[1]);
- else { box(-.07, -.03 + sw, 0, .055, .06, .15, f[1]); box(.015, -.03 - sw, 0, .055, .06, .15, f[1]); }
- box(-.085, -.055, .14, .17, .11, .17, f[0]);                    // body
- box(-.05, -.045, .31, .1, .09, .09, 25);                        // head
- box(-.055, -.05, .38, .11, .1, .035, f[2]);                     // hair, hood or helmet
- if (f[2] === 13) box(-.012, .04, .33, .024, .02, .06, 13);      // helmet nose guard
- // arms: the left swings with the walk, the right holds the tool
- box(-.12, -.03 - sw, .17, .035, .06, .13, f[0]);
- const ra = up ? .24 : .17; box(.085, -.03 + (work ? .04 : sw), ra, .035, .06, .13, f[0]);
+ const hero = kind && kind.slice(0, 2) === 'h_', robe = kind === 'priest' || kind === 'h_witch', iron = f[2] === 13, crown = f[2] === 9;
+ const beard = {elder:16, smith:26, miner:26, trainer:27, guard:27, axe:27, t_berserk:27, h_axe:27, h_hammer:26, h_horn:16, brewer:26, spear:26, shield:27}[kind];
+ const hairM = crown ? 26 : f[2];
+ // v3.4: more kit so a close look reads: boots, belt, hands, faces, beards, helmet rims, cloaks
+ if (robe){ box(-.08, -.05, 0, .16, .1, .2, f[1]); box(-.09, -.06, 0, .18, .12, .03, 18); }
+ else { box(-.07, -.03 + sw, .04, .055, .06, .11, f[1]); box(.015, -.03 - sw, .04, .055, .06, .11, f[1]);
+  box(-.075, -.035 + sw, 0, .065, .08, .045, 23); box(.01, -.035 - sw, 0, .065, .08, .045, 23); }          // boots
+ box(-.085, -.055, .14, .17, .11, .17, f[0]);                                                           // body
+ box(-.088, -.058, .19, .176, .116, .028, robe ? 9 : 23); if (!robe) box(-.018, .056, .19, .036, .006, .028, 9);  // belt and buckle
+ if (iron) box(-.07, .056, .23, .14, .004, .07, 13);                                                     // mail on the chest
+ if (kind === 'priest' || kind === 'h_witch') box(-.02, .056, .24, .04, .004, .04, 12);                 // rune on the robe
+ if (hero){ const fl = walk ? [0, .015, .03, .015][frame & 3] : 0; box(-.09, -.075 - fl, .07, .18, .02, .26, 28); box(-.095, -.07, .29, .19, .03, .03, 9); }  // crimson cloak, gold clasp line
+ box(-.05, -.045, .31, .1, .09, .09, 25);                                                               // head
+ box(-.034, .045, .345, .02, .006, .016, 18); box(.014, .045, .345, .02, .006, .016, 18);               // eyes
+ box(-.009, .045, .325, .018, .014, .022, 25);                                                          // nose
+ if (beard) box(-.045, .04, .29, .09, .02, .045, beard), box(-.025, .045, .27, .05, .015, .03, beard);
+ if (iron){ box(-.056, -.051, .37, .112, .102, .045, 13); box(-.06, -.055, .365, .12, .11, .012, 8); box(-.012, .045, .32, .024, .02, .06, 13); }  // helm, rim, nose guard
+ else if (robe){ box(-.06, -.055, .33, .12, .11, .1, f[0]); box(-.04, -.03, .43, .08, .07, .04, f[0]); }  // hood
+ else { box(-.055, -.05, .38, .11, .1, .035, hairM); box(-.056, -.05, .32, .012, .08, .07, hairM); box(.044, -.05, .32, .012, .08, .07, hairM); box(-.05, -.054, .31, .1, .012, .08, hairM); }
+ if (crown){ box(-.058, -.053, .405, .116, .106, .022, 9); [-.045, -.008, .03].forEach(x => box(x, .04, .425, .016, .012, .025, 9)); }
+ // arms with hands: the left swings with the walk, the right holds the tool
+ box(-.12, -.03 - sw, .17, .035, .06, .13, f[0]); box(-.118, -.025 - sw, .14, .03, .05, .035, 25);
+ const ra = up ? .24 : .17; box(.085, -.03 + (work ? .04 : sw), ra, .035, .06, .13, f[0]); box(.087, -.025 + (work ? .04 : sw), ra - .03, .03, .05, .035, 25);
+ if (iron){ box(-.13, -.04, .27, .05, .08, .04, 13); box(.08, -.04, .27, .05, .08, .04, 13); }          // pauldrons
  const hx = .1, hy = work ? .06 : .02, hz = ra + (up ? .14 : .02);
  const t = f[3];
- if (t === 'hammer'){ box(hx, hy, hz, .02, .02, .12, 23); box(hx - .03, hy - .015, hz + (up ? .12 : -.02), .08, .05, .04, 13); }
- else if (t === 'pick'){ box(hx, hy, hz, .02, .02, .14, 23); box(hx - .06, hy, hz + (up ? .13 : .12), .14, .025, .025, 13); }
- else if (t === 'spear'){ box(hx, hy + (work && up ? .1 : 0), .1, .02, .02, .5, 23); box(hx - .005, hy + (work && up ? .1 : 0), .6, .03, .03, .06, 13); }
- else if (t === 'axe'){ box(hx, hy, hz, .02, .02, .16, 23); box(hx - .01, hy - .04, hz + .1, .04, .07, .06, 13); }
- else if (t === 'bow'){ box(hx + .01, hy - .01, .14, .015, .02, .32, 23); }
- else if (t === 'staff'){ box(hx, hy, .02, .025, .025, .48, 23); box(hx - .01, hy - .01, .48, .045, .045, .04, 9); }
- else if (t === 'keg'){ if (!walk) box(hx - .02, hy, hz - .02, .08, .07, .08, 4); }
- else if (t === 'herb'){ box(hx - .01, hy + .02, hz + .06, .05, .04, .05, 20); }
- else if (t === 'shield'){ box(-.16, -.06, .14, .03, .14, .16, 10); }
+ if (t === 'hammer'){ box(hx, hy, hz, .02, .02, .12, 23); box(hx - .03, hy - .015, hz + (up ? .12 : -.02), .08, .05, .045, 13); box(hx - .032, hy - .017, hz + (up ? .155 : .015), .084, .054, .008, 7); }
+ else if (t === 'pick'){ box(hx, hy, hz, .02, .02, .14, 23); box(hx - .06, hy, hz + (up ? .13 : .12), .14, .025, .025, 13); box(hx - .075, hy + .003, hz + (up ? .125 : .115), .02, .02, .02, 7); }
+ else if (t === 'spear'){ const sy = hy + (work && up ? .1 : 0); box(hx, sy, .1, .02, .02, .5, 23); box(hx - .008, sy - .004, .6, .036, .028, .03, 13); box(hx - .002, sy, .63, .024, .02, .035, 13); box(hx + .002, sy + .004, .665, .016, .012, .02, 7); box(hx - .004, sy - .003, .58, .028, .026, .02, 10); }
+ else if (t === 'axe'){ box(hx, hy, hz, .02, .02, .17, 23); box(hx - .01, hy - .05, hz + .1, .04, .08, .07, 13); box(hx - .012, hy - .06, hz + .09, .044, .02, .09, 7); }
+ else if (t === 'bow'){ box(hx + .01, hy - .01, .2, .015, .02, .2, 23); box(hx + .01, hy - .03, .1, .015, .02, .1, 23); box(hx + .01, hy - .03, .4, .015, .02, .1, 23); box(hx + .022, hy - .045, .1, .004, .004, .4, 16);
+  box(-.09, -.09, .18, .05, .04, .16, 29); box(-.085, -.085, .34, .01, .01, .05, 16); box(-.065, -.085, .34, .01, .01, .05, 16); }  // quiver with fletching
+ else if (t === 'staff'){ box(hx, hy, .02, .025, .025, .48, 23); box(hx - .01, hy - .01, .48, .045, .045, .04, 9); box(hx, hy, .52, .025, .025, .025, 12); }
+ else if (t === 'keg'){ if (!walk){ box(hx - .02, hy, hz - .02, .08, .07, .08, 4); box(hx - .022, hy - .002, hz + .01, .084, .074, .01, 13); } }
+ else if (t === 'herb'){ box(hx - .01, hy + .02, hz + .06, .05, .04, .05, 20); box(hx, hy + .03, hz + .1, .02, .02, .03, 20); }
+ else if (t === 'shield'){ box(-.16, -.07, .13, .03, .16, .18, 10); box(-.165, -.075, .13, .008, .17, .18, 4); box(-.17, -.01, .2, .012, .04, .04, 9); }
  if (kind === 'priest' && work) box(-.02, .08, .3 + (up ? .06 : 0), .04, .02, .04, 12);
- if (torch){ box(-.14, .02, .2, .025, .025, .2, 23); box(-.15, .01, .4, .045, .045, .05, 11); }
+ if (torch){ box(-.14, .02, .2, .025, .025, .2, 23); box(-.15, .01, .4, .045, .045, .05, 11); box(-.14, .02, .45, .025, .025, .03, 11); }
  const K = 1.35; return B.map(b => [b[0] * K, b[1] * K, b[2] * K, b[3] * K, b[4] * K, b[5] * K, b[6]]);  // a touch bigger than life so they read on a phone
 }
 // the raiding dead, as blocks: pale grave-flesh, rags, teal eye-glow
 function raider(shape, frame, mode){
  const B = [], box = (x, y, z, w, d, h, m) => B.push([x, y, z, w, d, h, m]), walk = mode === 'walk', hit = mode === 'work' && (frame & 2);
  const sw = walk ? [0, .05, 0, -.05][frame & 3] : 0, skin = 16, rag = 13, eye = 12;
- if (shape === 'beast'){ // a gaunt wolf on four legs
-  box(-.07, -.17, .14, .14, .34, .13, 26); box(-.06, .14 + (hit ? .04 : 0), .2, .12, .13, .1, 26); box(-.05, .25 + (hit ? .04 : 0), .2, .1, .07, .05, 26);
-  box(-.04, .2 + (hit ? .04 : 0), .27, .03, .03, .02, eye); box(.01, .2 + (hit ? .04 : 0), .27, .03, .03, .02, eye); box(-.05, .17, .3, .03, .03, .05, 26); box(.02, .17, .3, .03, .03, .05, 26);
-  [[-.07, .1], [.03, .1], [-.07, -.15], [.03, -.15]].forEach(([x, y], i) => box(x, y + (i % 2 ? sw : -sw), 0, .04, .04, .15, 26)); box(-.02, -.24, .2, .04, .09, .03, 26);
+ if (shape === 'beast'){ // a gaunt wolf on four legs, ribs showing, ears up
+  const hy = hit ? .04 : 0;
+  box(-.07, -.17, .14, .14, .34, .13, 26); [-.08, -.03, .02].forEach(y => box(-.072, y, .17, .144, .018, .06, 16));      // ribs
+  for (let i = 0; i < 5; i++) box(-.012, -.15 + i * .07, .27, .024, .03, .025 + (i % 2) * .015, 18);                      // hackles
+  box(-.06, .14 + hy, .2, .12, .13, .1, 26); box(-.05, .25 + hy, .2, .1, .08, .05, 26); box(-.03, .32 + hy, .21, .06, .02, .03, 18);  // head, snout, nose
+  box(-.04, .315 + hy, .19, .012, .01, .018, 16); box(.028, .315 + hy, .19, .012, .01, .018, 16);                            // fangs
+  box(-.04, .2 + hy, .27, .03, .03, .02, eye); box(.01, .2 + hy, .27, .03, .03, .02, eye); box(-.05, .17, .3, .03, .03, .06, 26); box(.02, .17, .3, .03, .03, .06, 26);
+  [[-.07, .1], [.03, .1], [-.07, -.15], [.03, -.15]].forEach(([x, y], i) => { box(x, y + (i % 2 ? sw : -sw), .02, .04, .04, .13, 26); box(x - .003, y + (i % 2 ? sw : -sw), 0, .046, .05, .025, 18); });
+  box(-.02, -.26, .2, .04, .1, .03, 26); box(-.015, -.33, .17, .03, .07, .03, 27);                                           // tail
  } else if (shape === 'bird'){ // a corpse crow, flying high
-  const fl = [0, .06, .1, .06][frame & 3]; box(-.05, -.08, .9, .1, .18, .08, 18); box(-.03, .1, .93, .06, .06, .05, 18); box(-.01, .15, .94, .02, .05, .02, 9);
-  box(-.22, -.04, .94 + fl, .17, .1, .02, 18); box(.05, -.04, .94 + fl, .17, .1, .02, 18); box(-.02, .12, .97, .02, .02, .02, eye);
- } else if (shape === 'wraith'){ // a floating shade
+  const fl = [0, .06, .1, .06][frame & 3]; box(-.05, -.08, .9, .1, .18, .08, 18); box(-.03, .1, .93, .06, .06, .05, 18); box(-.01, .15, .94, .02, .06, .02, 9);
+  box(-.22, -.04, .94 + fl, .17, .1, .02, 18); box(.05, -.04, .94 + fl, .17, .1, .02, 18); box(-.3, -.03, .94 + fl * 1.6, .09, .08, .015, 18); box(.21, -.03, .94 + fl * 1.6, .09, .08, .015, 18);
+  [-.17, -.11, .1, .16].forEach(x => box(x, -.06, .935 + fl, .012, .04, .01, 16));                                         // bare wing bones
+  box(-.04, -.15, .9, .08, .08, .02, 18); box(-.025, -.2, .9, .05, .05, .015, 18);                                         // tail
+  box(-.03, .02, .86, .01, .01, .04, 9); box(.02, .02, .86, .01, .01, .04, 9);                                             // claws
+  box(-.02, .12, .97, .02, .02, .02, eye); box(.01, .12, .97, .02, .02, .02, eye);
+ } else if (shape === 'wraith'){ // a floating shade with a torn hem and long claws
   const bob = [0, .02, .04, .02][frame & 3]; box(-.09, -.06, .06 + bob, .18, .12, .3, 18); box(-.11, -.07, .02 + bob, .22, .14, .06, 18);
-  box(-.06, -.05, .36 + bob, .12, .1, .1, 18); box(-.035, .045, .39 + bob, .025, .01, .02, eye); box(.01, .045, .39 + bob, .025, .01, .02, eye);
-  box(.09, -.02, .2 + bob + (hit ? .08 : 0), .04, .1, .03, 18); if (hit) box(.1, .08, .3 + bob, .05, .05, .05, eye);
- } else if (shape === 'serpent'){ // a long low worm
-  for (let i = 0; i < 6; i++){ const off = walk ? [0, .03, 0, -.03][(frame + i) & 3] : 0; box(-.06 + off, -.3 + i * .1, 0, .12, .1, .1 - i * .006, i % 2 ? 31 : 26); }
-  box(-.07, .3 + (hit ? .05 : 0), .02, .14, .12, .12, 26); box(-.05, .41 + (hit ? .05 : 0), .1, .03, .01, .02, eye); box(.02, .41 + (hit ? .05 : 0), .1, .03, .01, .02, eye);
- } else if (shape === 'dragon'){ // a spawn of Nidhogg, wings half open
+  [-.1, -.05, 0, .05].forEach((x, i) => box(x, -.06 + (i % 2) * .03, -.03 + bob + (i % 2) * .02, .04, .04, .06, 18));      // torn hem
+  box(-.07, -.06, .33 + bob, .14, .12, .14, 18); box(-.05, -.035, .36 + bob, .1, .09, .09, 26);                             // hood, sunken face
+  box(-.035, .055, .39 + bob, .025, .01, .02, eye); box(.01, .055, .39 + bob, .025, .01, .02, eye);
+  box(.09, -.02, .2 + bob + (hit ? .08 : 0), .04, .1, .03, 18); [0, .025, .05].forEach(d => box(.1 + d * .4, .08, .19 + bob + (hit ? .08 : 0) + d * .2, .008, .05, .008, 16));
+  box(-.13, -.02, .2 + bob, .04, .1, .03, 18); if (hit) box(.1, .08, .3 + bob, .05, .05, .05, eye);
+ } else if (shape === 'serpent'){ // a long low worm with a fin and fangs
+  for (let i = 0; i < 6; i++){ const off = walk ? [0, .03, 0, -.03][(frame + i) & 3] : 0; box(-.06 + off, -.3 + i * .1, 0, .12, .1, .1 - i * .006, i % 2 ? 31 : 26); box(-.01 + off, -.28 + i * .1, .1 - i * .006, .02, .06, .04, 28); }
+  const hy = hit ? .05 : 0; box(-.07, .3 + hy, .02, .14, .12, .12, 26); box(-.06, .42 + hy, .03, .12, .04, .04, 26);
+  box(-.04, .45 + hy, .02, .012, .01, .025, 16); box(.028, .45 + hy, .02, .012, .01, .025, 16);
+  box(-.05, .41 + hy, .1, .03, .01, .02, eye); box(.02, .41 + hy, .1, .03, .01, .02, eye);
+ } else if (shape === 'dragon'){ // a spawn of Nidhogg: horns, spine spikes, ribbed wings
   const fl = [0, .05, .08, .05][frame & 3]; box(-.1, -.2, .14, .2, .4, .16, 23); box(-.06, .18, .22, .12, .16, .11, 23); box(-.04, .32, .24, .08, .08, .06, 23);
-  box(-.04, .3, .3, .02, .02, .02, eye); box(.02, .3, .3, .02, .02, .02, eye); box(-.03, -.34, .18, .06, .16, .05, 23);
+  for (let i = 0; i < 5; i++) box(-.012, -.18 + i * .08, .3, .024, .03, .04 + (i % 2) * .02, 16);
+  box(-.05, .2, .33, .015, .015, .07, 16); box(.035, .2, .33, .015, .015, .07, 16);                                        // horns
+  box(-.035, .39, .23, .012, .01, .02, 16); box(.023, .39, .23, .012, .01, .02, 16);                                       // teeth
+  box(-.04, .3, .3, .02, .02, .02, eye); box(.02, .3, .3, .02, .02, .02, eye); box(-.03, -.34, .18, .06, .16, .05, 23); box(-.02, -.44, .19, .04, .1, .03, 23);
   box(-.36, -.1, .3 + fl, .26, .2, .02, 28); box(.1, -.1, .3 + fl, .26, .2, .02, 28);
+  [-.34, -.25, -.16, .14, .23, .32].forEach(x => box(x, -.11, .32 + fl, .015, .22, .015, 23));                            // wing ribs
   [[-.09, .1], [.05, .1], [-.09, -.15], [.05, -.15]].forEach(([x, y], i) => box(x, y + (i % 2 ? sw : -sw), 0, .05, .05, .15, 23));
-  if (hit) box(-.03, .4, .26, .06, .14, .05, 11);
- } else { // draugr: a walking corpse in rags
+  if (hit){ box(-.03, .4, .26, .06, .14, .05, 11); box(-.02, .54, .27, .04, .08, .03, 11); }
+ } else { // draugr: a walking corpse in rags, rusted blade, ribs through the tunic
   box(-.07, -.03 + sw, 0, .055, .06, .15, rag); box(.015, -.03 - sw, 0, .055, .06, .15, rag);
-  box(-.085, -.055, .14, .17, .11, .17, rag); box(-.05, -.045, .31, .1, .09, .09, skin);
+  box(-.085, -.055, .14, .17, .11, .17, rag); [-.1, -.04, .02].forEach((x, i) => box(x + .02, -.058, .11 - (i % 2) * .03, .05, .02, .05, rag));  // hanging rags
+  [.2, .235, .27].forEach(z => box(-.05, .056, z, .1, .006, .014, skin));                                                     // ribs
+  box(-.05, -.045, .31, .1, .09, .09, skin); box(-.04, .042, .29, .08, .02, .03, skin);                                    // skull and jaw
+  box(-.03, .046, .3, .06, .004, .008, 18);                                                                                // gaping mouth
+  box(-.055, -.05, .385, .11, .1, .03, 13); box(-.06, -.054, .38, .12, .108, .01, 8);                                      // rusted helm
   box(-.035, .045, .34, .025, .01, .02, eye); box(.01, .045, .34, .025, .01, .02, eye);
-  box(-.12, -.03 + (hit ? .06 : 0), .2 + (hit ? .06 : 0), .035, .14, .035, skin); box(.085, -.03 + (hit ? .06 : 0), .22, .035, .14, .035, skin);
+  const hz = hit ? .06 : 0; box(-.12, -.03 + hz, .2 + hz, .035, .14, .035, skin); box(.085, -.03 + hz, .22, .035, .14, .035, skin);
+  box(.095, .1 + hz, .19, .016, .02, .02, 23); box(.096, .12 + hz, .2, .014, .16, .012, 19);                               // rusted blade
  }
  const K = 1.35; return B.map(b => [b[0] * K, b[1] * K, b[2] * K, b[3] * K, b[4] * K, b[5] * K, b[6]]);
 }
@@ -2014,6 +2057,7 @@ const VERSION = document.querySelector('meta[name="build"]').content; // e.g. "1
 const BUILD_DATE = document.querySelector('meta[name="build-date"]').content;
 // Newest first. Every update adds an entry; it shows once after the update lands.
 const CHANGELOG = [
+ {v:'3.4', d:'Nov 19 2026', notes:['In Edit layout, tap a building to see what it does where it stands: which towers reach it, how many extra steps the wall costs raiders, and what an Archer Tower covers. It updates live as you drag.', 'Picking a building draws every Archer Tower\'s reach on the ground, so you can see the gaps in your defense.', 'Zoom in closer, and everyone has more to see up close: faces, beards, helmets, cloaks for your warriors, quivers, shields, and nastier dead with ribs, rusted blades, fangs and horns.']},
  {v:'3.3', d:'Nov 18 2026', notes:['Night Raids are fought on your village now. The dead come out of the forest and go for your buildings; Archer Towers shoot, Spike Pits wound, and your squad and Garrison fight by the Hall. Where you put things matters.', 'Watch it live, or let it play out and see the result. Every raid is saved as a battle report you can watch later at 1x, 2x or 4x, or skip.', 'Losing no longer empties your coffers: they carry off a share of what is waiting to be collected, more the deeper they get.', 'Extra towers and pits from your Hall all fight now.']},
  {v:'3.2', d:'Nov 18 2026', notes:['Edit layout: drag your buildings anywhere inside the valley, draw and erase your palisade, and place extra Archer Towers and Spike Pits as your Hall unlocks them.', 'Green means a building fits, red means it does not. Done saves your layout, Cancel puts everything back.', 'Leave raiders a way in: the game will not let you wall the Hall in completely.']},
  {v:'3.1', d:'Nov 18 2026', notes:['Smoother map controls: the ground stays under your finger as you drag, pinch zooms toward your fingers, and a double-tap on open ground shows the whole village again.', 'Your village has people now. Villagers walk to work and back: the smith hammers at the forge, miners dig, the priest tends the altar. More move in as your Hall grows.', 'Guards patrol inside the palisade, and your troops drill in front of the War Camp.', 'Upgrade a building and watch it go up: scaffolding, builders and the new level rising from the ground.', 'After dark, fewer folk are out, and the ones who are carry torches.']},
@@ -3024,15 +3068,67 @@ const editHandlers = {
  paint:(x, y) => { const c = editCounts(), max = layoutMax(); if (x < 0 || y < 0 || x >= BASE.W || y >= BASE.H) return;
   if ((c.wall || 0) >= max.wall){ if (!vEdit.warned){ vEdit.warned = 1; toast('No wall pieces left. A bigger Hall gives you more.'); } return; }
   const w = {k:'wall', x, y}; if (!BASE.fits(vEdit.L, w, RM.BDEFS)) return; vEdit.L.items.push(w); editRefresh(); },
- erase:(x, y) => { const i = vEdit.L.items.findIndex(it => it.k === 'wall' && it.x === x && it.y === y); if (i < 0) return; vEdit.L.items.splice(i, 1); vEdit.warned = 0; editRefresh(); }
+ erase:(x, y) => { const i = vEdit.L.items.findIndex(it => it.k === 'wall' && it.x === x && it.y === y); if (i < 0) return; if (vEdit.sel && vEdit.sel.key >= i){ vEdit.sel = null; if (window.VIL) VIL.select(null); } vEdit.L.items.splice(i, 1); vEdit.warned = 0; editRefresh(); },
+ // v3.4 placement info: tap or drag a building and the strip above the buttons says what matters for where it goes
+ ring:key => { const it = vEdit && vEdit.L.items[key]; if (!it || it.k !== 'tower') return 0; return (S.vil.tower || 0) > 0 || (vEdit.sel && vEdit.sel.key === key) ? towerReach() : 0; },
+ select:(key, x, y) => { if (!vEdit) return; vEdit.sel = key == null ? null : {key, x, y, ok:true}; placeInfo(); },
+ hover:(key, x, y, ok) => { if (!vEdit) return; vEdit.sel = {key, x, y, ok}; placeInfo(); }
 };
+// ---------- v3.4 PLACEMENT FACTS: what a spot means in a raid, read from the same rules simRaid uses ----------
+// tower reach is raidItem's own number (Lookout adds to it); an unbuilt tower shows its level 1 reach
+function towerReach(){ return RM.raidItem({k:'tower', x:0, y:0}, Object.assign({}, S.vil, {tower:Math.max(1, S.vil.tower || 0)})).range; }
+function rectGap(a, b){ const dx = Math.max(b.x - (a.x + a.w), 0, a.x - (b.x + b.w)), dy = Math.max(b.y - (a.y + a.h), 0, a.y - (b.y + b.h)); return Math.sqrt(dx * dx + dy * dy); }
+function rectOf(it){ const f = BASE.fpOf(RM.BDEFS, it.k); return {x:it.x, y:it.y, w:f[0], h:f[1]}; }
+// steps from the nearest map edge to stand next to a building: built walls cost 6 (they get broken, like the sim), other built buildings block
+function walkCost(items, idx, walls){
+ const W = BASE.W, H = BASE.H, N = W * H, occ = new Int16Array(N).fill(-1);
+ items.forEach((it, i) => { if (i === idx || !(S.vil[it.k] > 0) || it.k === 'pits') return; BASE.cells(RM.BDEFS, it).forEach(([x, y]) => { if (x >= 0 && y >= 0 && x < W && y < H) occ[y * W + x] = i; }); });
+ const cost = new Float64Array(N).fill(1e9), q = [];
+ const stepOf = k => { const o = occ[k]; return o < 0 ? 1 : items[o].k === 'wall' ? (walls ? 6 : 1) : 0; };
+ for (let x = 0; x < W; x++) for (const y of [0, H - 1]){ const k = y * W + x, c = stepOf(k); if (c && c < cost[k]){ cost[k] = c; q.push(k); } }
+ for (let y = 0; y < H; y++) for (const x of [0, W - 1]){ const k = y * W + x, c = stepOf(k); if (c && c < cost[k]){ cost[k] = c; q.push(k); } }
+ while (q.length){ let bi = 0; for (let i = 1; i < q.length; i++) if (cost[q[i]] < cost[q[bi]]) bi = i; const k = q.splice(bi, 1)[0], x = k % W, y = (k - x) / W;
+  for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]){ const nx = x + dx, ny = y + dy; if (nx < 0 || ny < 0 || nx >= W || ny >= H) continue; const nk = ny * W + nx, c = stepOf(nk); if (!c) continue;
+   if (cost[k] + c < cost[nk]){ if (cost[nk] === 1e9) q.push(nk); cost[nk] = cost[k] + c; } } }
+ const r = rectOf(items[idx]); let best = 1e9;
+ for (let y = r.y - 1; y <= r.y + r.h; y++) for (let x = r.x - 1; x <= r.x + r.w; x++){ if (x < 0 || y < 0 || x >= W || y >= H) continue; if (x >= r.x && x < r.x + r.w && y >= r.y && y < r.y + r.h) continue; best = Math.min(best, cost[y * W + x]); }
+ return best; }
+function placeFacts(key, x, y){
+ const items = vEdit.L.items.map((it, i) => i === key ? {k:it.k, x, y} : it), it = items[key], k = it.k, lv = S.vil[k] || 0, f = [];
+ const name = k === 'wall' ? 'Palisade piece' : (RM.BUILDINGS.find(b => b.id === k) || {}).name || k;
+ const head = name + (lv ? ', level ' + lv : ', not built yet');
+ const R = rectOf(it), reach = towerReach(), towers = items.map((t, i) => ({t, i})).filter(o => o.t.k === 'tower' && o.i !== key && (S.vil.tower || 0) > 0);
+ const near = towers.filter(o => rectGap(rectOf(o.t), R) + 1.2 <= reach), covered = near.length;
+ // fully covered when raiders on every side of it are in reach, not just the near edge
+ const corner = (T, x, y) => rectGap(T, {x, y, w:0, h:0}), full = [[R.x - 1, R.y - 1], [R.x + R.w + 1, R.y - 1], [R.x - 1, R.y + R.h + 1], [R.x + R.w + 1, R.y + R.h + 1]].every(([x, y]) => near.some(o => corner(rectOf(o.t), x, y) <= reach));  // towers can share the job
+ if (k === 'hall') f.push(['', 'The heart of the village. If it falls, you lose all your uncollected coffers. Raiders go for the closest building, so what stands around it buys time.']);
+ else if (k === 'tower') f.push(['', 'Shoots the nearest raider within ' + (Math.round(reach * 10) / 10) + ' tiles. The bright ring is its reach.' + (lv ? '' : ' (Level 1 reach shown.)')]);
+ else if (k === 'pits') f.push(['', 'Wounds each raider who walks over it, once. Crows fly over it. Best in the gap raiders use to get in.']);
+ else if (k === 'wall') f.push(['', 'Raiders break it or go around. Leave one gap so they come in where your towers and pits wait.']);
+ else f.push(['', 'Raiders hit the closest building first, so the outer ones take the first blows.']);
+ if (!lv && k !== 'hall' && k !== 'wall'){ f.push(['warn', 'Not built yet, so raiders ignore it and it does nothing in a raid.']); }
+ if (k === 'tower'){ const near = items.filter((b, i) => i !== key && b.k !== 'wall' && b.k !== 'pits' && b.k !== 'tower' && (S.vil[b.k] || 0) > 0 && rectGap(R, rectOf(b)) + 1.2 <= reach);
+  const hall = near.some(b => b.k === 'hall');
+  f.push([near.length ? 'good' : 'warn', near.length ? 'Covers ' + near.length + ' building' + (near.length > 1 ? 's' : '') + (hall ? ', including the Hall.' : '. Not the Hall.') : 'Covers none of your buildings here.']);
+  f.push(['', 'Crows and wraiths go after towers first.']); }
+ else if (k !== 'wall'){
+  if ((S.vil.tower || 0) > 0) f.push([covered ? 'good' : 'warn', !covered ? 'No tower reaches this spot.' : full ? 'Inside the reach of ' + covered + ' tower' + (covered > 1 ? 's' : '') + '.' : 'Partly inside the reach of ' + covered + ' tower' + (covered > 1 ? 's' : '') + '. Raiders on the far side are out of range.']);
+  if (k !== 'pits' && (S.vil.wall || 0) > 0){ const a = walkCost(items, key, true), b = walkCost(items, key, false);
+   if (a < 1e8 && b < 1e8){ const d = Math.round(a - b); f.push([d >= 3 ? 'good' : 'warn', d >= 3 ? 'The wall costs raiders about ' + d + ' extra steps to get here.' : d > 0 ? 'The wall barely slows raiders on the way here.' : 'Raiders can walk straight here. The wall does not slow them.']); } } }
+ else if (!(S.vil.wall > 0)) f.push(['warn', 'Your Palisade is not built yet, so these pieces do not stop anyone.']);
+ return {head, f}; }
+function placeInfo(){
+ const el = $('#vinfo'); if (!el || !vEdit) return; const s = vEdit.sel;
+ if (!s || !vEdit.L.items[s.key]){ el.innerHTML = '<p class="vhint">Tap a building to see what it does where it stands.</p>'; return; }
+ const P = placeFacts(s.key, s.x, s.y);
+ el.innerHTML = `<b class="vih">${P.head}</b>${s.ok === false ? '<p class="vf warn">It does not fit here.</p>' : ''}${P.f.map(([c, t]) => `<p class="vf ${c}">${t}</p>`).join('')}`; }
 function editStart(){
  vEdit = {L:{v:1, items:S.layout.items.map(i => ({k:i.k, x:i.x, y:i.y}))}, mode:'move'};
  if (!S.flags) S.flags = {}; if (!S.flags.editTip){ S.flags.editTip = 1; save(); toast('Drag a building to move it. Use Walls to draw or erase the palisade. Two fingers move the map.', 5200); }
  renderVillage();
 }
-function editMode(m){ vEdit.mode = m; if (window.VIL) VIL.edit(m, editHandlers); editBar(); }
-function editAdd(k){ const c = freeSpot(k); if (!c){ toast('No room. Move something first.'); return; } vEdit.L.items.push(c); sfx('tap'); editRefresh(); }
+function editMode(m){ vEdit.mode = m; vEdit.sel = null; if (window.VIL) VIL.edit(m, editHandlers); editBar(); }  // erasing walls shifts item keys, so a pick never outlives a mode change
+function editAdd(k){ const c = freeSpot(k); if (!c){ toast('No room. Move something first.'); return; } vEdit.L.items.push(c); sfx('tap'); const key = vEdit.L.items.length - 1; vEdit.sel = {key, x:c.x, y:c.y, ok:true}; if (window.VIL) VIL.select(key); editRefresh(); }
 function editDone(){
  const v = BASE.validLayout(vEdit.L, RM.BDEFS, layoutMax(), layoutNeed(), 'hall');
  if (!v.ok){ const why = {sealed:'Raiders need a way in. Leave a gap in the wall.', overlap:'Two things overlap. Move one of them.', bounds:'Something is off the edge.', count:'Too many ' + (BNAME[v.k] || v.k) + ' pieces.', missing:(BNAME[v.k] || v.k) + ' is missing.'}[v.why];
@@ -3046,12 +3142,12 @@ function editBar(){
  if (!vEdit){ el.innerHTML = `<button class="btn small ghost" id="vEditBtn">Edit layout</button>${(S.reports || []).length ? ' <button class="btn small ghost" id="vRepBtn">Battle reports</button>' : ''}`; const rb = $('#vRepBtn'); if (rb) rb.onclick = () => { sfx('tap'); reportsSheet(); }; $('#vEditBtn').onclick = () => { sfx('tap'); editStart(); }; return; }
  const c = editCounts(), max = layoutMax(), m = vEdit.mode;
  const extras = ['tower', 'pits'].filter(k => (c[k] || 0) < max[k]).map(k => `<button class="vtray" data-add="${k}">+ ${BNAME[k]} <small>${max[k] - (c[k] || 0)} left</small></button>`).join('');
- el.innerHTML = `<div class="vmodes"><button data-m="move" class="${m === 'move' ? 'on' : ''}">Move</button><button data-m="paint" class="${m === 'paint' ? 'on' : ''}">Draw walls</button><button data-m="erase" class="${m === 'erase' ? 'on' : ''}">Erase walls</button></div>
-  <div class="vcount">Wall pieces <b>${c.wall || 0}</b> / ${max.wall}</div>${extras ? `<div class="vtrays">${extras}</div>` : ''}
-  <div class="row" style="gap:8px;justify-content:center"><button class="btn small ghost" id="vCancel">Cancel</button><button class="btn small blood" id="vDone">Done</button></div>`;
+ el.innerHTML = `<div class="row vsave" style="gap:8px;justify-content:center"><button class="btn small ghost" id="vCancel">Cancel</button><button class="btn small blood" id="vDone">Done</button></div><div class="vmodes"><button data-m="move" class="${m === 'move' ? 'on' : ''}">Move</button><button data-m="paint" class="${m === 'paint' ? 'on' : ''}">Draw walls</button><button data-m="erase" class="${m === 'erase' ? 'on' : ''}">Erase walls</button></div>
+  <div class="vinfo" id="vinfo" aria-live="polite"></div><div class="vcount">Wall pieces <b>${c.wall || 0}</b> / ${max.wall}</div>${extras ? `<div class="vtrays">${extras}</div>` : ''}`;
  $$('#vedit .vmodes button').forEach(b => b.onclick = () => { sfx('tap'); editMode(b.dataset.m); });
  $$('#vedit .vtray').forEach(b => b.onclick = () => editAdd(b.dataset.add));
  $('#vCancel').onclick = () => { sfx('tap'); editCancel(); }; $('#vDone').onclick = editDone;
+ placeInfo();
 }
 // ---------- v3.1 the village lives: villagers, guards on patrol, troops drilling ----------
 function villagerCount(){ return Math.min(19, 4 + 3 * (S.vil.hall || 0)); }
